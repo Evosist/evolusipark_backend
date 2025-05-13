@@ -1,0 +1,1670 @@
+{
+	"info": {
+		"_postman_id": "3d8314ba-1f84-41e6-af29-f0853fea9bd7",
+		"name": "EVOSIST PARKING",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26558441"
+	},
+	"item": [
+		{
+			"name": "AUTH",
+			"item": [
+				{
+					"name": "LOGIN",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "helloidealab",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "REGISTER",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "nama",
+									"value": "Itmamul Fahmi",
+									"type": "text"
+								},
+								{
+									"key": "jenis_kelamin",
+									"value": "Laki-laki",
+									"type": "text"
+								},
+								{
+									"key": "no_hp",
+									"value": "0823234234234",
+									"type": "text"
+								},
+								{
+									"key": "alamat_lengkap",
+									"value": "Pekuncen",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "helloidealab",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "level_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MASTER DATA",
+			"item": [
+				{
+					"name": "POS",
+					"item": [
+						{
+							"name": "GET ALL POS",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/pos",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"pos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CREATE POS",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "kode",
+											"value": "P1",
+											"type": "text"
+										},
+										{
+											"key": "keterangan",
+											"value": "Pos 1",
+											"type": "text"
+										},
+										{
+											"key": "tipe_pos",
+											"value": "In",
+											"type": "text"
+										},
+										{
+											"key": "tipe_manless",
+											"value": "Loop 1 with Button",
+											"type": "text"
+										},
+										{
+											"key": "tipe_kendaraan",
+											"value": "All",
+											"type": "text"
+										},
+										{
+											"key": "kamera_1",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "kamera_2",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "nama_printer",
+											"value": "Epson TM-T81 Receipt",
+											"type": "text"
+										},
+										{
+											"key": "nama_interface",
+											"value": "BGI",
+											"type": "text"
+										},
+										{
+											"key": "com_port",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "synchronize",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "user_id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/master-data/pos",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"pos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EDIT POS",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "kode",
+											"value": "P1",
+											"type": "text"
+										},
+										{
+											"key": "keterangan",
+											"value": "Pos 1",
+											"type": "text"
+										},
+										{
+											"key": "tipe_pos",
+											"value": "In",
+											"type": "text"
+										},
+										{
+											"key": "tipe_manless",
+											"value": "Loop 1 with Button",
+											"type": "text"
+										},
+										{
+											"key": "tipe_kendaraan",
+											"value": "All",
+											"type": "text"
+										},
+										{
+											"key": "kamera_1",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "kamera_2",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "nama_printer",
+											"value": "Epson TM-T81 Receipt",
+											"type": "text"
+										},
+										{
+											"key": "nama_interface",
+											"value": "BGI",
+											"type": "text"
+										},
+										{
+											"key": "com_port",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "synchronize",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "user_id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/master-data/pos/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"pos",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE POS",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/pos/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"pos",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "KENDARAAN",
+					"item": [
+						{
+							"name": "GET ALL KENDARAAN",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/kendaraan",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"kendaraan"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CREATE KENDARAAN",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nama_kendaraan",
+											"value": "Xenia",
+											"type": "text"
+										},
+										{
+											"key": "tipe_kendaraan",
+											"value": "Mobil",
+											"type": "text"
+										},
+										{
+											"key": "status",
+											"value": "true",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/master-data/kendaraan",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"kendaraan"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EDIT KENDARAAN",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nama_kendaraan",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "tipe_kendaraan",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "status",
+											"value": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/master-data/kendaraan/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"kendaraan",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE KENDARAAN",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/kendaraan/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"kendaraan",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "SHIFT",
+					"item": [
+						{
+							"name": "GET ALL SHIFT",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/shift",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"shift"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CREATE SHIFT",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nama_shift",
+											"value": "Shift 2",
+											"type": "text"
+										},
+										{
+											"key": "awal_shift",
+											"value": "15:00",
+											"type": "text"
+										},
+										{
+											"key": "akhir_shift",
+											"value": "16:00",
+											"type": "text"
+										},
+										{
+											"key": "status",
+											"value": "true",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/master-data/shift",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"shift"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EDIT SHIFT",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nama_shift",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "awal_shift",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "akhir_shift",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "status",
+											"value": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/master-data/shift/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"shift",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE SHIFT",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/shift/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"shift",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PRODUK MEMBER",
+					"item": [
+						{
+							"name": "GET ALL PRODUK MEMBER",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/produk-member",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"produk-member"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CREATE PRODUK MEMBER",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nama",
+											"value": "Member 2",
+											"type": "text"
+										},
+										{
+											"key": "periode",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "kendaraan_mb",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "kendaraan_mt",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "kendaraan_truck_atau_box",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "max_kendaraan",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "tarif",
+											"value": "50000",
+											"type": "text"
+										},
+										{
+											"key": "biaya_kartu",
+											"value": "50000",
+											"type": "text"
+										},
+										{
+											"key": "biaya_ganti_nopol",
+											"value": "50000",
+											"type": "text"
+										},
+										{
+											"key": "status",
+											"value": "true",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/master-data/produk-member",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"produk-member"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "UPDATE PRODUK MEMBER",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nama",
+											"value": "Member 2",
+											"type": "text"
+										},
+										{
+											"key": "periode",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "kendaraan_mb",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "kendaraan_mt",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "kendaraan_truck_atau_box",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "max_kendaraan",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "tarif",
+											"value": "50000",
+											"type": "text"
+										},
+										{
+											"key": "biaya_kartu",
+											"value": "50000",
+											"type": "text"
+										},
+										{
+											"key": "biaya_ganti_nopol",
+											"value": "50000",
+											"type": "text"
+										},
+										{
+											"key": "status",
+											"value": "true",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/master-data/produk-member/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"produk-member",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE PRODUK MEMBER",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/produk-member/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"produk-member",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PRODUK VOUCHER",
+					"item": [
+						{
+							"name": "GET ALL PRODUK VOUCHER",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/produk-voucher",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"produk-voucher"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CREATE PRODUK VOUCHER",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nama",
+											"value": "Produk Voucher 2",
+											"type": "text"
+										},
+										{
+											"key": "periode",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "kendaraan_mt",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "kendaraan_mb",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "kendaraan_truck_atau_box",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "tarif",
+											"value": "50000",
+											"type": "text"
+										},
+										{
+											"key": "model_pembayaran",
+											"value": "Check In",
+											"type": "text"
+										},
+										{
+											"key": "metode_verifikasi",
+											"value": "Tiket",
+											"type": "text"
+										},
+										{
+											"key": "status",
+											"value": "true",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/master-data/produk-voucher",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"produk-voucher"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "UPDATE PRODUK VOUCHER",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nama",
+											"value": "Produk Voucher 2",
+											"type": "text"
+										},
+										{
+											"key": "periode",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "kendaraan_mt",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "kendaraan_mb",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "kendaraan_truck_atau_box",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "tarif",
+											"value": "50000",
+											"type": "text"
+										},
+										{
+											"key": "model_pembayaran",
+											"value": "Check In",
+											"type": "text"
+										},
+										{
+											"key": "metode_verifikasi",
+											"value": "Tiket",
+											"type": "text"
+										},
+										{
+											"key": "status",
+											"value": "true",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/master-data/produk-voucher/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"produk-voucher",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE PRODUK VOUCHER",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/produk-voucher/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"produk-voucher",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PERUSAHAAN",
+					"item": [
+						{
+							"name": "GET ALL PERUSAHAAN",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/perusahaan",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"perusahaan"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CREATE PERUSAHAAN",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nama",
+											"value": "Microsoft",
+											"type": "text"
+										},
+										{
+											"key": "kontak",
+											"value": "Kontak 1",
+											"type": "text"
+										},
+										{
+											"key": "status",
+											"value": "true",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/master-data/perusahaan",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"perusahaan"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "UPDATE PERUSAHAAN",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nama",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "kontak",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "status",
+											"value": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/master-data/perusahaan/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"perusahaan",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE PERUSAHAAN",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/perusahaan/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"perusahaan",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "DATA MEMBER",
+					"item": [
+						{
+							"name": "GET ALL DATA MEMBER",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/data-member",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"data-member"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CREATE DATA MEMBER",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nama",
+											"value": "Itmamul Fahmi",
+											"type": "text"
+										},
+										{
+											"key": "no_hp",
+											"value": "09876578993",
+											"type": "text"
+										},
+										{
+											"key": "perusahaan_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "akses_tiket",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "akses_kartu",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "no_kartu",
+											"value": "4435345345345",
+											"type": "text"
+										},
+										{
+											"key": "tgl_input",
+											"value": "05-31-2000",
+											"type": "text"
+										},
+										{
+											"key": "produk_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "tarif",
+											"value": "50000",
+											"type": "text"
+										},
+										{
+											"key": "biaya_member",
+											"value": "50000",
+											"type": "text"
+										},
+										{
+											"key": "biaya_kartu",
+											"value": "50000",
+											"type": "text"
+										},
+										{
+											"key": "awal_aktif",
+											"value": "05-30-2000",
+											"type": "text"
+										},
+										{
+											"key": "akhir_aktif",
+											"value": "05-30-2000",
+											"type": "text"
+										},
+										{
+											"key": "data_nomor_polisi",
+											"value": "[{\"nomor_polisi\":\"B7654AC\", \"kendaraan_id\":\"1\"},{\"nomor_polisi\":\"B7654AC\", \"kendaraan_id\":\"1\"}]",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/master-data/data-member",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"data-member"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "UPDATE DATA MEMBER",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nama",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "no_hp",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "perusahaan_id",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "akses_tiket",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "akses_kartu",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "no_kartu",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "tgl_input",
+											"value": " ",
+											"type": "text"
+										},
+										{
+											"key": "nama_produk",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "tarif",
+											"value": " ",
+											"type": "text"
+										},
+										{
+											"key": "masa_aktif",
+											"value": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/master-data/data-member/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"data-member",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE DATA MEMBER",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/data-member/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"data-member",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "DATA VOUCHER",
+					"item": [
+						{
+							"name": "GET ALL DATA VOUCHER",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/data-voucher",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"data-voucher"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CREATE DATA VOUCHER",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "produk_voucher_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "periode",
+											"value": "1 Hari",
+											"type": "text"
+										},
+										{
+											"key": "awal_aktif",
+											"value": "2025-05-31",
+											"type": "text"
+										},
+										{
+											"key": "akhir_aktif",
+											"value": "2025-05-31",
+											"type": "text"
+										},
+										{
+											"key": "tarif",
+											"value": "50000",
+											"type": "text"
+										},
+										{
+											"key": "model_bayar",
+											"value": "Check In",
+											"type": "text"
+										},
+										{
+											"key": "verifikasi",
+											"value": "Tiket",
+											"type": "text"
+										},
+										{
+											"key": "no_tiket_atau_nopol",
+											"value": "B1234AJ",
+											"type": "text"
+										},
+										{
+											"key": "kendaraan_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "keterangan",
+											"value": "Data Voucher",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/master-data/data-voucher",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"data-voucher"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "UPDATE DATA VOUCHER",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "produk_voucher_id",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "periode",
+											"value": " ",
+											"type": "text"
+										},
+										{
+											"key": "awal_aktif",
+											"value": " ",
+											"type": "text"
+										},
+										{
+											"key": "akhir_aktif",
+											"value": " ",
+											"type": "text"
+										},
+										{
+											"key": "tarif",
+											"value": " ",
+											"type": "text"
+										},
+										{
+											"key": "model_bayar",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "verifikasi",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "no_tiket_atau_nopol",
+											"value": " ",
+											"type": "text"
+										},
+										{
+											"key": "kendaraan_id",
+											"value": " ",
+											"type": "text"
+										},
+										{
+											"key": "keterangan",
+											"value": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/master-data/data-voucher/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"data-voucher",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE DATA VOUCHER",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/data-voucher/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"data-voucher",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "LEVEL AKSES",
+					"item": [
+						{
+							"name": "GET ALL LEVEL AKSES",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/level-akses",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"level-akses"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CREATE LEVEL AKSES",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nama",
+											"value": "Operator",
+											"type": "text"
+										},
+										{
+											"key": "akses_menu",
+											"value": "[\n    {\n        \"akses_menu\": [\n            {\n                \"nama_menu\": \"Dashboard\",\n                \"nama_sub_menu\": null,\n                \"aksi\": [\n                    {\n                        \"create\": true,\n                        \"read\": true,\n                        \"update\": true,\n                        \"delete\": true\n                    }\n                ]\n            },\n            {\n                \"nama_menu\": \"Master\",\n                \"nama_sub_menu\": [\n                    {\n                        \"nama\": \"User\",\n                        \"aksi\": [\n                            {\n                                \"create\": true,\n                                \"read\": true,\n                                \"update\": true,\n                                \"delete\": true\n                            }\n                        ]\n                    },\n                    {\n                        \"nama\": \"Level Akses\",\n                        \"aksi\": [\n                            {\n                                \"create\": true,\n                                \"read\": true,\n                                \"update\": true,\n                                \"delete\": true,\n                                \"konfigurasi_menu\": true\n                            }\n                        ]\n                    },\n                    {\n                        \"nama\": \"Produk Member\",\n                        \"aksi\": [\n                            {\n                                \"create\": true,\n                                \"read\": true,\n                                \"update\": true,\n                                \"delete\": true\n                            }\n                        ]\n                    },\n                    {\n                        \"nama\": \"Produk Voucher\",\n                        \"aksi\": [\n                            {\n                                \"create\": true,\n                                \"read\": true,\n                                \"update\": true,\n                                \"delete\": true\n                            }\n                        ]\n                    },\n                    {\n                        \"nama\": \"Data Member\",\n                        \"aksi\": [\n                            {\n                                \"create\": true,\n                                \"read\": true,\n                                \"update\": true,\n                                \"delete\": true,\n                                \"perpanjang\": true,\n                                \"ganti_kartu\": true,\n                                \"ganti_nopol\": true\n                            }\n                        ]\n                    },\n                    {\n                        \"nama\": \"Data Voucher\",\n                        \"aksi\": [\n                            {\n                                \"create\": true,\n                                \"read\": true,\n                                \"update\": true,\n                                \"delete\": true\n                            }\n                        ]\n                    },\n                    {\n                        \"nama\": \"POS\",\n                        \"aksi\": [\n                            {\n                                \"create\": true,\n                                \"read\": true,\n                                \"update\": true,\n                                \"delete\": true\n                            }\n                        ]\n                    },\n                    {\n                        \"nama\": \"Kendaraan\",\n                        \"aksi\": [\n                            {\n                                \"create\": true,\n                                \"read\": true,\n                                \"update\": true,\n                                \"delete\": true\n                            }\n                        ]\n                    },\n                    {\n                        \"nama\": \"Shift\",\n                        \"aksi\": [\n                            {\n                                \"create\": true,\n                                \"update\": true,\n                                \"delete\": true\n                            }\n                        ]\n                    },\n                    {\n                        \"nama\": \"Perusahaan\",\n                        \"aksi\": [\n                            {\n                                \"create\": true,\n                                \"read\": true,\n                                \"update\": true,\n                                \"delete\": true\n                            }\n                        ]\n                    }\n                ]\n            },\n            {\n                \"nama_menu\": \"Setting\",\n                \"nama_sub_menu\": [\n                    {\n                        \"nama\": \"Tarif Parkir\",\n                        \"aksi\": [\n                            {\n                                \"create\": true,\n                                \"read\": true,\n                                \"update\": true,\n                                \"delete\": true\n                            }\n                        ]\n                    },\n                    {\n                        \"nama\": \"Tarif Denda\",\n                        \"aksi\": [\n                            {\n                                \"create\": true,\n                                \"read\": true,\n                                \"update\": true,\n                                \"delete\": true\n                            }\n                        ]\n                    },\n                    {\n                        \"nama\": \"Parameter\",\n                        \"aksi\": [\n                            {\n                                \"read\": true,\n                                \"update\": true\n                            }\n                        ]\n                    },\n                    {\n                        \"nama\": \"Global\",\n                        \"aksi\": [\n                            {\n                                \"read\": true,\n                                \"update\": true\n                            }\n                        ]\n                    },\n                    {\n                        \"nama\": \"Payment\",\n                        \"aksi\": [\n                            {\n                                \"read\": true,\n                                \"update\": true\n                            }\n                        ]\n                    }\n                ]\n            },\n            {\n                \"nama_menu\": \"Transaksi\",\n                \"nama_sub_menu\": [\n                    {\n                        \"nama\": \"Manual mix\",\n                        \"aksi\": null\n                    },\n                    {\n                        \"nama\": \"Pembatalan Transaksi\",\n                        \"aksi\": null\n                    },\n                    {\n                        \"nama\": \"Permasalahan atau Perbaikan\",\n                        \"aksi\": [\n                            {\n                                \"create_permasalahan\": true,\n                                \"create_perbaikan\": true,\n                                \"read\": true,\n                                \"update\": true,\n                                \"delete\": true\n                            }\n                        ]\n                    }\n                ]\n            },\n            {\n                \"nama_menu\": \"Report\",\n                \"nama_sub_menu\": [\n                    {\n                        \"nama\": \"Kendaraan\",\n                        \"aksi\": null\n                    },\n                    {\n                        \"nama\": \"Overnight\",\n                        \"aksi\": null\n                    },\n                    {\n                        \"nama\": \"Pendapatan Parkir\",\n                        \"aksi\": null\n                    },\n                    {\n                        \"nama\": \"Pendapatan Gabungan\",\n                        \"aksi\": null\n                    },\n                    {\n                        \"nama\": \"Pendapatan Member\",\n                        \"aksi\": null\n                    },\n                    {\n                        \"nama\": \"Pendapatan Voucher\",\n                        \"aksi\": null\n                    },\n                    {\n                        \"nama\": \"Pembatalan Transaksi\",\n                        \"aksi\": null\n                    },\n                    {\n                        \"nama\": \"Audit Transaksi\",\n                        \"aksi\": null\n                    },\n                    {\n                        \"nama\": \"Settlement Cashless\",\n                        \"aksi\": null\n                    }\n                ]\n            }\n        ]\n    }\n]\n",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/master-data/level-akses",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"level-akses"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "UPDATE LEVEL AKSES",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nama",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "akses_menu",
+											"value": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/master-data/level-akses/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"level-akses",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE LEVEL AKSES",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/level-akses/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"level-akses",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
