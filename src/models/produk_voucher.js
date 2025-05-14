@@ -18,11 +18,16 @@ module.exports = (sequelize, DataTypes) => {
     produk_voucher.init(
         {
             nama: DataTypes.STRING,
-            periode: DataTypes.STRING,
+            periode_value: DataTypes.INTEGER,
+            periode_unit: DataTypes.ENUM('Keluar', 'Hari', 'Bulan'),
             kendaraan_mb: DataTypes.BOOLEAN,
             kendaraan_mt: DataTypes.BOOLEAN,
             kendaraan_truck_atau_box: DataTypes.BOOLEAN,
-            tarif: DataTypes.STRING,
+            tarif: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
             model_pembayaran: DataTypes.ENUM('Check In', 'Check Out'),
             metode_verifikasi: DataTypes.ENUM('Tiket', 'Nopol'),
             status: DataTypes.BOOLEAN,

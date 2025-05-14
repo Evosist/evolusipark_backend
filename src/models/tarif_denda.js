@@ -17,9 +17,21 @@ module.exports = (sequelize, DataTypes) => {
     }
     tarif_denda.init(
         {
-            kendaraan_id: DataTypes.INTEGER,
-            denda_tiket: DataTypes.STRING,
-            denda_stnk: DataTypes.STRING,
+            kendaraan_id: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
+            denda_tiket: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
+            denda_stnk: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
             denda_member: DataTypes.BOOLEAN,
         },
         {

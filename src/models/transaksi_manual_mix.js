@@ -50,8 +50,16 @@ module.exports = (sequelize, DataTypes) => {
             denda: DataTypes.BOOLEAN,
             is_active: DataTypes.BOOLEAN,
             parkir: DataTypes.STRING,
-            jumlah_denda_stnk: DataTypes.STRING,
-            jumlah_denda_tiket: DataTypes.STRING,
+            jumlah_denda_stnk: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
+            jumlah_denda_tiket: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
             interval: DataTypes.STRING,
         },
         {

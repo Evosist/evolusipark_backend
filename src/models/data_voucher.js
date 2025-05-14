@@ -23,10 +23,14 @@ module.exports = (sequelize, DataTypes) => {
     data_voucher.init(
         {
             produk_voucher_id: DataTypes.INTEGER,
-            periode: DataTypes.STRING,
-            awal_aktif: DataTypes.STRING,
-            akhir_aktif: DataTypes.STRING,
-            tarif: DataTypes.STRING,
+            periode_value: DataTypes.INTEGER,
+            periode_unit: DataTypes.STRING,
+            periode: DataTypes.RANGE(DataTypes.DATE),
+            tarif: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
             model_bayar: DataTypes.ENUM('Check In', 'Check Out'),
             verifikasi: DataTypes.ENUM('Tiket', 'Nopol'),
             no_tiket_atau_nopol: DataTypes.STRING,

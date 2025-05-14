@@ -20,7 +20,11 @@ module.exports = (sequelize, DataTypes) => {
             tgl_transaksi: DataTypes.DATE,
             nomor_polisi_lama: DataTypes.STRING,
             nomor_polisi_baru: DataTypes.STRING,
-            tarif: DataTypes.STRING,
+            tarif: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
             keterangan: DataTypes.STRING,
             user_id: DataTypes.INTEGER,
         },

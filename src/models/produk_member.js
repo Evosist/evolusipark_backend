@@ -18,14 +18,27 @@ module.exports = (sequelize, DataTypes) => {
     produk_member.init(
         {
             nama: DataTypes.STRING,
-            periode: DataTypes.STRING,
+            periode_value: DataTypes.INTEGER,
+            periode_unit: DataTypes.ENUM('Hari', 'Bulan', 'Tahun'),
             kendaraan_mb: DataTypes.BOOLEAN,
             kendaraan_mt: DataTypes.BOOLEAN,
             kendaraan_truck_atau_box: DataTypes.BOOLEAN,
             max_kendaraan: DataTypes.STRING,
-            tarif: DataTypes.STRING,
-            biaya_kartu: DataTypes.STRING,
-            biaya_ganti_nopol: DataTypes.STRING,
+            tarif: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
+            biaya_kartu: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
+            biaya_ganti_nopol: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
             status: DataTypes.BOOLEAN,
             user_id: DataTypes.INTEGER,
         },

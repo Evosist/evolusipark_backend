@@ -40,11 +40,22 @@ module.exports = (sequelize, DataTypes) => {
             no_kartu: DataTypes.STRING,
             tgl_input: DataTypes.DATE,
             produk_id: DataTypes.INTEGER,
-            tarif: DataTypes.STRING,
-            biaya_member: DataTypes.STRING,
-            biaya_kartu: DataTypes.STRING,
-            awal_aktif: DataTypes.DATE,
-            akhir_aktif: DataTypes.DATE,
+            tarif: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
+            biaya_member: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
+            biaya_kartu: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
+            periode: DataTypes.RANGE(DataTypes.DATE),
             user_id: DataTypes.INTEGER,
         },
         {

@@ -18,15 +18,51 @@ module.exports = (sequelize, DataTypes) => {
     tarif_parkir.init(
         {
             kendaraan_id: DataTypes.INTEGER,
-            grace_period: DataTypes.INTEGER,
-            tarif_grace_period: DataTypes.STRING,
-            rotasi_pertama: DataTypes.INTEGER,
-            tarif_rotasi_pertama: DataTypes.STRING,
-            rotasi_kedua: DataTypes.INTEGER,
-            tarif_rotasi_kedua: DataTypes.STRING,
-            rotasi_ketiga: DataTypes.INTEGER,
-            tarif_rotasi_ketiga: DataTypes.STRING,
-            tarif_maksimal: DataTypes.STRING,
+            grace_period: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
+            tarif_grace_period: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
+            rotasi_pertama: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
+            tarif_rotasi_pertama: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
+            rotasi_kedua: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
+            tarif_rotasi_kedua: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
+            rotasi_ketiga: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
+            tarif_rotasi_ketiga: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
+            tarif_maksimal: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
         },
         {
             sequelize,
