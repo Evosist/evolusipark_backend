@@ -122,6 +122,7 @@ module.exports = {
     },
     gantiNopol: async (req, res) => {
         try {
+            // Cek apakah nomor polisi lama ada
             const data_nopol_lama = await data_nomor_polisi.findOne({
                 where: {
                     nomor_polisi: req.body.nomor_polisi_lama,
@@ -135,6 +136,7 @@ module.exports = {
                 })
             }
 
+            // Update nomor polisi
             const data = await data_nomor_polisi.update(
                 {
                     nomor_polisi: req.body.nomor_polisi_baru,
@@ -147,6 +149,7 @@ module.exports = {
                 }
             )
 
+            // Cek data produk member
             const produkMemberData = await data_member.findOne({
                 where: {
                     id: req.params.id,
@@ -161,6 +164,7 @@ module.exports = {
                 })
             }
 
+            // Buat riwayat transaksi
             await riwayat_transaksi_ganti_nopol.create({
                 tgl_transaksi: new Date(),
                 nomor_polisi_lama: req.body.nomor_polisi_lama,
@@ -192,6 +196,7 @@ module.exports = {
                 }
             )
 
+            // Cek data member
             const dataMember = await data_member.findOne({
                 where: {
                     id: req.params.id,
@@ -206,6 +211,7 @@ module.exports = {
                 })
             }
 
+            // Buat riwayat transaksi
             await riwayat_transaksi_kartu_member.create({
                 tgl_transaksi: new Date(),
                 no_kartu: req.body.no_kartu,
