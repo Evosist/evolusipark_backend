@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'user_id',
                 as: 'user',
             })
+
+            produk_member.hasOne(models.data_member, {
+                foreignKey: 'produk_id',
+                as: 'data_member',
+            })
         }
     }
     produk_member.init(
