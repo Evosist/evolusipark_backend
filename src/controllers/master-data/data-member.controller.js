@@ -6,6 +6,7 @@ const {
     data_nomor_polisi,
     riwayat_transaksi_kartu_member,
     riwayat_transaksi_ganti_nopol,
+    user,
 } = require('../../models/index')
 
 module.exports = {
@@ -21,6 +22,7 @@ module.exports = {
                     { model: perusahaan, as: 'perusahaan' },
                     { model: produk_member, as: 'produk_member' },
                     { model: data_nomor_polisi, as: 'data_nomor_polisi' },
+                    { model: user, as: 'user', attributes: ['id', 'nama'] },
                 ],
                 order: [[sortBy, sortOrder]],
                 offset: offset,
@@ -182,6 +184,7 @@ module.exports = {
                     { model: perusahaan, as: 'perusahaan' },
                     { model: produk_member, as: 'produk_member' },
                     { model: data_nomor_polisi, as: 'data_nomor_polisi' },
+                    { model: user, as: 'user', attributes: ['id', 'nama'] },
                 ],
             })
             return res.json({
