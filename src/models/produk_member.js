@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
             periode_value: DataTypes.INTEGER,
             periode_unit: DataTypes.ENUM('Hari', 'Bulan', 'Tahun'),
             list_id_kendaraan: DataTypes.ARRAY(DataTypes.STRING),
-            max_kendaraan: DataTypes.STRING,
+            max_kendaraan: DataTypes.INTEGER,
             tarif: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
