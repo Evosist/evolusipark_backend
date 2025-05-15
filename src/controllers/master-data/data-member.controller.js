@@ -62,6 +62,7 @@ module.exports = {
                     id: req.params.id,
                 },
             })
+
             return res.json({
                 success: true,
                 message: 'Update data member successfully',
@@ -143,24 +144,24 @@ module.exports = {
                 }
             )
 
-            const produkMemberData = await data_member.findOne({
+            const dataMember = await data_member.findOne({
                 where: {
                     id: req.params.id,
                 },
                 include: [{ model: produk_member, as: 'produk_member' }],
             })
 
-            if (!produkMemberData) {
+            if (!dataMember) {
                 return res.status(404).json({
                     success: false,
-                    message: 'Produk member tidak ditemukan',
+                    message: 'Data member tidak ditemukan',
                 })
             }
 
             await riwayat_transaksi_kartu_member.create({
                 tgl_transaksi: new Date(),
                 no_kartu: req.body.no_kartu,
-                tarif: produkMemberData?.produk_member?.tarif,
+                tarif: dataMember?.produk_member?.tarif,
                 keterangan: req.body.keterangan,
                 user_id: req.body.user_id,
             })
