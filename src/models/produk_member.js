@@ -20,9 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             nama: DataTypes.STRING,
             periode_value: DataTypes.INTEGER,
             periode_unit: DataTypes.ENUM('Hari', 'Bulan', 'Tahun'),
-            kendaraan_mb: DataTypes.BOOLEAN,
-            kendaraan_mt: DataTypes.BOOLEAN,
-            kendaraan_truck_atau_box: DataTypes.BOOLEAN,
+            list_kendaraan: DataTypes.JSONB,
             max_kendaraan: DataTypes.STRING,
             tarif: {
                 type: DataTypes.INTEGER,

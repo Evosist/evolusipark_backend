@@ -1,5 +1,5 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { produk_member } = require('../../models/index')
+const { produk_member, user } = require('../../models/index')
 
 module.exports = {
     getAll: async (req, res) => {
@@ -11,6 +11,13 @@ module.exports = {
             const sortBy = req.query.sortBy || 'id'
             const sortOrder = req.query.sortOrder || 'asc'
             const { count, rows } = await produk_member.findAndCountAll({
+                include: [
+                    {
+                        model: user,
+                        as: 'user',
+                        attributes: ['id', 'nama'],
+                    },
+                ],
                 order: [[sortBy, sortOrder]],
                 offset: offset,
                 limit: limit,
@@ -45,6 +52,13 @@ module.exports = {
     findOneById: async (req, res) => {
         try {
             const data = await produk_member.findAll({
+                include: [
+                    {
+                        model: user,
+                        as: 'user',
+                        attributes: ['id', 'nama'],
+                    },
+                ],
                 where: {
                     id: req.params.id,
                 },

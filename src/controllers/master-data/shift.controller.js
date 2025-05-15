@@ -1,5 +1,5 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { shift } = require('../../models/index')
+const { shift, user } = require('../../models/index')
 
 module.exports = {
     getAll: async (req, res) => {
@@ -10,6 +10,13 @@ module.exports = {
             const sortBy = req.query.sortBy || 'id'
             const sortOrder = req.query.sortOrder || 'asc'
             const { count, rows } = await shift.findAndCountAll({
+                include: [
+                    {
+                        model: user,
+                        as: 'user',
+                        attributes: ['id', 'nama'],
+                    },
+                ],
                 order: [[sortBy, sortOrder]],
                 offset: offset,
                 limit: limit,
@@ -44,6 +51,13 @@ module.exports = {
     findOneById: async (req, res) => {
         try {
             const data = await shift.findAll({
+                include: [
+                    {
+                        model: user,
+                        as: 'user',
+                        attributes: ['id', 'nama'],
+                    },
+                ],
                 where: {
                     id: req.params.id,
                 },
