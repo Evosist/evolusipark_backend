@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
             produk_voucher_id: DataTypes.INTEGER,
             periode_value: DataTypes.INTEGER,
             periode_unit: DataTypes.STRING,
-            periode: DataTypes.RANGE(DataTypes.DATE),
+            periode: DataTypes.RANGE(DataTypes.DATEONLY),
             tarif: {
                 type: DataTypes.INTEGER,
                 allowNull: false,

@@ -45,6 +45,7 @@ module.exports = {
     },
     create: async (req, res) => {
         try {
+            console.log(req.body)
             const data = await data_voucher.create(req.body)
             return res.json({
                 success: true,
