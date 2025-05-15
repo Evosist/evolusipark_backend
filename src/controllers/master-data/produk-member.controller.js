@@ -91,7 +91,7 @@ module.exports = {
     updateStatus: async (req, res) => {
         try {
             const data = await produk_member.update(
-                { status: false },
+                { status: req.body.status },
                 {
                     where: {
                         id: req.params.id,

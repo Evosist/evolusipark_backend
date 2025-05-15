@@ -1,5 +1,5 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { perusahaan } = require('../../models/index')
+const { perusahaan, user } = require('../../models/index')
 
 module.exports = {
     getAll: async (req, res) => {
@@ -11,6 +11,13 @@ module.exports = {
             const sortBy = req.query.sortBy || 'id'
             const sortOrder = req.query.sortOrder || 'asc'
             const { count, rows } = await perusahaan.findAndCountAll({
+                include: [
+                    {
+                        model: user,
+                        as: 'user',
+                        attributes: ['id', 'nama'],
+                    },
+                ],
                 order: [[sortBy, sortOrder]],
                 offset: offset,
                 limit: limit,
@@ -45,6 +52,13 @@ module.exports = {
     findOneById: async (req, res) => {
         try {
             const data = await perusahaan.findAll({
+                include: [
+                    {
+                        model: user,
+                        as: 'user',
+                        attributes: ['id', 'nama'],
+                    },
+                ],
                 where: {
                     id: req.params.id,
                 },
@@ -77,7 +91,7 @@ module.exports = {
     updateStatus: async (req, res) => {
         try {
             const data = await perusahaan.update(
-                { status: false },
+                { status: req.body.status },
                 {
                     where: {
                         id: req.params.id,
