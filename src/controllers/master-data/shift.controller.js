@@ -90,7 +90,7 @@ module.exports = {
     updateStatus: async (req, res) => {
         try {
             const data = await shift.update(
-                { status: false },
+                { status: req.body.status },
                 {
                     where: {
                         id: req.params.id,
