@@ -4,6 +4,7 @@ const {
     perusahaan,
     produk_member,
     data_nomor_polisi,
+    riwayat_transaksi_member,
     riwayat_transaksi_kartu_member,
     riwayat_transaksi_ganti_nopol,
     user,
@@ -100,6 +101,14 @@ module.exports = {
                 where: {
                     id: req.params.id,
                 },
+            })
+
+            await riwayat_transaksi_member.create({
+                tgl_transaksi: new Date(),
+                produk_id: req.body.produk_id,
+                tarif: req.body.tarif,
+                masa_aktif: req.body.periode,
+                user_id: req.body.user_id,
             })
 
             return res.json({
