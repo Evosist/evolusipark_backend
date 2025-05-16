@@ -105,10 +105,9 @@ module.exports = {
             const selisihJam = Math.ceil(selisihMs / (1000 * 60 * 60))
 
             // Pastikan tarif adalah angka
-            const tarifPertama =
-                Number(dataTarifParkir.tarif_rotasi_pertama) || 0
-            const tarifKedua = Number(dataTarifParkir.tarif_rotasi_kedua) || 0
-            const tarifKetiga = Number(dataTarifParkir.tarif_rotasi_ketiga) || 0
+            const tarifPertama = dataTarifParkir.tarif_rotasi_pertama || 0
+            const tarifKedua = dataTarifParkir.tarif_rotasi_kedua || 0
+            const tarifKetiga = dataTarifParkir.tarif_rotasi_ketiga || 0
 
             let biaya = 0
 
@@ -126,9 +125,9 @@ module.exports = {
                     },
                 })
 
-                const dendaTiket = Number(dataDenda.denda_tiket) || 0
+                const dendaTiket = dataDenda.denda_tiket || 0
 
-                const dendaStnk = Number(dataDenda.denda_stnk) || 0
+                const dendaStnk = dataDenda.denda_stnk || 0
 
                 if (req.body.is_tiket_hilang === 'true') {
                     biayaDendaTiket += dendaTiket
