@@ -72,6 +72,19 @@ module.exports = {
                 },
             })
 
+            const dataTarifDenda = await tarif_denda.findOne({
+                where: {
+                    kendaraan_id: req.body.kendaraan_id,
+                },
+            })
+
+            if (!dataTarifDenda) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Tarif denda tidak ditemukan',
+                })
+            }
+
             if (!dataTarifParkir) {
                 return res.status(404).json({
                     success: false,
