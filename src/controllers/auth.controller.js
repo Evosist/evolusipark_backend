@@ -23,7 +23,7 @@ module.exports = {
             return res.json({
                 success: true,
                 message: 'Login successfully',
-                results: { token },
+                results: { token: token, user_id: users.id },
             })
         } catch (err) {
             return errorhandler(res, err)
@@ -53,7 +53,7 @@ module.exports = {
             return res.json({
                 success: true,
                 message: 'Register successfully',
-                results: { token },
+                results: { token: token, user_id: users.id },
             })
         } catch (err) {
             return errorhandler(res, err)
