@@ -18,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
     perusahaan.init(
         {
             nama: DataTypes.STRING,
+            jenis_perusahaan: DataTypes.ENUM(
+                'Pemilik Gedung',
+                'Tenant',
+                'Developer'
+            ),
             kontak: DataTypes.STRING,
             status: DataTypes.BOOLEAN,
             user_id: DataTypes.INTEGER,
