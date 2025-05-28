@@ -33,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
                 validate: { min: 0 },
             },
             denda_member: DataTypes.BOOLEAN,
+            status: DataTypes.BOOLEAN,
         },
         {
             sequelize,

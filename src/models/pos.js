@@ -44,6 +44,7 @@ module.exports = (sequelize, DataTypes) => {
                 'USB TELINKS'
             ),
             com_port: DataTypes.STRING,
+            otorisasi: DataTypes.BOOLEAN,
             synchronize: DataTypes.STRING,
             user_id: DataTypes.INTEGER,
         },
