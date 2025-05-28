@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            level_akses.belongsTo(models.user, {
-                foreignKey: 'user_id',
+            level_akses.hasOne(models.user, {
+                foreignKey: 'level_akses_id',
                 as: 'user',
             })
         }
@@ -19,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
         {
             nama: DataTypes.STRING,
             akses_menu: DataTypes.JSONB,
-            user_id: DataTypes.INTEGER,
         },
         {
             sequelize,
