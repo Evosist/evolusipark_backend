@@ -1,5 +1,5 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { user } = require('../../models/index')
+const { user, level_akses } = require('../../models/index')
 
 module.exports = {
     getAll: async (req, res) => {
@@ -10,6 +10,18 @@ module.exports = {
             const sortBy = req.query.sortBy || 'id'
             const sortOrder = req.query.sortOrder || 'asc'
             const { count, rows } = await user.findAndCountAll({
+                include: [
+                    {
+                        model: level_akses,
+                        as: 'level_akses',
+                        attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: user,
+                        as: 'added_by_user',
+                        attributes: ['id', 'nama'],
+                    },
+                ],
                 order: [[sortBy, sortOrder]],
                 offset: offset,
                 limit: limit,
@@ -44,6 +56,18 @@ module.exports = {
     findOneById: async (req, res) => {
         try {
             const data = await user.findAll({
+                include: [
+                    {
+                        model: level_akses,
+                        as: 'level_akses',
+                        attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: user,
+                        as: 'added_by_user',
+                        attributes: ['id', 'nama'],
+                    },
+                ],
                 where: {
                     id: req.params.id,
                 },

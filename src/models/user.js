@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
             password: DataTypes.STRING,
             level_akses_id: DataTypes.INTEGER,
             status: DataTypes.BOOLEAN,
-            added_by: DataTypes.INTEGER,
+            added_by: { type: DataTypes.INTEGER, allowNull: true },
         },
         {
             sequelize,

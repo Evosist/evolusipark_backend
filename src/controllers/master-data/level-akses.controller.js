@@ -1,5 +1,5 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { level_akses } = require('../../models/index')
+const { level_akses, user } = require('../../models/index')
 
 module.exports = {
     getAll: async (req, res) => {
@@ -10,6 +10,9 @@ module.exports = {
             const sortBy = req.query.sortBy || 'id'
             const sortOrder = req.query.sortOrder || 'asc'
             const { count, rows } = await level_akses.findAndCountAll({
+                include: [
+                    { model: user, as: 'user', attributes: ['id', 'nama'] },
+                ],
                 order: [[sortBy, sortOrder]],
                 offset: offset,
                 limit: limit,
