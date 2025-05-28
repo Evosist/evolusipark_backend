@@ -1,5 +1,5 @@
 const profileRouter = require('express').Router()
-const profileController = require('../../controllers/setting/global.controller')
+const profileController = require('../../controllers/profile/profile.controller')
 
 profileRouter.get('/', profileController.getAll)
 profileRouter.get('/:id', profileController.findOneById)
