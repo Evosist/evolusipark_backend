@@ -1,5 +1,5 @@
 const parameterRouter = require('express').Router()
-const parameterController = require('../../controllers/setting/parameter.controller')
+const parameterController = require('../../../controllers/setting/parameter/parameter.controller')
 
 parameterRouter.get('/', parameterController.getAll)
 parameterRouter.get('/:id', parameterController.findOneById)
