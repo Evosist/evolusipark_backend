@@ -39,37 +39,6 @@ Install fw15-backend with npm
 
 Open http://localhost:3000 with your browser to see the result
 
-## API Endpoints
+# API DOCUMENTATION
 
-### 🔐 Authentication
-
-#### POST /api/auth/login
-
-**Description:** Logs in a user.
-
-**Request Body:**
-
-```json
-{
-    "email": "",
-    "password": ""
-}
-```
-
-#### POST /auth/register
-
-**Description:** Registering a user.
-
-**Request Body:**
-
-```json
-{
-    "nama": "",
-    "jenis_kelamin": "",
-    "no_hp": "",
-    "alamat_lengkap": "",
-    "username": "",
-    "password": "",
-    "level_id": ""
-}
-```
+https://documenter.getpostman.com/view/26558441/2sB2qi7H1x
