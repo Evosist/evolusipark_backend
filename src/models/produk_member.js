@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     produk_member.init(
         {
             nama: DataTypes.STRING,
-            periode: Datatypes.RANGE(DataTypes.DATEONLY),
+            periode: DataTypes.RANGE(DataTypes.DATEONLY),
             list_id_kendaraan: DataTypes.ARRAY(DataTypes.STRING),
             max_kendaraan: DataTypes.INTEGER,
             tarif: {
