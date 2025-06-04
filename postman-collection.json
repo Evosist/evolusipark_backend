@@ -8,7 +8,7 @@
 	},
 	"item": [
 		{
-			"name": "SETTING",
+			"name": "PENGATURAN",
 			"item": [
 				{
 					"name": "GLOBAL",
@@ -614,10 +614,10 @@
 					]
 				},
 				{
-					"name": "PAYMENT",
+					"name": "PEMBAYARAN",
 					"item": [
 						{
-							"name": "GET ALL PAYMENT",
+							"name": "GET ALL PEMBAYARAN",
 							"event": [
 								{
 									"listen": "test",
@@ -706,7 +706,7 @@
 							]
 						},
 						{
-							"name": "CREATE PAYMENT",
+							"name": "CREATE PEMBAYARAN",
 							"event": [
 								{
 									"listen": "test",
@@ -839,7 +839,7 @@
 							]
 						},
 						{
-							"name": "UPDATE PAYMENT",
+							"name": "UPDATE PEMBAYARAN",
 							"event": [
 								{
 									"listen": "test",
@@ -981,7 +981,7 @@
 							]
 						},
 						{
-							"name": "DELETE PAYMENT",
+							"name": "DELETE PEMBAYARAN",
 							"event": [
 								{
 									"listen": "test",
@@ -1729,150 +1729,121 @@
 					"name": "PARAMETER",
 					"item": [
 						{
-							"name": "GET ALL PARAMETER",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": []
-									}
-								}
-							],
-							"protocolProfileBehavior": {
-								"followRedirects": true,
-								"disableUrlEncoding": false,
-								"disableCookies": false
-							},
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{url}}/setting/parameter",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"setting",
-										"parameter"
-									]
-								}
-							},
-							"response": [
+							"name": "PARAMETER",
+							"item": [
 								{
 									"name": "GET ALL PARAMETER",
-									"originalRequest": {
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "{{url}}/setting/parameter",
+											"raw": "{{url}}/setting/parameter/parameter",
 											"host": [
 												"{{url}}"
 											],
 											"path": [
 												"setting",
+												"parameter",
 												"parameter"
 											]
 										}
 									},
-									"status": "OK",
-									"code": 200,
-									"_postman_previewlanguage": "json",
-									"header": [
+									"response": [
 										{
-											"key": "X-Powered-By",
-											"value": "Express"
-										},
-										{
-											"key": "Access-Control-Allow-Origin",
-											"value": "*"
-										},
-										{
-											"key": "Content-Type",
-											"value": "application/json; charset=utf-8"
-										},
-										{
-											"key": "Content-Length",
-											"value": "346"
-										},
-										{
-											"key": "ETag",
-											"value": "W/\"15a-DlgLOxoE548ovfxgWh4b/VPL4H0\""
-										},
-										{
-											"key": "Date",
-											"value": "Tue, 03 Jun 2025 02:26:18 GMT"
-										},
-										{
-											"key": "Connection",
-											"value": "keep-alive"
-										},
-										{
-											"key": "Keep-Alive",
-											"value": "timeout=5"
-										}
-									],
-									"cookie": [],
-									"body": "{\n    \"success\": true,\n    \"message\": \"Get all parameter successfully\",\n    \"results\": {\n        \"data\": [\n            {\n                \"id\": 1,\n                \"nama\": \"Bayar Member Secara Berjenjang\",\n                \"nilai\": \"false\",\n                \"keterangan\": \"Pembayaran member secara berjenjang ketika keluar\",\n                \"createdAt\": \"2025-06-03T02:26:14.584Z\",\n                \"updatedAt\": \"2025-06-03T02:26:14.584Z\"\n            }\n        ],\n        \"totalData\": 1,\n        \"totalPages\": 1,\n        \"currentPage\": 1,\n        \"pageSize\": 5\n    }\n}"
-								}
-							]
-						},
-						{
-							"name": "CREATE PARAMETER",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": []
-									}
-								}
-							],
-							"protocolProfileBehavior": {
-								"followRedirects": true,
-								"disableUrlEncoding": false,
-								"disableCookies": false
-							},
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/x-www-form-urlencoded"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "nama",
-											"value": "Bayar Member Secara Berjenjang"
-										},
-										{
-											"key": "nilai",
-											"value": "false"
-										},
-										{
-											"key": "keterangan",
-											"value": "Pembayaran member secara berjenjang ketika keluar"
+											"name": "GET ALL PARAMETER",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{url}}/setting/parameter",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"setting",
+														"parameter"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "346"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"15a-DlgLOxoE548ovfxgWh4b/VPL4H0\""
+												},
+												{
+													"key": "Date",
+													"value": "Tue, 03 Jun 2025 02:26:18 GMT"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "Keep-Alive",
+													"value": "timeout=5"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"success\": true,\n    \"message\": \"Get all parameter successfully\",\n    \"results\": {\n        \"data\": [\n            {\n                \"id\": 1,\n                \"nama\": \"Bayar Member Secara Berjenjang\",\n                \"nilai\": \"false\",\n                \"keterangan\": \"Pembayaran member secara berjenjang ketika keluar\",\n                \"createdAt\": \"2025-06-03T02:26:14.584Z\",\n                \"updatedAt\": \"2025-06-03T02:26:14.584Z\"\n            }\n        ],\n        \"totalData\": 1,\n        \"totalPages\": 1,\n        \"currentPage\": 1,\n        \"pageSize\": 5\n    }\n}"
 										}
 									]
 								},
-								"url": {
-									"raw": "{{url}}/setting/parameter",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"setting",
-										"parameter"
-									]
-								}
-							},
-							"response": [
 								{
 									"name": "CREATE PARAMETER",
-									"originalRequest": {
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
 										"method": "POST",
 										"header": [
 											{
@@ -1898,238 +1869,126 @@
 											]
 										},
 										"url": {
-											"raw": "{{url}}/setting/parameter",
-											"host": [
-												"{{url}}"
-											],
-											"path": [
-												"setting",
-												"parameter"
-											]
-										}
-									},
-									"status": "OK",
-									"code": 200,
-									"_postman_previewlanguage": "json",
-									"header": [
-										{
-											"key": "X-Powered-By",
-											"value": "Express",
-											"description": ""
-										},
-										{
-											"key": "Access-Control-Allow-Origin",
-											"value": "*",
-											"description": ""
-										},
-										{
-											"key": "Content-Type",
-											"value": "application/json; charset=utf-8",
-											"description": ""
-										},
-										{
-											"key": "Content-Length",
-											"value": "276",
-											"description": ""
-										},
-										{
-											"key": "ETag",
-											"value": "W/\"114-vukKtZM9YMtGHH5yq49CRDDDA6k\"",
-											"description": ""
-										},
-										{
-											"key": "Date",
-											"value": "Fri, 16 May 2025 02:35:20 GMT",
-											"description": ""
-										},
-										{
-											"key": "Connection",
-											"value": "keep-alive",
-											"description": ""
-										},
-										{
-											"key": "Keep-Alive",
-											"value": "timeout=5",
-											"description": ""
-										}
-									],
-									"cookie": [],
-									"body": "{\n  \"success\": true,\n  \"message\": \"Create parameter successfully\",\n  \"results\": {\n    \"id\": 1,\n    \"nama\": \"Bayar Member Secara Berjenjang\",\n    \"nilai\": \"false\",\n    \"keterangan\": \"Pembayaran member secara berjenjang ketika keluar\",\n    \"updatedAt\": \"2025-05-16T02:35:20.050Z\",\n    \"createdAt\": \"2025-05-16T02:35:20.050Z\"\n  }\n}"
-								}
-							]
-						},
-						{
-							"name": "DELETE PARAMETER",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"protocolProfileBehavior": {
-								"followRedirects": true,
-								"disableUrlEncoding": false,
-								"disableCookies": false
-							},
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{url}}/setting/parameter/:id",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"setting",
-										"parameter",
-										":id"
-									],
-									"variable": [
-										{
-											"key": "id",
-											"value": "1"
-										}
-									]
-								}
-							},
-							"response": [
-								{
-									"name": "DELETE PARAMETER",
-									"originalRequest": {
-										"method": "DELETE",
-										"header": [],
-										"url": {
-											"raw": "{{url}}/setting/parameter/:id",
+											"raw": "{{url}}/setting/parameter/parameter",
 											"host": [
 												"{{url}}"
 											],
 											"path": [
 												"setting",
 												"parameter",
-												":id"
-											],
-											"variable": [
-												{
-													"key": "id",
-													"value": "1"
-												}
+												"parameter"
 											]
 										}
 									},
-									"status": "OK",
-									"code": 200,
-									"_postman_previewlanguage": "json",
-									"header": [
+									"response": [
 										{
-											"key": "X-Powered-By",
-											"value": "Express"
-										},
-										{
-											"key": "Access-Control-Allow-Origin",
-											"value": "*"
-										},
-										{
-											"key": "Content-Type",
-											"value": "application/json; charset=utf-8"
-										},
-										{
-											"key": "Content-Length",
-											"value": "70"
-										},
-										{
-											"key": "ETag",
-											"value": "W/\"46-GSPfif14EdJIxZVD2n109YnWtcY\""
-										},
-										{
-											"key": "Date",
-											"value": "Tue, 03 Jun 2025 02:26:29 GMT"
-										},
-										{
-											"key": "Connection",
-											"value": "keep-alive"
-										},
-										{
-											"key": "Keep-Alive",
-											"value": "timeout=5"
-										}
-									],
-									"cookie": [],
-									"body": "{\n    \"success\": true,\n    \"message\": \"Delete parameter successfully\",\n    \"results\": 1\n}"
-								}
-							]
-						},
-						{
-							"name": "UPDATE PARAMETER",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"protocolProfileBehavior": {
-								"followRedirects": true,
-								"disableUrlEncoding": false,
-								"disableCookies": false
-							},
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/x-www-form-urlencoded"
-									}
-								],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "nama",
-											"value": "Fleksibel Masa Aktif Member"
-										},
-										{
-											"key": "nilai",
-											"value": "true"
-										},
-										{
-											"key": "keterangan",
-											"value": "Awal dan akhir masa aktif member bisa dirubah"
+											"name": "CREATE PARAMETER",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/x-www-form-urlencoded"
+													}
+												],
+												"body": {
+													"mode": "urlencoded",
+													"urlencoded": [
+														{
+															"key": "nama",
+															"value": "Bayar Member Secara Berjenjang"
+														},
+														{
+															"key": "nilai",
+															"value": "false"
+														},
+														{
+															"key": "keterangan",
+															"value": "Pembayaran member secara berjenjang ketika keluar"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{url}}/setting/parameter",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"setting",
+														"parameter"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "X-Powered-By",
+													"value": "Express",
+													"description": ""
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*",
+													"description": ""
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8",
+													"description": ""
+												},
+												{
+													"key": "Content-Length",
+													"value": "276",
+													"description": ""
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"114-vukKtZM9YMtGHH5yq49CRDDDA6k\"",
+													"description": ""
+												},
+												{
+													"key": "Date",
+													"value": "Fri, 16 May 2025 02:35:20 GMT",
+													"description": ""
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive",
+													"description": ""
+												},
+												{
+													"key": "Keep-Alive",
+													"value": "timeout=5",
+													"description": ""
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"success\": true,\n  \"message\": \"Create parameter successfully\",\n  \"results\": {\n    \"id\": 1,\n    \"nama\": \"Bayar Member Secara Berjenjang\",\n    \"nilai\": \"false\",\n    \"keterangan\": \"Pembayaran member secara berjenjang ketika keluar\",\n    \"updatedAt\": \"2025-05-16T02:35:20.050Z\",\n    \"createdAt\": \"2025-05-16T02:35:20.050Z\"\n  }\n}"
 										}
 									]
 								},
-								"url": {
-									"raw": "{{url}}/setting/parameter/:id",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"setting",
-										"parameter",
-										":id"
-									],
-									"variable": [
-										{
-											"key": "id",
-											"value": "2"
-										}
-									]
-								}
-							},
-							"response": [
 								{
 									"name": "UPDATE PARAMETER",
-									"originalRequest": {
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
 										"method": "PATCH",
 										"header": [
 											{
@@ -2155,12 +2014,13 @@
 											]
 										},
 										"url": {
-											"raw": "{{url}}/setting/parameter/:id",
+											"raw": "{{url}}/setting/parameter/parameter/:id",
 											"host": [
 												"{{url}}"
 											],
 											"path": [
 												"setting",
+												"parameter",
 												"parameter",
 												":id"
 											],
@@ -2172,45 +2032,601 @@
 											]
 										}
 									},
-									"status": "OK",
-									"code": 200,
-									"_postman_previewlanguage": "json",
-									"header": [
+									"response": [
 										{
-											"key": "X-Powered-By",
-											"value": "Express"
-										},
+											"name": "UPDATE PARAMETER",
+											"originalRequest": {
+												"method": "PATCH",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/x-www-form-urlencoded"
+													}
+												],
+												"body": {
+													"mode": "urlencoded",
+													"urlencoded": [
+														{
+															"key": "nama",
+															"value": "Fleksibel Masa Aktif Member"
+														},
+														{
+															"key": "nilai",
+															"value": "true"
+														},
+														{
+															"key": "keterangan",
+															"value": "Awal dan akhir masa aktif member bisa dirubah"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{url}}/setting/parameter/:id",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"setting",
+														"parameter",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "2"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "72"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"48-7T5GoBU+38iRKq+E3OT4Ux1PI8g\""
+												},
+												{
+													"key": "Date",
+													"value": "Tue, 03 Jun 2025 02:26:47 GMT"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "Keep-Alive",
+													"value": "timeout=5"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"success\": true,\n    \"message\": \"Update parameter successfully\",\n    \"results\": [\n        1\n    ]\n}"
+										}
+									]
+								},
+								{
+									"name": "DELETE PARAMETER",
+									"event": [
 										{
-											"key": "Access-Control-Allow-Origin",
-											"value": "*"
-										},
-										{
-											"key": "Content-Type",
-											"value": "application/json; charset=utf-8"
-										},
-										{
-											"key": "Content-Length",
-											"value": "72"
-										},
-										{
-											"key": "ETag",
-											"value": "W/\"48-7T5GoBU+38iRKq+E3OT4Ux1PI8g\""
-										},
-										{
-											"key": "Date",
-											"value": "Tue, 03 Jun 2025 02:26:47 GMT"
-										},
-										{
-											"key": "Connection",
-											"value": "keep-alive"
-										},
-										{
-											"key": "Keep-Alive",
-											"value": "timeout=5"
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
 										}
 									],
-									"cookie": [],
-									"body": "{\n    \"success\": true,\n    \"message\": \"Update parameter successfully\",\n    \"results\": [\n        1\n    ]\n}"
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/setting/parameter/parameter/:id",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"setting",
+												"parameter",
+												"parameter",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "DELETE PARAMETER",
+											"originalRequest": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{url}}/setting/parameter/:id",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"setting",
+														"parameter",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "1"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "70"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"46-GSPfif14EdJIxZVD2n109YnWtcY\""
+												},
+												{
+													"key": "Date",
+													"value": "Tue, 03 Jun 2025 02:26:29 GMT"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "Keep-Alive",
+													"value": "timeout=5"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"success\": true,\n    \"message\": \"Delete parameter successfully\",\n    \"results\": 1\n}"
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "TIPE KENDARAAN",
+							"item": [
+								{
+									"name": "GET ALL TIPE KENDARAAN",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/setting/parameter/tipe-kendaraan",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"setting",
+												"parameter",
+												"tipe-kendaraan"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "GET ALL TIPE KENDARAAN",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{url}}/setting/parameter/tipe-kendaraan",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"setting",
+														"parameter",
+														"tipe-kendaraan"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "477"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"1dd-u+XoJcD4QPsUmsrLCGgUVIN21FA\""
+												},
+												{
+													"key": "Date",
+													"value": "Wed, 04 Jun 2025 01:17:08 GMT"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "Keep-Alive",
+													"value": "timeout=5"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"success\": true,\n    \"message\": \"Get all tipe kendaraan successfully\",\n    \"results\": {\n        \"data\": [\n            {\n                \"id\": 1,\n                \"tipe_kendaraan\": \"Mobil\",\n                \"createdAt\": \"2025-06-04T01:16:56.167Z\",\n                \"updatedAt\": \"2025-06-04T01:16:56.167Z\"\n            },\n            {\n                \"id\": 2,\n                \"tipe_kendaraan\": \"Motor\",\n                \"createdAt\": \"2025-06-04T01:17:00.518Z\",\n                \"updatedAt\": \"2025-06-04T01:17:00.518Z\"\n            },\n            {\n                \"id\": 3,\n                \"tipe_kendaraan\": \"All\",\n                \"createdAt\": \"2025-06-04T01:17:02.579Z\",\n                \"updatedAt\": \"2025-06-04T01:17:02.579Z\"\n            }\n        ],\n        \"totalData\": 3,\n        \"totalPages\": 1,\n        \"currentPage\": 1,\n        \"pageSize\": 5\n    }\n}"
+										}
+									]
+								},
+								{
+									"name": "CREATE TIPE KENDARAAN",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "tipe_kendaraan",
+													"value": "Mobil",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url}}/setting/parameter/tipe-kendaraan",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"setting",
+												"parameter",
+												"tipe-kendaraan"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "CREATE TIPE KENDARAAN",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "urlencoded",
+													"urlencoded": [
+														{
+															"key": "tipe_kendaraan",
+															"value": "Truck / Box",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{url}}/setting/parameter/tipe-kendaraan",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"setting",
+														"parameter",
+														"tipe-kendaraan"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "191"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"bf-JdRcMJH8vbuj7Ex2BndUCYvQ+7A\""
+												},
+												{
+													"key": "Date",
+													"value": "Wed, 04 Jun 2025 01:17:21 GMT"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "Keep-Alive",
+													"value": "timeout=5"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"success\": true,\n    \"message\": \"Create tipe kendaraan successfully\",\n    \"results\": {\n        \"id\": 4,\n        \"tipe_kendaraan\": \"Truck / Box\",\n        \"updatedAt\": \"2025-06-04T01:17:21.756Z\",\n        \"createdAt\": \"2025-06-04T01:17:21.756Z\"\n    }\n}"
+										}
+									]
+								},
+								{
+									"name": "UPDATE TIPE KENDARAAN",
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "tipe_kendaraan",
+													"value": "Truck",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url}}/setting/parameter/tipe-kendaraan/:id",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"setting",
+												"parameter",
+												"tipe-kendaraan",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "3"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "UPDATE TIPE KENDARAAN",
+											"originalRequest": {
+												"method": "PATCH",
+												"header": [],
+												"body": {
+													"mode": "urlencoded",
+													"urlencoded": [
+														{
+															"key": "tipe_kendaraan",
+															"value": "Truck",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{url}}/setting/parameter/tipe-kendaraan/:id",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"setting",
+														"parameter",
+														"tipe-kendaraan",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "3"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "77"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"4d-2IFL6DGK2hVKZWJb21z8lBck4Ik\""
+												},
+												{
+													"key": "Date",
+													"value": "Wed, 04 Jun 2025 01:17:50 GMT"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "Keep-Alive",
+													"value": "timeout=5"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"success\": true,\n    \"message\": \"Update tipe kendaraan successfully\",\n    \"results\": [\n        1\n    ]\n}"
+										}
+									]
+								},
+								{
+									"name": "DELETE TIPE KENDARAAN",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "tipe_kendaraan",
+													"value": "Truck",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url}}/setting/parameter/tipe-kendaraan/:id",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"setting",
+												"parameter",
+												"tipe-kendaraan",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "4"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "DELETE TIPE KENDARAAN",
+											"originalRequest": {
+												"method": "PATCH",
+												"header": [],
+												"body": {
+													"mode": "urlencoded",
+													"urlencoded": [
+														{
+															"key": "tipe_kendaraan",
+															"value": "Truck",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{url}}/setting/parameter/tipe-kendaraan/:id",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"setting",
+														"parameter",
+														"tipe-kendaraan",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "4"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "X-Powered-By",
+													"value": "Express"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json; charset=utf-8"
+												},
+												{
+													"key": "Content-Length",
+													"value": "77"
+												},
+												{
+													"key": "ETag",
+													"value": "W/\"4d-2IFL6DGK2hVKZWJb21z8lBck4Ik\""
+												},
+												{
+													"key": "Date",
+													"value": "Wed, 04 Jun 2025 01:18:04 GMT"
+												},
+												{
+													"key": "Connection",
+													"value": "keep-alive"
+												},
+												{
+													"key": "Keep-Alive",
+													"value": "timeout=5"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"success\": true,\n    \"message\": \"Update tipe kendaraan successfully\",\n    \"results\": [\n        1\n    ]\n}"
+										}
+									]
 								}
 							]
 						}
@@ -5152,10 +5568,10 @@
 					]
 				},
 				{
-					"name": "POS",
+					"name": "POS (IN/OUT)",
 					"item": [
 						{
-							"name": "GET ALL POS",
+							"name": "GET ALL POS (IN/OUT)",
 							"event": [
 								{
 									"listen": "test",
@@ -5255,7 +5671,7 @@
 							]
 						},
 						{
-							"name": "CREATE POS",
+							"name": "CREATE POS (IN/OUT)",
 							"event": [
 								{
 									"listen": "test",
@@ -5330,7 +5746,7 @@
 										},
 										{
 											"key": "user_id",
-											"value": "6"
+											"value": "2"
 										}
 									]
 								},
@@ -5585,7 +6001,7 @@
 							]
 						},
 						{
-							"name": "DELETE POS",
+							"name": "DELETE POS (IN/OUT)",
 							"event": [
 								{
 									"listen": "test",
@@ -5691,7 +6107,7 @@
 							]
 						},
 						{
-							"name": "EDIT POS",
+							"name": "EDIT POS (IN/OUT)",
 							"event": [
 								{
 									"listen": "test",
@@ -5915,8 +6331,108 @@
 					]
 				},
 				{
-					"name": "KENDARAAN",
+					"name": "DATA KENDARAAN",
 					"item": [
+						{
+							"name": "GET ALL KENDARAAN",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"followRedirects": true,
+								"disableUrlEncoding": false,
+								"disableCookies": false
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/master-data/kendaraan",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"master-data",
+										"kendaraan"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "GET ALL KENDARAAN",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{_['url']}}/master-data/kendaraan",
+											"host": [
+												"{{_['url']}}"
+											],
+											"path": [
+												"master-data",
+												"kendaraan"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express",
+											"description": ""
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*",
+											"description": ""
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8",
+											"description": ""
+										},
+										{
+											"key": "Content-Length",
+											"value": "543",
+											"description": ""
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"21f-g+vSEmRj8VkrITfkHKuSb5bkIx4\"",
+											"description": ""
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 16 May 2025 03:20:48 GMT",
+											"description": ""
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive",
+											"description": ""
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5",
+											"description": ""
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"success\": true,\n  \"message\": \"Get all kendaraan successfully\",\n  \"results\": {\n    \"data\": [\n      {\n        \"id\": 1,\n        \"nama_kendaraan\": \"Avanza\",\n        \"tipe_kendaraan\": \"Mobil\",\n        \"status\": true,\n        \"user_id\": 1,\n        \"createdAt\": \"2025-05-16T02:33:14.070Z\",\n        \"updatedAt\": \"2025-05-16T02:33:14.070Z\",\n        \"user\": {\n          \"id\": 1,\n          \"nama\": \"Itmamul Fahmi\"\n        }\n      },\n      {\n        \"id\": 2,\n        \"nama_kendaraan\": \"Xenia\",\n        \"tipe_kendaraan\": \"Mobil\",\n        \"status\": true,\n        \"user_id\": 1,\n        \"createdAt\": \"2025-05-16T03:20:45.304Z\",\n        \"updatedAt\": \"2025-05-16T03:20:45.304Z\",\n        \"user\": {\n          \"id\": 1,\n          \"nama\": \"Itmamul Fahmi\"\n        }\n      }\n    ],\n    \"totalData\": 2,\n    \"totalPages\": 1,\n    \"currentPage\": 1,\n    \"pageSize\": 5\n  }\n}"
+								}
+							]
+						},
 						{
 							"name": "UPDATE STATUS KENDARAAN",
 							"event": [
@@ -6095,8 +6611,8 @@
 											"value": "Xenia"
 										},
 										{
-											"key": "tipe_kendaraan",
-											"value": "Mobil"
+											"key": "tipe_kendaraan_id",
+											"value": "1"
 										},
 										{
 											"key": "status",
@@ -6104,7 +6620,7 @@
 										},
 										{
 											"key": "user_id",
-											"value": "6"
+											"value": "1"
 										}
 									]
 								},
@@ -6209,106 +6725,6 @@
 									],
 									"cookie": [],
 									"body": "{\n  \"success\": true,\n  \"message\": \"Create kendaraan successfully\",\n  \"results\": {\n    \"id\": 2,\n    \"nama_kendaraan\": \"Xenia\",\n    \"tipe_kendaraan\": \"Mobil\",\n    \"status\": true,\n    \"user_id\": 1,\n    \"updatedAt\": \"2025-05-16T03:20:45.304Z\",\n    \"createdAt\": \"2025-05-16T03:20:45.304Z\"\n  }\n}"
-								}
-							]
-						},
-						{
-							"name": "GET ALL KENDARAAN",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"protocolProfileBehavior": {
-								"followRedirects": true,
-								"disableUrlEncoding": false,
-								"disableCookies": false
-							},
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{url}}/master-data/kendaraan",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"master-data",
-										"kendaraan"
-									]
-								}
-							},
-							"response": [
-								{
-									"name": "GET ALL KENDARAAN",
-									"originalRequest": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "{{_['url']}}/master-data/kendaraan",
-											"host": [
-												"{{_['url']}}"
-											],
-											"path": [
-												"master-data",
-												"kendaraan"
-											]
-										}
-									},
-									"status": "OK",
-									"code": 200,
-									"_postman_previewlanguage": "json",
-									"header": [
-										{
-											"key": "X-Powered-By",
-											"value": "Express",
-											"description": ""
-										},
-										{
-											"key": "Access-Control-Allow-Origin",
-											"value": "*",
-											"description": ""
-										},
-										{
-											"key": "Content-Type",
-											"value": "application/json; charset=utf-8",
-											"description": ""
-										},
-										{
-											"key": "Content-Length",
-											"value": "543",
-											"description": ""
-										},
-										{
-											"key": "ETag",
-											"value": "W/\"21f-g+vSEmRj8VkrITfkHKuSb5bkIx4\"",
-											"description": ""
-										},
-										{
-											"key": "Date",
-											"value": "Fri, 16 May 2025 03:20:48 GMT",
-											"description": ""
-										},
-										{
-											"key": "Connection",
-											"value": "keep-alive",
-											"description": ""
-										},
-										{
-											"key": "Keep-Alive",
-											"value": "timeout=5",
-											"description": ""
-										}
-									],
-									"cookie": [],
-									"body": "{\n  \"success\": true,\n  \"message\": \"Get all kendaraan successfully\",\n  \"results\": {\n    \"data\": [\n      {\n        \"id\": 1,\n        \"nama_kendaraan\": \"Avanza\",\n        \"tipe_kendaraan\": \"Mobil\",\n        \"status\": true,\n        \"user_id\": 1,\n        \"createdAt\": \"2025-05-16T02:33:14.070Z\",\n        \"updatedAt\": \"2025-05-16T02:33:14.070Z\",\n        \"user\": {\n          \"id\": 1,\n          \"nama\": \"Itmamul Fahmi\"\n        }\n      },\n      {\n        \"id\": 2,\n        \"nama_kendaraan\": \"Xenia\",\n        \"tipe_kendaraan\": \"Mobil\",\n        \"status\": true,\n        \"user_id\": 1,\n        \"createdAt\": \"2025-05-16T03:20:45.304Z\",\n        \"updatedAt\": \"2025-05-16T03:20:45.304Z\",\n        \"user\": {\n          \"id\": 1,\n          \"nama\": \"Itmamul Fahmi\"\n        }\n      }\n    ],\n    \"totalData\": 2,\n    \"totalPages\": 1,\n    \"currentPage\": 1,\n    \"pageSize\": 5\n  }\n}"
 								}
 							]
 						},
@@ -6505,7 +6921,7 @@
 									"variable": [
 										{
 											"key": "id",
-											"value": "1"
+											"value": "3"
 										}
 									]
 								}
@@ -9498,10 +9914,10 @@
 					]
 				},
 				{
-					"name": "LEVEL AKSES",
+					"name": "LEVEL PENGGUNA",
 					"item": [
 						{
-							"name": "UPDATE LEVEL AKSES",
+							"name": "UPDATE LEVEL PENGGUNA",
 							"event": [
 								{
 									"listen": "test",
@@ -9651,7 +10067,7 @@
 							]
 						},
 						{
-							"name": "DELETE LEVEL AKSES",
+							"name": "DELETE LEVEL PENGGUNA",
 							"event": [
 								{
 									"listen": "test",
@@ -9757,7 +10173,7 @@
 							]
 						},
 						{
-							"name": "GET ALL LEVEL AKSES",
+							"name": "GET ALL LEVEL PENGGUNA",
 							"event": [
 								{
 									"listen": "test",
@@ -9857,7 +10273,7 @@
 							]
 						},
 						{
-							"name": "CREATE LEVEL AKSES",
+							"name": "CREATE LEVEL PENGGUNA",
 							"event": [
 								{
 									"listen": "test",
@@ -9999,6 +10415,575 @@
 							]
 						}
 					]
+				},
+				{
+					"name": "DATA PENGGUNA",
+					"item": [
+						{
+							"name": "GET ALL DATA PENGGUNA",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/profile?limit=5&page=1&offset=5&sortBy=id&sortOrder=asc",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"profile"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "5"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "offset",
+											"value": "5"
+										},
+										{
+											"key": "sortBy",
+											"value": "id"
+										},
+										{
+											"key": "sortOrder",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "GET ALL PROFILE",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/profile?limit=5&page=1&offset=5&sortBy=id&sortOrder=asc",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"profile"
+											],
+											"query": [
+												{
+													"key": "limit",
+													"value": "5"
+												},
+												{
+													"key": "page",
+													"value": "1"
+												},
+												{
+													"key": "offset",
+													"value": "5"
+												},
+												{
+													"key": "sortBy",
+													"value": "id"
+												},
+												{
+													"key": "sortOrder",
+													"value": "asc"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "619"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"26b-7h0hSfMYlDLISpLl7YT2FOii44k\""
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 03 Jun 2025 08:37:27 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Get all user successfully\",\n    \"results\": {\n        \"data\": [\n            {\n                \"id\": 3,\n                \"nama\": \"Itmamul Fahmi\",\n                \"jenis_kelamin\": \"Laki-laki\",\n                \"no_hp\": \"0823234234234\",\n                \"alamat_lengkap\": \"Jakarta\",\n                \"username\": \"itmamulfahmi\",\n                \"password\": \"$argon2id$v=19$m=65536,t=3,p=4$iAYSWiVJyuFWPQ/3DjjyCw$3LTmyOs0lS4MVKwLpHHTvIJlm6K40XOUiq6Mh5uBV+E\",\n                \"perusahaan_id\": null,\n                \"level_akses_id\": 2,\n                \"status\": true,\n                \"added_by\": null,\n                \"createdAt\": \"2025-06-03T08:34:12.653Z\",\n                \"updatedAt\": \"2025-06-03T08:34:12.653Z\",\n                \"level_akses\": {\n                    \"id\": 2,\n                    \"nama\": \"Administrator\"\n                },\n                \"added_by_user\": null,\n                \"asal_perusahaan\": null\n            }\n        ],\n        \"totalData\": 1,\n        \"totalPages\": 1,\n        \"currentPage\": 1,\n        \"pageSize\": 5\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "CREATE DATA PENGGUNA",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nama",
+											"value": "Evosist",
+											"type": "text"
+										},
+										{
+											"key": "jenis_kelamin",
+											"value": "Laki-laki",
+											"type": "text"
+										},
+										{
+											"key": "no_hp",
+											"value": "0823423423",
+											"type": "text"
+										},
+										{
+											"key": "alamat_lengkap",
+											"value": "Banyumas",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "evosist",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "openfahmi.2004#",
+											"type": "text"
+										},
+										{
+											"key": "level_akses_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "status",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "perusahaan_id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/profile",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"profile"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "CREATE PROFILE",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "nama",
+													"value": "Evosist",
+													"type": "text"
+												},
+												{
+													"key": "jenis_kelamin",
+													"value": "Laki-laki",
+													"type": "text"
+												},
+												{
+													"key": "no_hp",
+													"value": "0823423423",
+													"type": "text"
+												},
+												{
+													"key": "alamat_lengkap",
+													"value": "Banyumas",
+													"type": "text"
+												},
+												{
+													"key": "username",
+													"value": "evosist",
+													"type": "text"
+												},
+												{
+													"key": "password",
+													"value": "openfahmi.2004#",
+													"type": "text"
+												},
+												{
+													"key": "level_akses_id",
+													"value": "2",
+													"type": "text"
+												},
+												{
+													"key": "status",
+													"value": "true",
+													"type": "text"
+												},
+												{
+													"key": "asal_perusahaan",
+													"value": "Hello World",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url}}/profile",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"profile"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "364"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"16c-OfV4zTUjHlOYE1ozKj9xW2eAMA0\""
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 03 Jun 2025 08:38:03 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Create user successfully\",\n    \"results\": {\n        \"id\": 5,\n        \"nama\": \"Evosist\",\n        \"jenis_kelamin\": \"Laki-laki\",\n        \"no_hp\": \"0823423423\",\n        \"alamat_lengkap\": \"Banyumas\",\n        \"username\": \"evosist\",\n        \"password\": \"openfahmi.2004#\",\n        \"level_akses_id\": 2,\n        \"status\": true,\n        \"updatedAt\": \"2025-06-03T08:38:03.366Z\",\n        \"createdAt\": \"2025-06-03T08:38:03.366Z\",\n        \"perusahaan_id\": null,\n        \"added_by\": null\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "UPDATE DATA PENGGUNA",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "nama",
+											"value": "Evosist",
+											"type": "text"
+										},
+										{
+											"key": "jenis_kelamin",
+											"value": "Laki-laki",
+											"type": "text"
+										},
+										{
+											"key": "no_hp",
+											"value": "0823423423",
+											"type": "text"
+										},
+										{
+											"key": "alamat_lengkap",
+											"value": "Banyumas",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "evosist",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "openfahmi.2004#",
+											"type": "text"
+										},
+										{
+											"key": "level_akses_id",
+											"value": "2",
+											"type": "text"
+										},
+										{
+											"key": "status",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "added_by",
+											"value": "3",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/profile/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"profile",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "UPDATE PROFILE",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "nama",
+													"value": "Evosist",
+													"type": "text"
+												},
+												{
+													"key": "jenis_kelamin",
+													"value": "Laki-laki",
+													"type": "text"
+												},
+												{
+													"key": "no_hp",
+													"value": "0823423423",
+													"type": "text"
+												},
+												{
+													"key": "alamat_lengkap",
+													"value": "Banyumas",
+													"type": "text"
+												},
+												{
+													"key": "username",
+													"value": "evosist",
+													"type": "text"
+												},
+												{
+													"key": "password",
+													"value": "openfahmi.2004#",
+													"type": "text"
+												},
+												{
+													"key": "level_akses_id",
+													"value": "2",
+													"type": "text"
+												},
+												{
+													"key": "status",
+													"value": "true",
+													"type": "text"
+												},
+												{
+													"key": "added_by",
+													"value": "3",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url}}/profile/:id",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"profile",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "3"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "67"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"43-204sfPQe3yLGNybF9jDddlF2wyE\""
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 03 Jun 2025 08:40:20 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Update user successfully\",\n    \"results\": [\n        1\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "DELETE DATA PENGGUNA",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/profile/:id",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"profile",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "DELETE PROFILE",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/profile/:id",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"profile",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "3"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "65"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"41-CoG2S9ynRTv0j6l0ybVaurM0Bqk\""
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 03 Jun 2025 09:16:05 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"Delete user successfully\",\n    \"results\": 1\n}"
+								}
+							]
+						}
+					]
 				}
 			]
 		},
@@ -10061,7 +11046,7 @@
 								},
 								{
 									"key": "level_akses_id",
-									"value": "2"
+									"value": "1"
 								},
 								{
 									"key": "status",
@@ -10330,10 +11315,10 @@
 			"name": "TRANSAKSI",
 			"item": [
 				{
-					"name": "MANUAL MIX",
+					"name": "TAMBAH TRANSAKSI",
 					"item": [
 						{
-							"name": "UPDATE TRANSAKSI MANUAL / MIX",
+							"name": "UPDATE TRANSAKSI",
 							"event": [
 								{
 									"listen": "test",
@@ -10547,7 +11532,7 @@
 							]
 						},
 						{
-							"name": "CREATE TRANSAKSI MANUAL / MIX",
+							"name": "CREATE TRANSAKSI",
 							"event": [
 								{
 									"listen": "test",
@@ -11299,7 +12284,7 @@
 							]
 						},
 						{
-							"name": "DELETE TRANSAKSI MANUAL / MIX",
+							"name": "DELETE TRANSAKSI",
 							"event": [
 								{
 									"listen": "test",
@@ -11405,7 +12390,7 @@
 							]
 						},
 						{
-							"name": "GET ALL TRANSAKSI MANUAL / MIX",
+							"name": "GET ALL TRANSAKSI",
 							"event": [
 								{
 									"listen": "test",
@@ -11589,7 +12574,7 @@
 							]
 						},
 						{
-							"name": "CANCEL TRANSAKSI",
+							"name": "TRANSAKSI BATAL",
 							"event": [
 								{
 									"listen": "test",
@@ -11733,8 +12718,11 @@
 								{
 									"listen": "test",
 									"script": {
+										"exec": [
+											""
+										],
 										"type": "text/javascript",
-										"exec": []
+										"packages": {}
 									}
 								}
 							],
@@ -11756,66 +12744,85 @@
 									"urlencoded": [
 										{
 											"key": "judul_permasalahan",
-											"value": "Error Barrier Gate"
+											"value": "Error Barrier Gate",
+											"type": "text"
 										},
 										{
 											"key": "tanggal_permasalahan",
-											"value": "05-31-2021"
+											"value": "05-31-2021",
+											"type": "text"
 										},
 										{
 											"key": "kategori_permasalahan",
-											"value": "Sistem"
+											"value": "Sistem",
+											"type": "text"
 										},
 										{
 											"key": "pos_id",
-											"value": "1"
+											"value": "2",
+											"type": "text"
 										},
 										{
 											"key": "hardware_atau_alat",
-											"value": "Hardware"
+											"value": "Hardware",
+											"type": "text"
 										},
 										{
 											"key": "penyebab_permasalahan",
-											"value": "Ada short dalam kelistrikan"
+											"value": "Ada short dalam kelistrikan",
+											"type": "text"
 										},
 										{
 											"key": "keterangan_permasalahan",
-											"value": "Segera melakukan perbaikan"
+											"value": "Segera melakukan perbaikan",
+											"type": "text"
 										},
 										{
 											"key": "nama_pelapor",
-											"value": "Fahmi"
+											"value": "Fahmi",
+											"type": "text"
 										},
 										{
 											"key": "status_permasalahan",
-											"value": "Pending"
+											"value": "Pending",
+											"type": "text"
 										},
 										{
 											"key": "tanggal_perbaikan",
-											"value": "31-05-2004"
+											"value": "31-05-2004",
+											"type": "text"
+										},
+										{
+											"key": "jenis_perbaikan",
+											"value": "Penggantian Kabel",
+											"type": "text"
 										},
 										{
 											"key": "status_perbaikan",
-											"value": "Pending"
+											"value": "Pending",
+											"type": "text"
 										},
 										{
 											"key": "penanganan",
-											"value": ""
+											"value": "Penanganan",
+											"type": "text"
 										},
 										{
 											"key": "keterangan_penanganan",
-											"value": ""
+											"value": "Keterangan Penanganan",
+											"type": "text"
 										},
 										{
 											"key": "nama_yang_menangani",
-											"value": ""
+											"value": "Itmamul Fahmi",
+											"type": "text"
 										}
 									]
 								},
 								"url": {
-									"raw": "{{_['url']}}/transaksi/permasalahan-atau-perbaikan/:id",
+									"raw": "{{url}}/transaksi/permasalahan-atau-perbaikan/:id",
 									"host": [
-										"{{_['url']}}"
+										"{{url}}"
 									],
 									"path": [
 										"transaksi",
@@ -11824,7 +12831,8 @@
 									],
 									"variable": [
 										{
-											"key": "id"
+											"key": "id",
+											"value": "2"
 										}
 									]
 								}
@@ -12207,59 +13215,78 @@
 									"urlencoded": [
 										{
 											"key": "judul_permasalahan",
-											"value": "Error Barrier Gate"
+											"value": "Error Barrier Gate",
+											"type": "text"
 										},
 										{
 											"key": "tanggal_permasalahan",
-											"value": "05-31-2021"
+											"value": "05-31-2021",
+											"type": "text"
 										},
 										{
 											"key": "kategori_permasalahan",
-											"value": "Sistem"
+											"value": "Sistem",
+											"type": "text"
 										},
 										{
 											"key": "pos_id",
-											"value": "3"
+											"value": "2",
+											"type": "text"
 										},
 										{
 											"key": "hardware_atau_alat",
-											"value": "Hardware"
+											"value": "Hardware",
+											"type": "text"
 										},
 										{
 											"key": "penyebab_permasalahan",
-											"value": "Ada short dalam kelistrikan"
+											"value": "Ada short dalam kelistrikan",
+											"type": "text"
 										},
 										{
 											"key": "keterangan_permasalahan",
-											"value": "Segera melakukan perbaikan"
+											"value": "Segera melakukan perbaikan",
+											"type": "text"
 										},
 										{
 											"key": "nama_pelapor",
-											"value": "Fahmi"
+											"value": "Fahmi",
+											"type": "text"
 										},
 										{
 											"key": "status_permasalahan",
-											"value": "Pending"
+											"value": "Pending",
+											"type": "text"
 										},
 										{
 											"key": "tanggal_perbaikan",
-											"value": "31-05-2004"
+											"value": "31-05-2004",
+											"type": "text"
+										},
+										{
+											"key": "jenis_perbaikan",
+											"value": "",
+											"type": "text"
 										},
 										{
 											"key": "status_perbaikan",
-											"value": "Pending"
+											"value": "Pending",
+											"type": "text"
 										},
 										{
 											"key": "penanganan",
-											"value": ""
+											"value": "",
+											"type": "text"
 										},
 										{
 											"key": "keterangan_penanganan",
-											"value": ""
+											"value": "",
+											"type": "text"
 										},
 										{
 											"key": "nama_yang_menangani",
-											"value": ""
+											"value": "",
+											"type": "text"
 										}
 									]
 								},
@@ -12406,575 +13433,6 @@
 									"body": "{\n  \"success\": true,\n  \"message\": \"Create permasalahan atau perbaikan successfully\",\n  \"results\": {\n    \"id\": 1,\n    \"judul_permasalahan\": \"Error Barrier Gate\",\n    \"tanggal_permasalahan\": \"05-31-2021\",\n    \"kategori_permasalahan\": \"Sistem\",\n    \"pos_id\": 1,\n    \"hardware_atau_alat\": \"Hardware\",\n    \"penyebab_permasalahan\": \"Ada short dalam kelistrikan\",\n    \"keterangan_permasalahan\": \"Segera melakukan perbaikan\",\n    \"nama_pelapor\": \"Fahmi\",\n    \"status_permasalahan\": \"Pending\",\n    \"tanggal_perbaikan\": \"31-05-2004\",\n    \"status_perbaikan\": \"Pending\",\n    \"penanganan\": \"\",\n    \"keterangan_penanganan\": \"\",\n    \"nama_yang_menangani\": \"\",\n    \"updatedAt\": \"2025-05-16T02:38:02.569Z\",\n    \"createdAt\": \"2025-05-16T02:38:02.569Z\"\n  }\n}"
 								}
 							]
-						}
-					]
-				}
-			]
-		},
-		{
-			"name": "PROFILE",
-			"item": [
-				{
-					"name": "GET ALL PROFILE",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/profile?limit=5&page=1&offset=5&sortBy=id&sortOrder=asc",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"profile"
-							],
-							"query": [
-								{
-									"key": "limit",
-									"value": "5"
-								},
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "offset",
-									"value": "5"
-								},
-								{
-									"key": "sortBy",
-									"value": "id"
-								},
-								{
-									"key": "sortOrder",
-									"value": "asc"
-								}
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "GET ALL PROFILE",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{url}}/profile?limit=5&page=1&offset=5&sortBy=id&sortOrder=asc",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"profile"
-									],
-									"query": [
-										{
-											"key": "limit",
-											"value": "5"
-										},
-										{
-											"key": "page",
-											"value": "1"
-										},
-										{
-											"key": "offset",
-											"value": "5"
-										},
-										{
-											"key": "sortBy",
-											"value": "id"
-										},
-										{
-											"key": "sortOrder",
-											"value": "asc"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "*"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "619"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"26b-7h0hSfMYlDLISpLl7YT2FOii44k\""
-								},
-								{
-									"key": "Date",
-									"value": "Tue, 03 Jun 2025 08:37:27 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"success\": true,\n    \"message\": \"Get all user successfully\",\n    \"results\": {\n        \"data\": [\n            {\n                \"id\": 3,\n                \"nama\": \"Itmamul Fahmi\",\n                \"jenis_kelamin\": \"Laki-laki\",\n                \"no_hp\": \"0823234234234\",\n                \"alamat_lengkap\": \"Jakarta\",\n                \"username\": \"itmamulfahmi\",\n                \"password\": \"$argon2id$v=19$m=65536,t=3,p=4$iAYSWiVJyuFWPQ/3DjjyCw$3LTmyOs0lS4MVKwLpHHTvIJlm6K40XOUiq6Mh5uBV+E\",\n                \"perusahaan_id\": null,\n                \"level_akses_id\": 2,\n                \"status\": true,\n                \"added_by\": null,\n                \"createdAt\": \"2025-06-03T08:34:12.653Z\",\n                \"updatedAt\": \"2025-06-03T08:34:12.653Z\",\n                \"level_akses\": {\n                    \"id\": 2,\n                    \"nama\": \"Administrator\"\n                },\n                \"added_by_user\": null,\n                \"asal_perusahaan\": null\n            }\n        ],\n        \"totalData\": 1,\n        \"totalPages\": 1,\n        \"currentPage\": 1,\n        \"pageSize\": 5\n    }\n}"
-						}
-					]
-				},
-				{
-					"name": "CREATE PROFILE",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "nama",
-									"value": "Evosist",
-									"type": "text"
-								},
-								{
-									"key": "jenis_kelamin",
-									"value": "Laki-laki",
-									"type": "text"
-								},
-								{
-									"key": "no_hp",
-									"value": "0823423423",
-									"type": "text"
-								},
-								{
-									"key": "alamat_lengkap",
-									"value": "Banyumas",
-									"type": "text"
-								},
-								{
-									"key": "username",
-									"value": "evosist",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "openfahmi.2004#",
-									"type": "text"
-								},
-								{
-									"key": "level_akses_id",
-									"value": "2",
-									"type": "text"
-								},
-								{
-									"key": "status",
-									"value": "true",
-									"type": "text"
-								},
-								{
-									"key": "asal_perusahaan",
-									"value": "Hello World",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{url}}/profile",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"profile"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "CREATE PROFILE",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "nama",
-											"value": "Evosist",
-											"type": "text"
-										},
-										{
-											"key": "jenis_kelamin",
-											"value": "Laki-laki",
-											"type": "text"
-										},
-										{
-											"key": "no_hp",
-											"value": "0823423423",
-											"type": "text"
-										},
-										{
-											"key": "alamat_lengkap",
-											"value": "Banyumas",
-											"type": "text"
-										},
-										{
-											"key": "username",
-											"value": "evosist",
-											"type": "text"
-										},
-										{
-											"key": "password",
-											"value": "openfahmi.2004#",
-											"type": "text"
-										},
-										{
-											"key": "level_akses_id",
-											"value": "2",
-											"type": "text"
-										},
-										{
-											"key": "status",
-											"value": "true",
-											"type": "text"
-										},
-										{
-											"key": "asal_perusahaan",
-											"value": "Hello World",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "{{url}}/profile",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"profile"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "*"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "364"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"16c-OfV4zTUjHlOYE1ozKj9xW2eAMA0\""
-								},
-								{
-									"key": "Date",
-									"value": "Tue, 03 Jun 2025 08:38:03 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"success\": true,\n    \"message\": \"Create user successfully\",\n    \"results\": {\n        \"id\": 5,\n        \"nama\": \"Evosist\",\n        \"jenis_kelamin\": \"Laki-laki\",\n        \"no_hp\": \"0823423423\",\n        \"alamat_lengkap\": \"Banyumas\",\n        \"username\": \"evosist\",\n        \"password\": \"openfahmi.2004#\",\n        \"level_akses_id\": 2,\n        \"status\": true,\n        \"updatedAt\": \"2025-06-03T08:38:03.366Z\",\n        \"createdAt\": \"2025-06-03T08:38:03.366Z\",\n        \"perusahaan_id\": null,\n        \"added_by\": null\n    }\n}"
-						}
-					]
-				},
-				{
-					"name": "UPDATE PROFILE",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "nama",
-									"value": "Evosist",
-									"type": "text"
-								},
-								{
-									"key": "jenis_kelamin",
-									"value": "Laki-laki",
-									"type": "text"
-								},
-								{
-									"key": "no_hp",
-									"value": "0823423423",
-									"type": "text"
-								},
-								{
-									"key": "alamat_lengkap",
-									"value": "Banyumas",
-									"type": "text"
-								},
-								{
-									"key": "username",
-									"value": "evosist",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "openfahmi.2004#",
-									"type": "text"
-								},
-								{
-									"key": "level_akses_id",
-									"value": "2",
-									"type": "text"
-								},
-								{
-									"key": "status",
-									"value": "true",
-									"type": "text"
-								},
-								{
-									"key": "added_by",
-									"value": "3",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{url}}/profile/:id",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"profile",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "3"
-								}
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "UPDATE PROFILE",
-							"originalRequest": {
-								"method": "PATCH",
-								"header": [],
-								"body": {
-									"mode": "urlencoded",
-									"urlencoded": [
-										{
-											"key": "nama",
-											"value": "Evosist",
-											"type": "text"
-										},
-										{
-											"key": "jenis_kelamin",
-											"value": "Laki-laki",
-											"type": "text"
-										},
-										{
-											"key": "no_hp",
-											"value": "0823423423",
-											"type": "text"
-										},
-										{
-											"key": "alamat_lengkap",
-											"value": "Banyumas",
-											"type": "text"
-										},
-										{
-											"key": "username",
-											"value": "evosist",
-											"type": "text"
-										},
-										{
-											"key": "password",
-											"value": "openfahmi.2004#",
-											"type": "text"
-										},
-										{
-											"key": "level_akses_id",
-											"value": "2",
-											"type": "text"
-										},
-										{
-											"key": "status",
-											"value": "true",
-											"type": "text"
-										},
-										{
-											"key": "added_by",
-											"value": "3",
-											"type": "text"
-										}
-									]
-								},
-								"url": {
-									"raw": "{{url}}/profile/:id",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"profile",
-										":id"
-									],
-									"variable": [
-										{
-											"key": "id",
-											"value": "3"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "*"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "67"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"43-204sfPQe3yLGNybF9jDddlF2wyE\""
-								},
-								{
-									"key": "Date",
-									"value": "Tue, 03 Jun 2025 08:40:20 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"success\": true,\n    \"message\": \"Update user successfully\",\n    \"results\": [\n        1\n    ]\n}"
-						}
-					]
-				},
-				{
-					"name": "DELETE PROFILE",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/profile/:id",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"profile",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "3"
-								}
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "DELETE PROFILE",
-							"originalRequest": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{url}}/profile/:id",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"profile",
-										":id"
-									],
-									"variable": [
-										{
-											"key": "id",
-											"value": "3"
-										}
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": "*"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "65"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"41-CoG2S9ynRTv0j6l0ybVaurM0Bqk\""
-								},
-								{
-									"key": "Date",
-									"value": "Tue, 03 Jun 2025 09:16:05 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"success\": true,\n    \"message\": \"Delete user successfully\",\n    \"results\": 1\n}"
 						}
 					]
 				}
