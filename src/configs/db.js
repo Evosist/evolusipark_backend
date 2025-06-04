@@ -14,11 +14,11 @@ module.exports = {
         dialect: 'postgres',
         dialectModule: pg,
         logging: false,
-        dialectOptions: {
-            ssl: {
-                rejectUnauthorized: false,
-            },
-        },
+        // dialectOptions: {
+        //     ssl: {
+        //         rejectUnauthorized: false,
+        //     },
+        // },
     },
     test: {
         username: 'root',

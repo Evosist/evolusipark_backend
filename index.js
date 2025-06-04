@@ -3,25 +3,10 @@ require('dotenv').config({
 })
 
 const express = require('express')
+const ExcelJS = require('exceljs')
 const puppeteer = require('puppeteer')
-const { format } = require('@fast-csv/format')
 const fs = require('fs')
 const app = express()
-
-const data = [
-    {
-        id: 1,
-        name: 'John Doe',
-        email: 'john@example.com',
-        created_at: '2025-05-01',
-    },
-    {
-        id: 2,
-        name: 'Jane Smith',
-        email: 'jane@example.com',
-        created_at: '2025-04-28',
-    },
-]
 
 const tableData = [
     {
@@ -88,15 +73,31 @@ app.get('/generate-pdf', async (req, res) => {
     }
 })
 
-app.get('/export-csv', (req, res) => {
-    res.setHeader('Content-Disposition', 'attachment; filename="users.csv"')
-    res.setHeader('Content-Type', 'text/csv')
+app.get('/download-excel', async (req, res) => {
+    const workbook = new ExcelJS.Workbook()
+    const worksheet = workbook.addWorksheet('Users')
 
-    const csvStream = format({ headers: true })
-    csvStream.pipe(res)
+    worksheet.columns = [
+        { header: 'ID', key: 'id', width: 10 },
+        { header: 'Name', key: 'name', width: 30 },
+        { header: 'Email', key: 'email', width: 30 },
+    ]
 
-    data.forEach((row) => csvStream.write(row))
-    csvStream.end()
+    const data = [
+        { id: 1, name: 'Alice', email: 'alice@example.com' },
+        { id: 2, name: 'Bob', email: 'bob@example.com' },
+    ]
+
+    data.forEach((user) => worksheet.addRow(user))
+
+    res.setHeader(
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    res.setHeader('Content-Disposition', 'attachment; filename=users.xlsx')
+
+    await workbook.xlsx.write(res)
+    res.end()
 })
 
 app.use(express.json({ limit: '10mb', extended: true }))
