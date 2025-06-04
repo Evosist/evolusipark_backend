@@ -1,5 +1,5 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { kendaraan, user } = require('../../models/index')
+const { kendaraan, user, tipe_kendaraan } = require('../../models/index')
 
 module.exports = {
     getAll: async (req, res) => {
@@ -15,6 +15,10 @@ module.exports = {
                         model: user,
                         as: 'user',
                         attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: tipe_kendaraan,
+                        as: 'tipe_kendaraan',
                     },
                 ],
                 order: [[sortBy, sortOrder]],

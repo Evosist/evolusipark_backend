@@ -23,12 +23,17 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'user_id',
                 as: 'user',
             })
+
+            kendaraan.belongsTo(models.tipe_kendaraan, {
+                foreignKey: 'tipe_kendaraan_id',
+                as: 'tipe_kendaraan',
+            })
         }
     }
     kendaraan.init(
         {
             nama_kendaraan: DataTypes.STRING,
-            tipe_kendaraan: DataTypes.ENUM('Mobil', 'Motor', 'All'),
+            tipe_kendaraan_id: DataTypes.INTEGER,
             status: DataTypes.BOOLEAN,
             user_id: DataTypes.INTEGER,
         },

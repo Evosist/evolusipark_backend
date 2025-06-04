@@ -1,5 +1,5 @@
 const errorhandler = require('../../../helpers/errorhandler.helper')
-const { kendaraan } = require('../../../models/index')
+const { tipe_kendaraan } = require('../../../models/index')
 
 module.exports = {
     getAll: async (req, res) => {
@@ -9,14 +9,14 @@ module.exports = {
             const offset = (page - 1) * limit
             const sortBy = req.query.sortBy || 'id'
             const sortOrder = req.query.sortOrder || 'asc'
-            const { count, rows } = await kendaraan.findAndCountAll({
+            const { count, rows } = await tipe_kendaraan.findAndCountAll({
                 order: [[sortBy, sortOrder]],
                 offset: offset,
                 limit: limit,
             })
             return res.json({
                 success: true,
-                message: 'Get all kendaraan successfully',
+                message: 'Get all tipe kendaraan successfully',
                 results: {
                     data: rows,
                     totalData: count,
@@ -31,10 +31,10 @@ module.exports = {
     },
     create: async (req, res) => {
         try {
-            const data = await kendaraan.create(req.body)
+            const data = await tipe_kendaraan.create(req.body)
             return res.json({
                 success: true,
-                message: 'Create kendaraan successfully',
+                message: 'Create tipe kendaraan successfully',
                 results: data,
             })
         } catch (err) {
@@ -43,14 +43,14 @@ module.exports = {
     },
     findOneById: async (req, res) => {
         try {
-            const data = await kendaraan.findAll({
+            const data = await tipe_kendaraan.findAll({
                 where: {
                     id: req.params.id,
                 },
             })
             return res.json({
                 success: true,
-                message: 'Get kendaraan successfully',
+                message: 'Get tipe kendaraan successfully',
                 results: data,
             })
         } catch (err) {
@@ -59,14 +59,14 @@ module.exports = {
     },
     update: async (req, res) => {
         try {
-            const data = await kendaraan.update(req.body, {
+            const data = await tipe_kendaraan.update(req.body, {
                 where: {
                     id: req.params.id,
                 },
             })
             return res.json({
                 success: true,
-                message: 'Update kendaraan successfully',
+                message: 'Update tipe kendaraan successfully',
                 results: data,
             })
         } catch (err) {
@@ -75,14 +75,14 @@ module.exports = {
     },
     delete: async (req, res) => {
         try {
-            const data = await kendaraan.destroy({
+            const data = await tipe_kendaraan.destroy({
                 where: {
                     id: req.params.id,
                 },
             })
             return res.json({
                 success: true,
-                message: 'Delete kendaraan successfully',
+                message: 'Delete tipe kendaraan successfully',
                 results: data,
             })
         } catch (err) {

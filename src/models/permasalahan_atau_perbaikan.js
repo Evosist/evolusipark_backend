@@ -36,6 +36,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: true,
             },
             tanggal_perbaikan: DataTypes.STRING,
+            jenis_perbaikan: DataTypes.STRING,
             status_perbaikan: {
                 type: DataTypes.ENUM('Pending', 'On Progress', 'Done'),
                 allowNull: true,
