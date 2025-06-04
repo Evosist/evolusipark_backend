@@ -1,5 +1,5 @@
-const errorhandler = require('../../helpers/errorhandler.helper')
-const { parameter } = require('../../models/index')
+const errorhandler = require('../../../helpers/errorhandler.helper')
+const { parameter } = require('../../../models/index')
 
 module.exports = {
     getAll: async (req, res) => {

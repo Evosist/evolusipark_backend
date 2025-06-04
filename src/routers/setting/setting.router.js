@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const tarifParkirRouter = require('./tarifparkir.router')
 const tarifDendaRouter = require('./tarifdenda.router')
-const parameterRouter = require('./parameter.router')
+const parameterRouter = require('./parameter/index.router')
 const globalRouter = require('./global.router')
 const paymentRouter = require('./payment.router')
 
