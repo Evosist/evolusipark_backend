@@ -1,5 +1,10 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { kendaraan, user, tipe_kendaraan } = require('../../models/index')
+const {
+    kendaraan,
+    user,
+    tipe_kendaraan,
+    tarif_parkir,
+} = require('../../models/index')
 
 module.exports = {
     getAll: async (req, res) => {
@@ -43,6 +48,11 @@ module.exports = {
     create: async (req, res) => {
         try {
             const data = await kendaraan.create(req.body)
+
+            await tarif_parkir.create({
+                kendaraan_id: data.id,
+            })
+
             return res.json({
                 success: true,
                 message: 'Create kendaraan successfully',
