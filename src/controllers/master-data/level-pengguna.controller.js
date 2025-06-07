@@ -1,5 +1,5 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { level_akses, user } = require('../../models/index')
+const { level_pengguna, user } = require('../../models/index')
 
 module.exports = {
     getAll: async (req, res) => {
@@ -9,7 +9,7 @@ module.exports = {
             const offset = (page - 1) * limit
             const sortBy = req.query.sortBy || 'id'
             const sortOrder = req.query.sortOrder || 'asc'
-            const { count, rows } = await level_akses.findAndCountAll({
+            const { count, rows } = await level_pengguna.findAndCountAll({
                 include: [
                     { model: user, as: 'user', attributes: ['id', 'nama'] },
                 ],
@@ -34,7 +34,7 @@ module.exports = {
     },
     create: async (req, res) => {
         try {
-            const data = await level_akses.create({
+            const data = await level_pengguna.create({
                 ...req.body,
                 hak_akses: JSON.parse(req.body.hak_akses),
             })
@@ -49,7 +49,7 @@ module.exports = {
     },
     findOneById: async (req, res) => {
         try {
-            const data = await level_akses.findAll({
+            const data = await level_pengguna.findAll({
                 where: {
                     id: req.params.id,
                 },
@@ -65,7 +65,7 @@ module.exports = {
     },
     update: async (req, res) => {
         try {
-            const data = await level_akses.update(
+            const data = await level_pengguna.update(
                 { ...req.body, hak_akses: JSON.parse(req.body.hak_akses) },
                 {
                     where: {
@@ -84,7 +84,7 @@ module.exports = {
     },
     delete: async (req, res) => {
         try {
-            const data = await level_akses.destroy({
+            const data = await level_pengguna.destroy({
                 where: {
                     id: req.params.id,
                 },
