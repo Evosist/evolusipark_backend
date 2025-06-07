@@ -14,9 +14,9 @@ module.exports = (sequelize, DataTypes) => {
                 as: 'added_by_user',
             })
 
-            user.belongsTo(models.level_akses, {
+            user.belongsTo(models.level_pengguna, {
                 foreignKey: 'level_pengguna_id',
-                as: 'level_akses',
+                as: 'level_pengguna',
             })
 
             user.belongsTo(models.perusahaan, {
