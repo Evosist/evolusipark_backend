@@ -34,10 +34,7 @@ module.exports = {
     },
     create: async (req, res) => {
         try {
-            const data = await level_akses.create({
-                ...req.body,
-                akses_menu: JSON.parse(req.body.akses_menu),
-            })
+            const data = await level_akses.create(req.body)
             return res.json({
                 success: true,
                 message: 'Create level akses successfully',
@@ -65,14 +62,11 @@ module.exports = {
     },
     update: async (req, res) => {
         try {
-            const data = await level_akses.update(
-                { ...req.body, akses_menu: JSON.parse(req.body.akses_menu) },
-                {
-                    where: {
-                        id: req.params.id,
-                    },
-                }
-            )
+            const data = await level_akses.update(req.body, {
+                where: {
+                    id: req.params.id,
+                },
+            })
             return res.json({
                 success: true,
                 message: 'Update level akses successfully',
