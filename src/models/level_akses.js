@@ -13,12 +13,18 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'level_akses_id',
                 as: 'user',
             })
+
+            level_akses.belongsTo(models.perusahaan, {
+                foreignKey: 'perusahaan_id',
+                as: 'perusahaan',
+            })
         }
     }
     level_akses.init(
         {
             nama: DataTypes.STRING,
-            akses_menu: DataTypes.JSONB,
+            perusahaan_id: DataTypes.INTEGER,
+            hak_akses: DataTypes.JSONB,
         },
         {
             sequelize,
