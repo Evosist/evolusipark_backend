@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
             })
 
             user.belongsTo(models.level_akses, {
-                foreignKey: 'level_akses_id',
+                foreignKey: 'level_pengguna_id',
                 as: 'level_akses',
             })
 
@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
             username: { type: DataTypes.STRING, unique: true },
             password: DataTypes.STRING,
             perusahaan_id: DataTypes.INTEGER,
-            level_akses_id: DataTypes.INTEGER,
+            level_pengguna_id: DataTypes.INTEGER,
             status: DataTypes.BOOLEAN,
             added_by: DataTypes.INTEGER,
         },
