@@ -19,7 +19,7 @@ module.exports = {
             })
             return res.json({
                 success: true,
-                message: 'Get all level akses successfully',
+                message: 'Get all level pengguna successfully',
                 results: {
                     data: rows,
                     totalData: count,
@@ -40,7 +40,7 @@ module.exports = {
             })
             return res.json({
                 success: true,
-                message: 'Create level akses successfully',
+                message: 'Create level pengguna successfully',
                 results: data,
             })
         } catch (err) {
@@ -56,7 +56,7 @@ module.exports = {
             })
             return res.json({
                 success: true,
-                message: 'Get level akses successfully',
+                message: 'Get level pengguna successfully',
                 results: data,
             })
         } catch (err) {
@@ -75,7 +75,7 @@ module.exports = {
             )
             return res.json({
                 success: true,
-                message: 'Update level akses successfully',
+                message: 'Update level pengguna successfully',
                 results: data,
             })
         } catch (err) {
@@ -91,7 +91,7 @@ module.exports = {
             })
             return res.json({
                 success: true,
-                message: 'Delete level akses successfully',
+                message: 'Delete level pengguna successfully',
                 results: data,
             })
         } catch (err) {
