@@ -23,8 +23,6 @@ module.exports = (sequelize, DataTypes) => {
     data_voucher.init(
         {
             produk_voucher_id: DataTypes.INTEGER,
-            periode_value: DataTypes.INTEGER,
-            periode_unit: DataTypes.STRING,
             periode: DataTypes.RANGE(DataTypes.DATEONLY),
             tarif: {
                 type: DataTypes.INTEGER,
