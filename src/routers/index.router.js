@@ -1,5 +1,6 @@
 const router = require('express').Router()
 
+router.use('/dashboard', require('./dashboard.router'))
 router.use('/auth', require('./auth.router'))
 router.use('/master-data', require('../routers/master-data/master-data.router'))
 router.use('/setting', require('../routers/setting/setting.router'))
