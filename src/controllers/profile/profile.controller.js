@@ -1,7 +1,6 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
 const { user, level_pengguna, perusahaan } = require('../../models/index')
 const argon = require('argon2')
-const jwt = require('jsonwebtoken')
 
 module.exports = {
     getAll: async (req, res) => {

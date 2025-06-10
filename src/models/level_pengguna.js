@@ -14,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
                 as: 'user',
             })
 
-            level_pengguna.hasOne(models.perusahaan, {
-                foreignKey: 'level_pengguna_id',
+            level_pengguna.belongsTo(models.perusahaan, {
+                foreignKey: 'perusahaan_id',
                 as: 'perusahaan',
             })
         }
@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         {
             nama: DataTypes.STRING,
             hak_akses: DataTypes.JSONB,
+            perusahaan_id: DataTypes.INTEGER,
         },
         {
             sequelize,

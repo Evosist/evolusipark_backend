@@ -26,7 +26,6 @@ module.exports = (sequelize, DataTypes) => {
             kontak: DataTypes.STRING,
             status: DataTypes.BOOLEAN,
             user_id: DataTypes.INTEGER,
-            level_pengguna_id: DataTypes.INTEGER,
         },
         {
             sequelize,
