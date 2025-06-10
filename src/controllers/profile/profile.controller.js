@@ -1,5 +1,5 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { user, level_akses, perusahaan } = require('../../models/index')
+const { user, level_pengguna, perusahaan } = require('../../models/index')
 
 module.exports = {
     getAll: async (req, res) => {
@@ -12,8 +12,8 @@ module.exports = {
             const { count, rows } = await user.findAndCountAll({
                 include: [
                     {
-                        model: level_akses,
-                        as: 'level_akses',
+                        model: level_pengguna,
+                        as: 'level_pengguna',
                         attributes: ['id', 'nama'],
                     },
                     {
@@ -62,8 +62,8 @@ module.exports = {
             const data = await user.findAll({
                 include: [
                     {
-                        model: level_akses,
-                        as: 'level_akses',
+                        model: level_pengguna,
+                        as: 'level_pengguna',
                         attributes: ['id', 'nama'],
                     },
                     {
