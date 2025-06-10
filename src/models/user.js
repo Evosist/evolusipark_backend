@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
                 as: 'level_pengguna',
             })
 
-            user.belongsTo(models.perusahaan, {
+            user.hasOne(models.perusahaan, {
                 foreignKey: 'perusahaan_id',
                 as: 'asal_perusahaan',
             })
@@ -33,7 +33,6 @@ module.exports = (sequelize, DataTypes) => {
             alamat_lengkap: DataTypes.STRING,
             username: { type: DataTypes.STRING, unique: true },
             password: DataTypes.STRING,
-            perusahaan_id: DataTypes.INTEGER,
             level_pengguna_id: DataTypes.INTEGER,
             status: DataTypes.BOOLEAN,
             added_by: DataTypes.INTEGER,

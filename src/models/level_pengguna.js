@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'level_pengguna_id',
                 as: 'user',
             })
+
+            level_pengguna.hasOne(models.perusahaan, {
+                foreignKey: 'level_pengguna_id',
+                as: 'perusahaan',
+            })
         }
     }
     level_pengguna.init(

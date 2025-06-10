@@ -1,5 +1,7 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
 const { user, level_pengguna, perusahaan } = require('../../models/index')
+const argon = require('argon2')
+const jwt = require('jsonwebtoken')
 
 module.exports = {
     getAll: async (req, res) => {
@@ -47,11 +49,29 @@ module.exports = {
     },
     create: async (req, res) => {
         try {
-            const data = await user.create(req.body)
+            const { username, password } = req.body
+            const checkUsername = await user.findOne({
+                where: {
+                    username: username,
+                },
+            })
+            if (checkUsername) {
+                throw Error('auth_duplicate_username')
+            }
+
+            const hashedPassword = await argon.hash(password)
+
+            const data = {
+                ...req.body,
+                password: hashedPassword,
+            }
+
+            const users = await user.create(data)
+
             return res.json({
                 success: true,
                 message: 'Create user successfully',
-                results: data,
+                results: { data: users },
             })
         } catch (err) {
             return errorhandler(res, err)
@@ -87,15 +107,30 @@ module.exports = {
     },
     update: async (req, res) => {
         try {
-            const data = await user.update(req.body, {
-                where: {
-                    id: req.params.id,
-                },
-            })
+            const { password } = req.body
+
+            let data = {}
+
+            if (password) {
+                const hashedPassword = await argon.hash(password)
+                data = { ...req.body, password: hashedPassword }
+            } else {
+                data = { ...req.body }
+            }
+
+            const users = await user.update(
+                { ...data },
+                {
+                    where: {
+                        id: req.params.id,
+                    },
+                }
+            )
+
             return res.json({
                 success: true,
                 message: 'Update user successfully',
-                results: data,
+                results: { data: users },
             })
         } catch (err) {
             return errorhandler(res, err)
