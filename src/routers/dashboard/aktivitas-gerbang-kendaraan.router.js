@@ -1,5 +1,5 @@
 const dashboardRouter = require('express').Router()
-const dashboardController = require('../../controllers/dashboard/dashboard.controller')
+const dashboardController = require('../../controllers/dashboard/aktivitas-gerbang-kendaraan.controller')
 
 dashboardRouter.get('/', dashboardController.getAll)
 dashboardRouter.get('/:id', dashboardController.findOneById)

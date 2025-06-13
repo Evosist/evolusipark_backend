@@ -47,6 +47,13 @@ module.exports = {
     create: async (req, res) => {
         try {
             const data = await data_member.create(req.body)
+
+            await data_nomor_polisi.bulkCreate({
+                data_member_id: data.id,
+                kendaraan_id: req.body.kendaraan_id,
+                nomor_polisi: req.body.nomor_polisi,
+            })
+
             return res.json({
                 success: true,
                 message: 'Create data member successfully',
