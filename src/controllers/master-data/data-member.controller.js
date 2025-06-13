@@ -48,11 +48,12 @@ module.exports = {
         try {
             const data = await data_member.create(req.body)
 
-            await data_nomor_polisi.bulkCreate({
+            const nomorPolisiData = req.body.data_nomor_polisi.map((item) => ({
+                ...item,
                 data_member_id: data.id,
-                kendaraan_id: req.body.kendaraan_id,
-                nomor_polisi: req.body.nomor_polisi,
-            })
+            }))
+
+            await data_nomor_polisi.bulkCreate(nomorPolisiData)
 
             return res.json({
                 success: true,
