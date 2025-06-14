@@ -15,8 +15,8 @@ function generateTableRows(data) {
       <td>${item.jenis_perusahaan}</td>
       <td>${item.kontak}</td>
       <td>${item.status}</td>
-      <td>${item.createdAt}</td>
-      <td>${item.updatedAt}</td>
+      <td>${item.created}</td>
+      <td>${item.updated}</td>
     </tr>
   `
         )
@@ -90,8 +90,8 @@ module.exports = {
                    jenis_perusahaan: item.jenis_perusahaan,
                    kontak: item.kontak,
                    status: item.status,
-                   createdAt: dayjs(item.createdAt).format('DD-MM-YYYY'),
-                   updatedAt: dayjs(item.updatedAt).format('DD-MM-YYYY'),
+                   created: dayjs(item.createdAt).format('DD-MM-YYYY'),
+                   updated: dayjs(item.updatedAt).format('DD-MM-YYYY'),
                }))
 
                const template = fs.readFileSync('template.html', 'utf-8')
