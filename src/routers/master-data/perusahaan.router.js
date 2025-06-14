@@ -2,6 +2,7 @@ const perusahaanRouter = require('express').Router()
 const perusahaanController = require('../../controllers/master-data/perusahaan.controller')
 
 perusahaanRouter.get('/', perusahaanController.getAll)
+perusahaanRouter.get('/pdf', perusahaanController.generatePdf)
 perusahaanRouter.get('/:id', perusahaanController.findOneById)
 perusahaanRouter.post('/', perusahaanController.create)
 perusahaanRouter.patch('/:id', perusahaanController.update)
