@@ -58,7 +58,7 @@ module.exports = {
             return res.json({
                 success: true,
                 message: 'Create data member successfully',
-                results: data,
+                results: { data, data_nomor_polisi: nomorPolisiData },
             })
         } catch (err) {
             return errorhandler(res, err)
@@ -266,10 +266,18 @@ module.exports = {
                     id: req.params.id,
                 },
             })
+
+            const nomorPolisiData = req.body.data_nomor_polisi.map((item) => ({
+                ...item,
+                data_member_id: data.id,
+            }))
+
+            await data_nomor_polisi.bulkCreate(nomorPolisiData)
+
             return res.json({
                 success: true,
-                message: 'Update data member successfully',
-                results: data,
+                message: 'Create data member successfully',
+                results: { data, data_nomor_polisi: nomorPolisiData },
             })
         } catch (err) {
             return errorhandler(res, err)
