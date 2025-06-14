@@ -1,3 +1,4 @@
+const dayjs = require('dayjs')
 const errorhandler = require('../../helpers/errorhandler.helper')
 const { perusahaan, user } = require('../../models/index')
 const fs = require('fs')
@@ -89,8 +90,8 @@ module.exports = {
                    jenis_perusahaan: item.jenis_perusahaan,
                    kontak: item.kontak,
                    status: item.status,
-                   added: item.createdAt,
-                   updated: item.updatedAt,
+                   createdAt: dayjs(item.createdAt).format('DD-MM-YYYY'),
+                   updatedAt: dayjs(item.updatedAt).format('DD-MM-YYYY'),
                }))
 
                const template = fs.readFileSync('template.html', 'utf-8')
