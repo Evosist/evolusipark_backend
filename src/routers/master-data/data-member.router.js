@@ -2,6 +2,8 @@ const dataMemberRouter = require('express').Router()
 const dataMemberController = require('../../controllers/master-data/data-member.controller')
 
 dataMemberRouter.get('/', dataMemberController.getAll)
+dataMemberRouter.get('/pdf', dataMemberController.generatePdf)
+dataMemberRouter.get('/excel', dataMemberController.generateExcel)
 dataMemberRouter.get('/:id', dataMemberController.findOneById)
 dataMemberRouter.post('/', dataMemberController.create)
 dataMemberRouter.patch(

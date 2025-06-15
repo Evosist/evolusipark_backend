@@ -7,6 +7,7 @@ const {
     riwayat_transaksi_member,
     riwayat_transaksi_kartu_member,
     riwayat_transaksi_ganti_nopol,
+    tipe_kendaraan,
     user,
 } = require('../../models/index')
 const fs = require('fs')
@@ -23,12 +24,12 @@ function generateTableRows(data) {
       <td>${item.no}</td>
       <td>${item.nama}</td>
       <td>${item.no_hp}</td>
-      <td>${item.perusahaan}</td>
+      <td>${item.perusahaan.nama}</td>
       <td>${item.akses_tiket}</td>
       <td>${item.akses_kartu}</td>
-      <td>${item.nomor_kartu}</td>
+      <td>${item.no_kartu}</td>
       <td>${item.tgl_input}</td>
-      <td>${item.produk_member}</td>
+      <td>${item.produk_member.nama}</td>
       <td>${item.tarif}</td>
       <td>${item.masa_aktif}</td>
       <td>${item.created}</td>
@@ -77,36 +78,42 @@ module.exports = {
         try {
             const data = await data_member.findAll({
                 include: [
-                    {
-                        model: user,
-                        as: 'user',
-                        attributes: ['id', 'nama'],
-                    },
-                    {
-                        model: tipe_kendaraan,
-                        as: 'tipe_kendaraan',
-                    },
+                    { model: perusahaan, as: 'perusahaan' },
+                    { model: produk_member, as: 'produk_member' },
+                    { model: data_nomor_polisi, as: 'data_nomor_polisi' },
+                    { model: user, as: 'user', attributes: ['id', 'nama'] },
                 ],
             })
 
-            const tableData = data.map((item, index) => ({
-                no: index + 1,
-                nama: item.nama,
-                no_hp: item.no_hp,
-                perusahaan: item.perusahaan.nama,
-                akses_tiket: item.akses_tiket,
-                akses_kartu: item.akses_kartu,
-                nomor_kartu: item.nomor_kartu,
-                tgl_input: item.tgl_input,
-                produk_member: item.produk_member.nama,
-                tarif: item.tarif,
-                masa_aktif: item.masa_aktif,
-                created: dayjs(item.createdAt).format('DD-MM-YYYY'),
-                updated: dayjs(item.updatedAt).format('DD-MM-YYYY'),
-            }))
+            const tableData = data.map((item, index) => {
+                const startDate = dayjs(item.periode?.[0]?.value)
+                const endDate = dayjs(item.periode?.[1]?.value)
+                const masa_aktif =
+                    startDate.isValid() && endDate.isValid()
+                        ? `${startDate.format('DD/MM/YYYY')} s/d ${endDate
+                              .subtract(1, 'day')
+                              .format('DD/MM/YYYY')}`
+                        : '-'
+
+                return {
+                    no: index + 1,
+                    nama: item.nama,
+                    no_hp: item.no_hp,
+                    perusahaan: item.perusahaan.nama,
+                    akses_tiket: item.akses_tiket === true ? 'Ya' : 'Tidak',
+                    akses_kartu: item.akses_kartu === true ? 'Ya' : 'Tidak',
+                    no_kartu: item.no_kartu,
+                    tgl_input: dayjs(item.tgl_input).format('DD/MM/YYYY'),
+                    produk_member: item.produk_member.nama,
+                    tarif: item.tarif,
+                    masa_aktif, // otomatis dihitung dari periode
+                    created: dayjs(item.createdAt).format('DD/MM/YYYY'),
+                    updated: dayjs(item.updatedAt).format('DD/MM/YYYY'),
+                }
+            })
 
             const template = fs.readFileSync(
-                'src/templates/master-data/data-kendaraan.template.html',
+                'src/templates/master-data/data-member.template.html',
                 'utf-8'
             )
             const rowsHtml = generateTableRows(tableData)
@@ -117,7 +124,14 @@ module.exports = {
             await page.setContent(finalHtml, { waitUntil: 'networkidle0' })
 
             const pdfBuffer = await page.pdf({
-                format: 'A4',
+                path: 'data-member.pdf',
+                format: 'A3', // atau coba 'A3' untuk lebih besar
+                margin: {
+                    top: '10mm',
+                    bottom: '10mm',
+                    left: '10mm',
+                    right: '10mm',
+                },
                 printBackground: true,
             })
 
@@ -223,7 +237,7 @@ module.exports = {
                     item.perusahaan,
                     item.akses_tiket,
                     item.akses_kartu,
-                    item.nomor_kartu,
+                    item.no_kartu,
                     item.tgl_input,
                     item.produk_member,
                     item.tarif,
