@@ -1,5 +1,37 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { produk_member, user, data_member } = require('../../models/index')
+const {
+    produk_member,
+    user,
+    data_member,
+    kendaraan,
+} = require('../../models/index')
+const fs = require('fs')
+const puppeteer = require('puppeteer')
+const ExcelJS = require('exceljs')
+const dayjs = require('dayjs')
+
+// Utility to fill the HTML template
+function generateTableRows(data) {
+    return data
+        .map(
+            (item) => `
+    <tr>
+      <td>${item.no}</td>
+      <td>${item.nama}</td>
+      <td>${item.periode}</td>
+      <td>${item.kendaraan}</td>
+      <td>${item.max_kendaraan}</td>
+      <td>${item.tarif}</td>
+      <td>${item.biaya_kartu}</td>
+      <td>${item.biaya_ganti_nopol}</td>
+      <td>${item.status}</td>
+      <td>${item.created}</td>
+      <td>${item.updated}</td>
+    </tr>
+  `
+        )
+        .join('')
+}
 
 module.exports = {
     getAll: async (req, res) => {
@@ -38,6 +70,262 @@ module.exports = {
                 },
             })
         } catch (err) {
+            return errorhandler(res, err)
+        }
+    },
+    generatePdf: async (req, res) => {
+        try {
+            const [produkMembers, kendaraanList] = await Promise.all([
+                produk_member.findAll({
+                    include: [
+                        {
+                            model: user,
+                            as: 'user',
+                            attributes: ['id', 'nama'],
+                        },
+                    ],
+                }),
+                kendaraan.findAll({ attributes: ['id', 'nama_kendaraan'] }),
+            ])
+
+            const kendaraanMap = {}
+            kendaraanList.forEach((k) => {
+                kendaraanMap[k.id] = k.nama_kendaraan
+            })
+
+            const tableData = produkMembers.map((item, index) => {
+                const periodeStr =
+                    item.periode?.length === 2
+                        ? `${new Date(item.periode[0].value).toLocaleDateString(
+                              'id-ID'
+                          )} s/d ${new Date(
+                              item.periode[1].value
+                          ).toLocaleDateString('id-ID')}`
+                        : '-'
+
+                const kendaraanStr = (item.list_id_kendaraan || [])
+                    .map((id) => kendaraanMap[id] || `ID ${id}`)
+                    .join(', ')
+
+                return {
+                    no: index + 1,
+                    nama: item.nama,
+                    user: item.user?.nama || '-',
+                    periode: periodeStr,
+                    kendaraan: kendaraanStr,
+                    max_kendaraan: item.max_kendaraan,
+                    tarif: `Rp${item.tarif.toLocaleString('id-ID')}`,
+                    biaya_kartu: `Rp${item.biaya_kartu.toLocaleString(
+                        'id-ID'
+                    )}`,
+                    biaya_ganti_nopol: `Rp${item.biaya_ganti_nopol.toLocaleString(
+                        'id-ID'
+                    )}`,
+                    status: item.status ? 'Aktif' : 'Nonaktif',
+                    created: new Date(item.createdAt).toLocaleDateString(
+                        'id-ID'
+                    ),
+                }
+            })
+
+            // === Generate HTML Table Rows ===
+            const generateTableRows = (rows) => {
+                return rows
+                    .map((row) => {
+                        return `
+                    <tr>
+                        <td>${row.no}</td>
+                        <td>${row.nama}</td>
+                        <td>${row.user}</td>
+                        <td>${row.periode}</td>
+                        <td>${row.kendaraan}</td>
+                        <td>${row.max_kendaraan}</td>
+                        <td>${row.tarif}</td>
+                        <td>${row.biaya_kartu}</td>
+                        <td>${row.biaya_ganti_nopol}</td>
+                        <td>${row.status}</td>
+                        <td>${row.created}</td>
+                    </tr>
+                    `
+                    })
+                    .join('')
+            }
+
+            const template = fs.readFileSync(
+                'src/templates/master-data/produk-member.template.html',
+                'utf-8'
+            )
+
+            const rowsHtml = generateTableRows(tableData)
+            const finalHtml = template.replace('{{rows}}', rowsHtml)
+
+            const browser = await puppeteer.launch()
+            const page = await browser.newPage()
+            await page.setContent(finalHtml, { waitUntil: 'networkidle0' })
+
+            const pdfBuffer = await page.pdf({
+                format: 'A4',
+                printBackground: true,
+            })
+
+            await browser.close()
+
+            res.set({
+                'Content-Type': 'application/pdf',
+                'Content-Disposition':
+                    'inline; filename="DataProdukMember.pdf"',
+                'Content-Length': pdfBuffer.length,
+            })
+
+            res.send(pdfBuffer)
+        } catch (err) {
+            console.error(err)
+            res.status(500).send('Error generating PDF')
+        }
+    },
+    generateExcel: async (req, res) => {
+        try {
+            const [produkMembers, kendaraanList] = await Promise.all([
+                produk_member.findAll({
+                    include: [
+                        {
+                            model: user,
+                            as: 'user',
+                            attributes: ['id', 'nama'],
+                        },
+                    ],
+                }),
+                kendaraan.findAll({ attributes: ['id', 'nama_kendaraan'] }),
+            ])
+
+            const kendaraanMap = {}
+            kendaraanList.forEach((k) => {
+                kendaraanMap[k.id] = k.nama_kendaraan
+            })
+
+            const workbook = new ExcelJS.Workbook()
+            const worksheet = workbook.addWorksheet('Data Produk Member')
+
+            const dateStr = new Date().toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+            })
+
+            const headers = [
+                'No.',
+                'Nama',
+                'User',
+                'Periode',
+                'Daftar Kendaraan',
+                'Max Kendaraan',
+                'Tarif',
+                'Biaya Kartu',
+                'Biaya Ganti Nopol',
+                'Status',
+                'Tanggal Dibuat',
+            ]
+
+            const lastColLetter = String.fromCharCode(65 + headers.length - 1)
+
+            const mergeAndStyle = (value, font, rowIdx) => {
+                worksheet.mergeCells(`A${rowIdx}:${lastColLetter}${rowIdx}`)
+                const cell = worksheet.getCell(`A${rowIdx}`)
+                cell.value = value
+                cell.alignment = { horizontal: 'center' }
+                cell.font = font
+            }
+
+            mergeAndStyle('Evolusi Park', { bold: true, size: 12 }, 1)
+            mergeAndStyle(
+                'Developed by PT. Evosist (Evolusi Sistem)',
+                { italic: true, size: 10 },
+                2
+            )
+            mergeAndStyle('Data Produk Member', { bold: true, size: 20 }, 3)
+            mergeAndStyle(dateStr, { size: 10 }, 4)
+
+            worksheet.addRow([])
+
+            const headerRow = worksheet.addRow(headers)
+            headerRow.eachCell((cell) => {
+                cell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'FFFF5B2A' },
+                }
+                cell.font = { bold: true, color: { argb: 'FFFFFFFF' } }
+                cell.border = {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thick' },
+                    right: { style: 'thin' },
+                }
+                cell.alignment = { horizontal: 'center' }
+            })
+
+            produkMembers.forEach((item, index) => {
+                const periodeFormatted =
+                    item.periode?.length === 2
+                        ? `${new Date(item.periode[0].value).toLocaleDateString(
+                              'id-ID'
+                          )} s/d ${new Date(
+                              item.periode[1].value
+                          ).toLocaleDateString('id-ID')}`
+                        : '-'
+
+                const kendaraanStr = (item.list_id_kendaraan || [])
+                    .map((id) => kendaraanMap[id] || `ID ${id}`)
+                    .join(', ')
+
+                const row = worksheet.addRow([
+                    index + 1,
+                    item.nama,
+                    item.user?.nama || '-',
+                    periodeFormatted,
+                    kendaraanStr,
+                    item.max_kendaraan,
+                    `Rp${item.tarif.toLocaleString('id-ID')}`,
+                    `Rp${item.biaya_kartu.toLocaleString('id-ID')}`,
+                    `Rp${item.biaya_ganti_nopol.toLocaleString('id-ID')}`,
+                    item.status ? 'Aktif' : 'Nonaktif',
+                    new Date(item.createdAt).toLocaleString('id-ID'),
+                ])
+
+                row.eachCell((cell) => {
+                    cell.border = {
+                        top: { style: 'thin' },
+                        left: { style: 'thin' },
+                        bottom: { style: 'thin' },
+                        right: { style: 'thin' },
+                    }
+                    cell.alignment = { vertical: 'middle' }
+                })
+            })
+
+            worksheet.columns.forEach((col) => {
+                let maxLength = 10
+                col.eachCell({ includeEmpty: true }, (cell) => {
+                    if (cell.value) {
+                        const length = cell.value.toString().length
+                        if (length > maxLength) maxLength = length
+                    }
+                })
+                col.width = maxLength + 2
+            })
+
+            res.setHeader(
+                'Content-Type',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            )
+            res.setHeader(
+                'Content-Disposition',
+                'attachment; filename=DataProdukMember.xlsx'
+            )
+            await workbook.xlsx.write(res)
+            res.end()
+        } catch (err) {
+            console.error(err)
             return errorhandler(res, err)
         }
     },
