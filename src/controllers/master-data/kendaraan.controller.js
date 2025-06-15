@@ -5,6 +5,9 @@ const {
     tipe_kendaraan,
     tarif_parkir,
 } = require('../../models/index')
+const fs = require('fs')
+const puppeteer = require('puppeteer')
+const ExcelJS = require('exceljs')
 
 // Utility to fill the HTML template
 function generateTableRows(data) {
