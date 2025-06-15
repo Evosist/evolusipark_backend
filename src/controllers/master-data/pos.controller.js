@@ -3,6 +3,7 @@ const errorhandler = require('../../helpers/errorhandler.helper')
 const { pos, user } = require('../../models/index')
 const puppeteer = require('puppeteer')
 const fs = require('fs')
+const ExcelJS = require('exceljs')
 
 // Utility to fill the HTML template
 function generateTableRows(data) {
@@ -118,7 +119,7 @@ module.exports = {
 
             res.set({
                 'Content-Type': 'application/pdf',
-                'Content-Disposition': 'inline; filename="report.pdf"',
+                'Content-Disposition': 'inline; filename="data-pos.pdf"',
                 'Content-Length': pdfBuffer.length,
             })
 
@@ -141,7 +142,7 @@ module.exports = {
             })
 
             const workbook = new ExcelJS.Workbook()
-            const worksheet = workbook.addWorksheet('Data Perusahaan')
+            const worksheet = workbook.addWorksheet('Data POS')
 
             const dateStr = new Date().toLocaleDateString('id-ID', {
                 day: '2-digit',
@@ -183,7 +184,7 @@ module.exports = {
                 { italic: true, size: 10 },
                 2
             )
-            mergeAndStyle('Data Perusahaan', { bold: true, size: 20 }, 3)
+            mergeAndStyle('Data POS', { bold: true, size: 20 }, 3)
             mergeAndStyle(dateStr, { size: 10 }, 4)
 
             worksheet.addRow([])
