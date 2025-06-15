@@ -162,9 +162,16 @@ module.exports = {
 
             const headers = [
                 'No.',
-                'Nama Kendaraan',
-                'Tipe Kendaraan',
-                'Status',
+                'Nama',
+                'Kontak',
+                'Perusahaan',
+                'Akses Tiket',
+                'Akses Kartu',
+                'Nomor Kartu',
+                'Tgl Input',
+                'Produk Member',
+                'Tarif',
+                'Masa Aktif',
                 'Added',
             ]
             const lastColLetter = String.fromCharCode(65 + headers.length - 1) // Convert to Excel letter
@@ -184,7 +191,7 @@ module.exports = {
                 { italic: true, size: 10 },
                 2
             )
-            mergeAndStyle('Data Kendaraan', { bold: true, size: 20 }, 3)
+            mergeAndStyle('Data Member', { bold: true, size: 20 }, 3)
             mergeAndStyle(dateStr, { size: 10 }, 4)
 
             worksheet.addRow([])
@@ -211,9 +218,16 @@ module.exports = {
             data.forEach((item, index) => {
                 const row = worksheet.addRow([
                     index + 1,
-                    item.nama_kendaraan,
-                    item.tipe_kendaraan.tipe_kendaraan,
-                    item.status,
+                    item.nama,
+                    item.no_hp,
+                    item.perusahaan,
+                    item.akses_tiket,
+                    item.akses_kartu,
+                    item.nomor_kartu,
+                    item.tgl_input,
+                    item.produk_member,
+                    item.tarif,
+                    item.masa_aktif,
                     new Date(item.createdAt).toLocaleString('id-ID'),
                 ])
 
