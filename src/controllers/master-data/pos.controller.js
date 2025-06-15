@@ -24,7 +24,6 @@ function generateTableRows(data) {
       <td>${item.com_port}</td>
       <td>${item.otorisasi}</td>
       <td>${item.synchronize}</td>
-      <td>${item.status}</td>
       <td>${item.created}</td>
       <td>${item.updated}</td>
     </tr>
@@ -94,7 +93,6 @@ module.exports = {
                 com_port: item.com_port,
                 otorisasi: item.otorisasi,
                 synchronize: item.synchronize,
-                status: item.status,
                 created: dayjs(item.createdAt).format('DD-MM-YYYY'),
                 updated: dayjs(item.updatedAt).format('DD-MM-YYYY'),
             }))
@@ -164,7 +162,6 @@ module.exports = {
                 'COM Port',
                 'Otorisasi',
                 'Synchronize (Menit)',
-                'Status',
                 'Added',
             ]
             const lastColLetter = String.fromCharCode(65 + headers.length - 1) // Convert to Excel letter
@@ -223,7 +220,6 @@ module.exports = {
                     item.com_port,
                     item.otorisasi,
                     item.synchronize,
-                    item.status,
                     new Date(item.createdAt).toLocaleString('id-ID'),
                 ])
 
