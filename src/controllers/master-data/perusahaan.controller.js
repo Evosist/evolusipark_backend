@@ -94,7 +94,7 @@ module.exports = {
                    updated: dayjs(item.updatedAt).format('DD-MM-YYYY'),
                }))
 
-               const template = fs.readFileSync('template.html', 'utf-8')
+               const template = fs.readFileSync('src/templates/master-data/perusahaan.template.html', 'utf-8')
                const rowsHtml = generateTableRows(tableData)
                const finalHtml = template.replace('{{rows}}', rowsHtml)
        
