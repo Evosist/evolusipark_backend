@@ -134,9 +134,6 @@ module.exports = {
                         attributes: ['id', 'nama'],
                     },
                 ],
-                where: {
-                    id: req.params.id,
-                },
             })
 
             const workbook = new ExcelJS.Workbook()
