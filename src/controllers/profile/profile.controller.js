@@ -1,6 +1,29 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
 const { user, level_pengguna, perusahaan } = require('../../models/index')
 const argon = require('argon2')
+const dayjs = require('dayjs')
+const fs = require('fs')
+const puppeteer = require('puppeteer')
+
+function generateTableRows(data) {
+    return data
+        .map(
+            (item) => `
+    <tr>
+      <td>${item.no}</td>
+      <td>${item.nama}</td>
+      <td>${item.jenis_kelamin}</td>
+      <td>${item.no_hp}</td>
+      <td>${item.alamat_lengkap}</td>
+      <td>${item.level_pengguna?.nama || '-'}</td>
+      <td>${item.status}</td>
+      <td>${item.created}</td>
+      <td>${item.updated}</td>
+    </tr>
+  `
+        )
+        .join('')
+}
 
 module.exports = {
     getAll: async (req, res) => {
@@ -44,6 +67,68 @@ module.exports = {
             })
         } catch (err) {
             return errorhandler(res, err)
+        }
+    },
+    generatePdf: async (req, res) => {
+        try {
+            const data = await user.findAll({
+                include: [
+                    {
+                        model: user,
+                        as: 'added_by_user',
+                        attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: level_pengguna,
+                        as: 'level_pengguna',
+                        attributes: ['id', 'nama'],
+                    },
+                ],
+            })
+
+            const tableData = data.map((item, index) => {
+                console.log(item)
+                return {
+                    no: index + 1,
+                    nama: item.nama,
+                    jenis_kelamin: item.jenis_kelamin,
+                    no_hp: item.no_hp,
+                    alamat_lengkap: item.alamat_lengkap,
+                    level: item.level_pengguna?.nama || '-',
+                    status: item.status,
+                    created: dayjs(item.createdAt).format('DD-MM-YYYY'),
+                    updated: dayjs(item.updatedAt).format('DD-MM-YYYY'),
+                }
+            })
+
+            const template = fs.readFileSync(
+                'src/templates/master-data/data-member.template.html',
+                'utf-8'
+            )
+            const rowsHtml = generateTableRows(tableData)
+            const finalHtml = template.replace('{{rows}}', rowsHtml)
+
+            const browser = await puppeteer.launch()
+            const page = await browser.newPage()
+            await page.setContent(finalHtml, { waitUntil: 'networkidle0' })
+
+            const pdfBuffer = await page.pdf({
+                format: 'A4',
+                printBackground: true,
+            })
+
+            await browser.close()
+
+            res.set({
+                'Content-Type': 'application/pdf',
+                'Content-Disposition': 'inline; filename="report.pdf"',
+                'Content-Length': pdfBuffer.length,
+            })
+
+            res.send(pdfBuffer)
+        } catch (err) {
+            console.error(err)
+            res.status(500).send('Error generating PDF')
         }
     },
     create: async (req, res) => {
