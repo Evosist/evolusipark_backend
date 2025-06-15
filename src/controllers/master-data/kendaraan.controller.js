@@ -8,6 +8,7 @@ const {
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
+const dayjs = require('dayjs')
 
 // Utility to fill the HTML template
 function generateTableRows(data) {
@@ -75,13 +76,17 @@ module.exports = {
                         as: 'user',
                         attributes: ['id', 'nama'],
                     },
+                    {
+                        model: tipe_kendaraan,
+                        as: 'tipe_kendaraan',
+                    },
                 ],
             })
 
             const tableData = data.map((item, index) => ({
                 no: index + 1,
                 nama_kendaraan: item.nama_kendaraan,
-                tipe_kendaraan: item.tipe_kendaraan,
+                tipe_kendaraan: item.tipe_kendaraan.tipe_kendaraan,
                 status: item.status,
                 created: dayjs(item.createdAt).format('DD-MM-YYYY'),
                 updated: dayjs(item.updatedAt).format('DD-MM-YYYY'),
@@ -125,6 +130,10 @@ module.exports = {
                         model: user,
                         as: 'user',
                         attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: tipe_kendaraan,
+                        as: 'tipe_kendaraan',
                     },
                 ],
             })
@@ -190,7 +199,7 @@ module.exports = {
                 const row = worksheet.addRow([
                     index + 1,
                     item.nama_kendaraan,
-                    item.tipe_kendaraan,
+                    item.tipe_kendaraan.tipe_kendaraan,
                     item.status,
                     new Date(item.createdAt).toLocaleString('id-ID'),
                 ])
