@@ -110,7 +110,7 @@ module.exports = {
             await page.setContent(finalHtml, { waitUntil: 'networkidle0' })
 
             const pdfBuffer = await page.pdf({
-                format: 'A4',
+                format: 'A3',
                 printBackground: true,
             })
 
