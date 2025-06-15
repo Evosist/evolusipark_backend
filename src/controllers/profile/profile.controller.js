@@ -4,6 +4,7 @@ const argon = require('argon2')
 const dayjs = require('dayjs')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
+const ExcelJS = require('exceljs')
 
 function generateTableRows(data) {
     return data
@@ -129,6 +130,129 @@ module.exports = {
         } catch (err) {
             console.error(err)
             res.status(500).send('Error generating PDF')
+        }
+    },
+    generateExcel: async (req, res) => {
+        try {
+            const data = await user.findAll({
+                include: [
+                    {
+                        model: user,
+                        as: 'added_by_user',
+                        attributes: ['id', 'nama'],
+                    },
+                ],
+            })
+
+            const workbook = new ExcelJS.Workbook()
+            const worksheet = workbook.addWorksheet('Data User')
+
+            const dateStr = new Date().toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+            })
+
+            const headers = [
+                'No.',
+                'Nama',
+                'Jenis Kelamin',
+                'No HP',
+                'Alamat Lengkap',
+                'Level',
+                'Status',
+                'Added',
+            ]
+
+            const lastColLetter = String.fromCharCode(65 + headers.length - 1) // Convert to Excel letter
+
+            const mergeAndStyle = (value, font, rowIdx) => {
+                worksheet.mergeCells(`A${rowIdx}:${lastColLetter}${rowIdx}`)
+                const cellObj = worksheet.getCell(`A${rowIdx}`)
+                cellObj.value = value
+                cellObj.alignment = { horizontal: 'center' }
+                cellObj.font = font
+            }
+
+            // === Judul Atas ===
+            mergeAndStyle('Evolusi Park', { bold: true, size: 12 }, 1)
+            mergeAndStyle(
+                'Developed by PT. Evosist (Evolusi Sistem)',
+                { italic: true, size: 10 },
+                2
+            )
+            mergeAndStyle('Data User', { bold: true, size: 20 }, 3)
+            mergeAndStyle(dateStr, { size: 10 }, 4)
+
+            worksheet.addRow([])
+
+            // === Header Tabel ===
+            const headerRow = worksheet.addRow(headers)
+            headerRow.eachCell((cell) => {
+                cell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'FFFF5B2A' },
+                }
+                cell.font = { bold: true, color: { argb: 'FFFFFFFF' } }
+                cell.border = {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thick' },
+                    right: { style: 'thin' },
+                }
+                cell.alignment = { horizontal: 'center' }
+            })
+
+            // === Data Rows ===
+            data.forEach((item, index) => {
+                const row = worksheet.addRow([
+                    index + 1,
+                    item.nama,
+                    item.jenis_kelamin,
+                    item.no_hp,
+                    item.alamat_lengkap,
+                    item.level_pengguna?.nama || '-',
+                    item.status,
+                    new Date(item.createdAt).toLocaleString('id-ID'),
+                ])
+
+                row.eachCell((cell) => {
+                    cell.border = {
+                        top: { style: 'thin' },
+                        left: { style: 'thin' },
+                        bottom: { style: 'thin' },
+                        right: { style: 'thin' },
+                    }
+                    cell.alignment = { vertical: 'middle' }
+                })
+            })
+
+            // Auto-width kolom
+            worksheet.columns.forEach((col) => {
+                let maxLength = 10
+                col.eachCell({ includeEmpty: true }, (cell) => {
+                    if (cell.value) {
+                        const length = cell.value.toString().length
+                        if (length > maxLength) maxLength = length
+                    }
+                })
+                col.width = maxLength + 2
+            })
+
+            // === Set header response and kirim Excel file ===
+            res.setHeader(
+                'Content-Type',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            )
+            res.setHeader(
+                'Content-Disposition',
+                'attachment; filename=DataUser.xlsx'
+            )
+            await workbook.xlsx.write(res)
+            res.end()
+        } catch (err) {
+            return errorhandler(res, err)
         }
     },
     create: async (req, res) => {
