@@ -3,7 +3,7 @@ const perusahaanController = require('../../controllers/master-data/perusahaan.c
 
 perusahaanRouter.get('/', perusahaanController.getAll)
 perusahaanRouter.get('/pdf', perusahaanController.generatePdf)
-perusahaanRouter.get('/excel', perusahaanController.generatePdf)
+perusahaanRouter.get('/excel', perusahaanController.generateExcel)
 perusahaanRouter.get('/:id', perusahaanController.findOneById)
 perusahaanRouter.post('/', perusahaanController.create)
 perusahaanRouter.patch('/:id', perusahaanController.update)
