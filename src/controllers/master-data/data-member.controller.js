@@ -151,22 +151,17 @@ module.exports = {
     },
     generateExcel: async (req, res) => {
         try {
-            const data = await kendaraan.findAll({
+            const data = await data_member.findAll({
                 include: [
-                    {
-                        model: user,
-                        as: 'user',
-                        attributes: ['id', 'nama'],
-                    },
-                    {
-                        model: tipe_kendaraan,
-                        as: 'tipe_kendaraan',
-                    },
+                    { model: perusahaan, as: 'perusahaan' },
+                    { model: produk_member, as: 'produk_member' },
+                    { model: data_nomor_polisi, as: 'data_nomor_polisi' },
+                    { model: user, as: 'user', attributes: ['id', 'nama'] },
                 ],
             })
 
             const workbook = new ExcelJS.Workbook()
-            const worksheet = workbook.addWorksheet('Data Kendaraan')
+            const worksheet = workbook.addWorksheet('Data Member')
 
             const dateStr = new Date().toLocaleDateString('id-ID', {
                 day: '2-digit',
@@ -228,20 +223,34 @@ module.exports = {
                 cell.alignment = { horizontal: 'center' }
             })
 
+            // Format masa_aktif dari periode
+            const formatPeriode = (periode) => {
+                if (!Array.isArray(periode) || periode.length !== 2) return '-'
+
+                const start = new Date(periode[0].value).toLocaleDateString(
+                    'id-ID'
+                )
+                const end = new Date(periode[1].value).toLocaleDateString(
+                    'id-ID'
+                )
+
+                return `${start} s.d ${end}`
+            }
+
             // === Data Rows ===
             data.forEach((item, index) => {
                 const row = worksheet.addRow([
                     index + 1,
                     item.nama,
                     item.no_hp,
-                    item.perusahaan,
-                    item.akses_tiket,
-                    item.akses_kartu,
+                    item.perusahaan.nama,
+                    item.akses_tiket ? 'Ya' : 'Tidak',
+                    item.akses_kartu ? 'Ya' : 'Tidak',
                     item.no_kartu,
                     item.tgl_input,
-                    item.produk_member,
+                    item.produk_member.nama,
                     item.tarif,
-                    item.masa_aktif,
+                    formatPeriode(item.periode),
                     new Date(item.createdAt).toLocaleString('id-ID'),
                 ])
 
@@ -275,7 +284,7 @@ module.exports = {
             )
             res.setHeader(
                 'Content-Disposition',
-                'attachment; filename=DataKendaraan.xlsx'
+                'attachment; filename=DataMember.xlsx'
             )
             await workbook.xlsx.write(res)
             res.end()
