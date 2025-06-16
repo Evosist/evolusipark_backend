@@ -6,6 +6,14 @@ permasalahanAtauPerbaikanRouter.get(
     permasalahanAtauPerbaikanController.getAll
 )
 permasalahanAtauPerbaikanRouter.get(
+    '/pdf',
+    permasalahanAtauPerbaikanController.generatePdf
+)
+permasalahanAtauPerbaikanRouter.get(
+    '/excel',
+    permasalahanAtauPerbaikanController.generateExcel
+)
+permasalahanAtauPerbaikanRouter.get(
     '/:id',
     permasalahanAtauPerbaikanController.findOneById
 )
