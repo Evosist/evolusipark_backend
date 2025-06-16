@@ -10,6 +10,21 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             // define association here
             pos.belongsTo(models.user, { foreignKey: 'user_id', as: 'user' })
+
+            pos.belongsTo(models.tipe_manless, {
+                foreignKey: 'tipe_manless_id',
+                as: 'tipe_manless',
+            })
+
+            pos.belongsTo(models.printer, {
+                foreignKey: 'nama_printer_id',
+                as: 'printer',
+            })
+
+            pos.belongsTo(models.interface, {
+                foreignKey: 'nama_interface_id',
+                as: 'interface',
+            })
         }
     }
     pos.init(
@@ -17,32 +32,12 @@ module.exports = (sequelize, DataTypes) => {
             kode: DataTypes.STRING,
             keterangan: DataTypes.STRING,
             tipe_pos: DataTypes.ENUM('In', 'Out'),
-            tipe_manless: DataTypes.ENUM(
-                'Loop 1 with Button',
-                'Loop 1 with Button and Feedback',
-                'Feedback with Button',
-                'Button Only'
-            ),
+            tipe_manless_id: DataTypes.INTEGER,
             tipe_kendaraan: DataTypes.ENUM('Mobil', 'Motor', 'All'),
             kamera_1: DataTypes.BOOLEAN,
             kamera_2: DataTypes.BOOLEAN,
-            nama_printer: DataTypes.ENUM(
-                'Epson TM-T81 Receipt',
-                'Epson TM-T82 Receipt',
-                'Epson TM-U220 Receipt',
-                'Epson TM-T88III Receipt',
-                'Epson TM-T88IV Receipt',
-                'Epson TM-T88V Receipt',
-                'Epson TM-T82II Receipt'
-            ),
-            nama_interface: DataTypes.ENUM(
-                'BGI',
-                'TWS',
-                'PAWL',
-                'SMART PARKING',
-                'SER TELINKS',
-                'USB TELINKS'
-            ),
+            nama_printer_id: DataTypes.INTEGER,
+            nama_interface_id: DataTypes.INTEGER,
             com_port: DataTypes.STRING,
             otorisasi: DataTypes.BOOLEAN,
             synchronize: DataTypes.STRING,
