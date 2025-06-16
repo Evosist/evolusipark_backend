@@ -51,7 +51,7 @@ module.exports = {
             })
             return res.json({
                 success: true,
-                message: 'Get all transaksi manual mix successfully',
+                message: 'Get all transaksi tunai successfully',
                 results: {
                     data: rows,
                     totalData: count,
@@ -161,7 +161,7 @@ module.exports = {
 
             return res.json({
                 success: true,
-                message: 'Create transaksi manual mix successfully',
+                message: 'Create transaksi tunai successfully',
                 results: data,
             })
         } catch (err) {
@@ -177,7 +177,7 @@ module.exports = {
             })
             return res.json({
                 success: true,
-                message: 'Get transaksi manual mix successfully',
+                message: 'Get transaksi tunai successfully',
                 results: data,
             })
         } catch (err) {
@@ -193,7 +193,7 @@ module.exports = {
             })
             return res.json({
                 success: true,
-                message: 'Update transaksi manual mix successfully',
+                message: 'Update transaksi tunai successfully',
                 results: data,
             })
         } catch (err) {
@@ -213,7 +213,7 @@ module.exports = {
             )
             return res.json({
                 success: true,
-                message: 'Update transaksi manual mix successfully',
+                message: 'Update transaksi tunai successfully',
                 results: data,
             })
         } catch (err) {
@@ -229,7 +229,7 @@ module.exports = {
             })
             return res.json({
                 success: true,
-                message: 'Delete transaksi manual mix successfully',
+                message: 'Delete transaksi tunai successfully',
                 results: data,
             })
         } catch (err) {

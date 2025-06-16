@@ -1,6 +1,6 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
 const {
-    transaksi_tunai,
+    transaksi_manual,
     pos,
     kendaraan,
     user,
@@ -21,7 +21,7 @@ module.exports = {
             const offset = (page - 1) * limit
             const sortBy = req.query.sortBy || 'id'
             const sortOrder = req.query.sortOrder || 'asc'
-            const { count, rows } = await transaksi_tunai.findAndCountAll({
+            const { count, rows } = await transaksi_manual.findAndCountAll({
                 include: [
                     {
                         model: pos,
@@ -51,7 +51,7 @@ module.exports = {
             })
             return res.json({
                 success: true,
-                message: 'Get all transaksi manual mix successfully',
+                message: 'Get all transaksi manual successfully',
                 results: {
                     data: rows,
                     totalData: count,
@@ -151,7 +151,7 @@ module.exports = {
                 }
             }
 
-            const data = await transaksi_tunai.create({
+            const data = await transaksi_manual.create({
                 ...req.body,
                 parkir: biaya,
                 jumlah_denda_tiket: biayaDendaTiket,
@@ -161,7 +161,7 @@ module.exports = {
 
             return res.json({
                 success: true,
-                message: 'Create transaksi manual mix successfully',
+                message: 'Create transaksi manual successfully',
                 results: data,
             })
         } catch (err) {
@@ -170,14 +170,14 @@ module.exports = {
     },
     findOneById: async (req, res) => {
         try {
-            const data = await transaksi_tunai.findAll({
+            const data = await transaksi_manual.findAll({
                 where: {
                     id: req.params.id,
                 },
             })
             return res.json({
                 success: true,
-                message: 'Get transaksi manual mix successfully',
+                message: 'Get transaksi manual successfully',
                 results: data,
             })
         } catch (err) {
@@ -186,14 +186,14 @@ module.exports = {
     },
     update: async (req, res) => {
         try {
-            const data = await transaksi_tunai.update(req.body, {
+            const data = await transaksi_manual.update(req.body, {
                 where: {
                     id: req.params.id,
                 },
             })
             return res.json({
                 success: true,
-                message: 'Update transaksi manual mix successfully',
+                message: 'Update transaksi manual successfully',
                 results: data,
             })
         } catch (err) {
@@ -202,7 +202,7 @@ module.exports = {
     },
     updateTransaksi: async (req, res) => {
         try {
-            const data = await transaksi_tunai.update(
+            const data = await transaksi_manual.update(
                 { ...req.body, is_active: false },
                 {
                     where: {
@@ -213,7 +213,7 @@ module.exports = {
             )
             return res.json({
                 success: true,
-                message: 'Update transaksi manual mix successfully',
+                message: 'Update transaksi manual successfully',
                 results: data,
             })
         } catch (err) {
@@ -222,14 +222,14 @@ module.exports = {
     },
     delete: async (req, res) => {
         try {
-            const data = await transaksi_tunai.destroy({
+            const data = await transaksi_manual.destroy({
                 where: {
                     id: req.params.id,
                 },
             })
             return res.json({
                 success: true,
-                message: 'Delete transaksi manual mix successfully',
+                message: 'Delete transaksi manual successfully',
                 results: data,
             })
         } catch (err) {
