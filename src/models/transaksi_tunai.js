@@ -57,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
             petugas_id: DataTypes.INTEGER,
             shift_id: DataTypes.INTEGER,
             denda: DataTypes.BOOLEAN,
-            tipe_denda_id: DataTypes.BOOLEAN,
+            tipe_denda_id: DataTypes.INTEGER,
             is_active: DataTypes.BOOLEAN,
             jenis_pembayaran_id: DataTypes.INTEGER,
             parkir: DataTypes.STRING,
