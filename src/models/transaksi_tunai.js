@@ -1,7 +1,7 @@
 'use strict'
 const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
-    class transaksi_manual extends Model {
+    class transaksi_tunai extends Model {
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
@@ -9,33 +9,33 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            transaksi_manual.belongsTo(models.pos, {
+            transaksi_tunai.belongsTo(models.pos, {
                 foreignKey: 'pintu_masuk_id',
                 as: 'pintu_masuk',
             })
 
-            transaksi_manual.belongsTo(models.pos, {
+            transaksi_tunai.belongsTo(models.pos, {
                 foreignKey: 'pintu_keluar_id',
                 as: 'pintu_keluar',
             })
 
-            transaksi_manual.belongsTo(models.kendaraan, {
+            transaksi_tunai.belongsTo(models.kendaraan, {
                 foreignKey: 'kendaraan_id',
                 as: 'kendaraan',
             })
 
-            transaksi_manual.belongsTo(models.user, {
+            transaksi_tunai.belongsTo(models.user, {
                 foreignKey: 'petugas_id',
                 as: 'petugas',
             })
 
-            transaksi_manual.belongsTo(models.shift, {
+            transaksi_tunai.belongsTo(models.shift, {
                 foreignKey: 'shift_id',
                 as: 'shift',
             })
         }
     }
-    transaksi_manual.init(
+    transaksi_tunai.init(
         {
             tanggal_masuk: DataTypes.DATE,
             pintu_masuk_id: DataTypes.INTEGER,
@@ -64,8 +64,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         {
             sequelize,
-            modelName: 'transaksi_manual',
+            modelName: 'transaksi_tunai',
         }
     )
-    return transaksi_manual
+    return transaksi_tunai
 }
