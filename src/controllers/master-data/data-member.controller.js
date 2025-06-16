@@ -524,7 +524,7 @@ module.exports = {
 
             return res.json({
                 success: true,
-                message: 'Create data member successfully',
+                message: 'Update data member successfully',
                 results: { data, data_nomor_polisi: nomorPolisiData },
             })
         } catch (err) {
