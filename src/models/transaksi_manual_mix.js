@@ -61,6 +61,7 @@ module.exports = (sequelize, DataTypes) => {
                 validate: { min: 0 },
             },
             interval: DataTypes.STRING,
+            keterangan_atau_penjelasan: DataTypes.STRING,
         },
         {
             sequelize,
