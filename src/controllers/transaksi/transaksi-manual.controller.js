@@ -1,6 +1,6 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
 const {
-    transaksi_manual_mix,
+    transaksi_tunai,
     pos,
     kendaraan,
     user,
@@ -21,7 +21,7 @@ module.exports = {
             const offset = (page - 1) * limit
             const sortBy = req.query.sortBy || 'id'
             const sortOrder = req.query.sortOrder || 'asc'
-            const { count, rows } = await transaksi_manual_mix.findAndCountAll({
+            const { count, rows } = await transaksi_tunai.findAndCountAll({
                 include: [
                     {
                         model: pos,
@@ -151,7 +151,7 @@ module.exports = {
                 }
             }
 
-            const data = await transaksi_manual_mix.create({
+            const data = await transaksi_tunai.create({
                 ...req.body,
                 parkir: biaya,
                 jumlah_denda_tiket: biayaDendaTiket,
@@ -170,7 +170,7 @@ module.exports = {
     },
     findOneById: async (req, res) => {
         try {
-            const data = await transaksi_manual_mix.findAll({
+            const data = await transaksi_tunai.findAll({
                 where: {
                     id: req.params.id,
                 },
@@ -186,7 +186,7 @@ module.exports = {
     },
     update: async (req, res) => {
         try {
-            const data = await transaksi_manual_mix.update(req.body, {
+            const data = await transaksi_tunai.update(req.body, {
                 where: {
                     id: req.params.id,
                 },
@@ -202,7 +202,7 @@ module.exports = {
     },
     updateTransaksi: async (req, res) => {
         try {
-            const data = await transaksi_manual_mix.update(
+            const data = await transaksi_tunai.update(
                 { ...req.body, is_active: false },
                 {
                     where: {
@@ -222,7 +222,7 @@ module.exports = {
     },
     delete: async (req, res) => {
         try {
-            const data = await transaksi_manual_mix.destroy({
+            const data = await transaksi_tunai.destroy({
                 where: {
                     id: req.params.id,
                 },
