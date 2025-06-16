@@ -7,6 +7,7 @@ const {
     shift,
     tarif_parkir,
     tarif_denda,
+    payment,
 } = require('../../models/index')
 const dayjs = require('dayjs')
 const relativeTime = require('dayjs/plugin/relativeTime')
@@ -43,6 +44,10 @@ module.exports = {
                         model: user,
                         as: 'petugas',
                         attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: payment,
+                        as: 'jenis_pembayaran',
                     },
                 ],
                 order: [[sortBy, sortOrder]],
@@ -174,6 +179,33 @@ module.exports = {
                 where: {
                     id: req.params.id,
                 },
+                include: [
+                    {
+                        model: pos,
+                        as: 'pintu_masuk',
+                    },
+                    {
+                        model: pos,
+                        as: 'pintu_keluar',
+                    },
+                    {
+                        model: kendaraan,
+                        as: 'kendaraan',
+                    },
+                    {
+                        model: shift,
+                        as: 'shift',
+                    },
+                    {
+                        model: user,
+                        as: 'petugas',
+                        attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: payment,
+                        as: 'jenis_pembayaran',
+                    },
+                ],
             })
             return res.json({
                 success: true,

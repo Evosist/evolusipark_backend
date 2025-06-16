@@ -33,6 +33,11 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'shift_id',
                 as: 'shift',
             })
+
+            transaksi_manual.belongsTo(models.payment, {
+                foreignKey: 'jenis_pembayaran_id',
+                as: 'jenis_pembayaran',
+            })
         }
     }
     transaksi_manual.init(
@@ -48,6 +53,7 @@ module.exports = (sequelize, DataTypes) => {
             shift_id: DataTypes.INTEGER,
             denda: DataTypes.BOOLEAN,
             is_active: DataTypes.BOOLEAN,
+            jenis_pembayaran_id: DataTypes.INTEGER,
             parkir: DataTypes.STRING,
             jumlah_denda_stnk: {
                 type: DataTypes.INTEGER,
