@@ -7,7 +7,6 @@ const {
     riwayat_transaksi_member,
     riwayat_transaksi_kartu_member,
     riwayat_transaksi_ganti_nopol,
-    tipe_kendaraan,
     user,
 } = require('../../models/index')
 const fs = require('fs')
