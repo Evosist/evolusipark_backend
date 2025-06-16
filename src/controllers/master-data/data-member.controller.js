@@ -13,6 +13,7 @@ const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
 const dayjs = require('dayjs')
+const sequelize = require('../../models/index').sequelize
 
 // Utility to fill the HTML template
 function generateTableRows(data) {
@@ -507,27 +508,70 @@ module.exports = {
         }
     },
     update: async (req, res) => {
+        const t = await sequelize.transaction()
         try {
-            const data = await data_member.update(req.body, {
-                where: {
-                    id: req.params.id,
-                },
+            // Ambil data dari req.body dan beri alias untuk menghindari konflik nama
+            const {
+                data_nomor_polisi: dataNomorPolisi,
+                periode,
+                ...memberData
+            } = req.body
+
+            // Ubah periode array menjadi dua field terpisah
+            memberData.periode_awal = periode?.[0] || null
+            memberData.periode_akhir = periode?.[1] || null
+
+            // Update data_member berdasarkan ID
+            const [updatedCount] = await data_member.update(memberData, {
+                where: { id: req.params.id },
+                transaction: t,
             })
 
-            const nomorPolisiData = req.body.data_nomor_polisi.map((item) => ({
-                ...item,
-                data_member_id: data.id,
-            }))
+            if (updatedCount === 0) {
+                await t.rollback()
+                return res.status(404).json({
+                    success: false,
+                    message: 'Data member tidak ditemukan',
+                })
+            }
 
-            await data_nomor_polisi.bulkCreate(nomorPolisiData)
+            // Hapus semua nomor polisi lama yang terkait dengan data_member ini
+            await data_nomor_polisi.destroy({
+                where: { data_member_id: req.params.id },
+                transaction: t,
+            })
+
+            // Tambahkan nomor polisi baru jika ada
+            let nomorPolisiBaru = []
+            if (Array.isArray(dataNomorPolisi)) {
+                nomorPolisiBaru = dataNomorPolisi.map((item) => ({
+                    ...item,
+                    data_member_id: req.params.id,
+                }))
+
+                await data_nomor_polisi.bulkCreate(nomorPolisiBaru, {
+                    transaction: t,
+                })
+            }
+
+            // Commit transaksi jika semua berhasil
+            await t.commit()
 
             return res.json({
                 success: true,
-                message: 'Update data member successfully',
-                results: { data, data_nomor_polisi: nomorPolisiData },
+                message: 'Berhasil update data member',
+                results: {
+                    id: req.params.id,
+                    data_nomor_polisi: nomorPolisiBaru,
+                },
             })
         } catch (err) {
-            return errorhandler(res, err)
+            await t.rollback()
+            return res.status(500).json({
+                success: false,
+                message: 'Gagal update data member',
+                error: err.message,
+            })
         }
     },
     delete: async (req, res) => {
