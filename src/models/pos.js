@@ -16,12 +16,12 @@ module.exports = (sequelize, DataTypes) => {
                 as: 'tipe_manless',
             })
 
-            pos.belongsTo(models.printer, {
+            pos.belongsTo(models.nama_printer, {
                 foreignKey: 'nama_printer_id',
                 as: 'printer',
             })
 
-            pos.belongsTo(models.interface, {
+            pos.belongsTo(models.nama_interface, {
                 foreignKey: 'nama_interface_id',
                 as: 'interface',
             })
