@@ -109,7 +109,7 @@ module.exports = {
             })
 
             const template = fs.readFileSync(
-                'src/templates/master-data/permasalahan-atau-perbaikan.template.html',
+                'src/templates/transaksi/permasalahan-atau-perbaikan.template.html',
                 'utf-8'
             )
             const rowsHtml = generateTableRows(tableData)
