@@ -1,6 +1,12 @@
 const dayjs = require('dayjs')
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { pos, user } = require('../../models/index')
+const {
+    pos,
+    user,
+    tipe_manless,
+    nama_printer,
+    nama_interface,
+} = require('../../models/index')
 const puppeteer = require('puppeteer')
 const fs = require('fs')
 const ExcelJS = require('exceljs')
@@ -47,6 +53,18 @@ module.exports = {
                         as: 'user',
                         attributes: ['id', 'nama'],
                     },
+                    {
+                        model: tipe_manless,
+                        as: 'tipe_manless',
+                    },
+                    {
+                        model: nama_printer,
+                        as: 'printer',
+                    },
+                    {
+                        model: nama_interface,
+                        as: 'interface',
+                    },
                 ],
                 order: [[sortBy, sortOrder]],
                 offset: offset,
@@ -75,6 +93,18 @@ module.exports = {
                         model: user,
                         as: 'user',
                         attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: tipe_manless,
+                        as: 'tipe_manless',
+                    },
+                    {
+                        model: nama_printer,
+                        as: 'printer',
+                    },
+                    {
+                        model: nama_interface,
+                        as: 'interface',
                     },
                 ],
             })
@@ -135,6 +165,18 @@ module.exports = {
                         model: user,
                         as: 'user',
                         attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: tipe_manless,
+                        as: 'tipe_manless',
+                    },
+                    {
+                        model: nama_printer,
+                        as: 'printer',
+                    },
+                    {
+                        model: nama_interface,
+                        as: 'interface',
                     },
                 ],
             })
@@ -279,6 +321,20 @@ module.exports = {
                 where: {
                     id: req.params.id,
                 },
+                include: [
+                    {
+                        model: tipe_manless,
+                        as: 'tipe_manless',
+                    },
+                    {
+                        model: nama_printer,
+                        as: 'printer',
+                    },
+                    {
+                        model: nama_interface,
+                        as: 'interface',
+                    },
+                ],
             })
             return res.json({
                 success: true,
