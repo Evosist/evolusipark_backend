@@ -255,6 +255,7 @@ module.exports = {
             return errorhandler(res, err)
         }
     },
+
     create: async (req, res) => {
         try {
             const { username, password } = req.body
