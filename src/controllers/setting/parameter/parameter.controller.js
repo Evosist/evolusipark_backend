@@ -99,7 +99,7 @@ module.exports = {
             const data = await parameter.findAll()
 
             const workbook = new ExcelJS.Workbook()
-            const worksheet = workbook.addWorksheet('Data User')
+            const worksheet = workbook.addWorksheet('Parameter')
 
             const dateStr = new Date().toLocaleDateString('id-ID', {
                 day: '2-digit',
