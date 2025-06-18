@@ -1,10 +1,25 @@
-const dashboardRouter = require('express').Router()
-const dashboardController = require('../../controllers/dashboard/aktivitas-gerbang-kendaraan.controller')
+const aktivitasGerbangKendaraanRouter = require('express').Router()
+const aktivitasGerbangKendaraanController = require('../../controllers/dashboard/aktivitas-gerbang-kendaraan.controller')
 
-dashboardRouter.get('/', dashboardController.getAll)
-dashboardRouter.get('/:id', dashboardController.findOneById)
-dashboardRouter.post('/', dashboardController.create)
-dashboardRouter.patch('/:id', dashboardController.update)
-dashboardRouter.delete('/:id', dashboardController.delete)
+aktivitasGerbangKendaraanRouter.get(
+    '/',
+    aktivitasGerbangKendaraanController.getAll
+)
+aktivitasGerbangKendaraanRouter.get(
+    '/:id',
+    aktivitasGerbangKendaraanController.findOneById
+)
+aktivitasGerbangKendaraanRouter.post(
+    '/',
+    aktivitasGerbangKendaraanController.create
+)
+aktivitasGerbangKendaraanRouter.patch(
+    '/:id',
+    aktivitasGerbangKendaraanController.update
+)
+aktivitasGerbangKendaraanRouter.delete(
+    '/:id',
+    aktivitasGerbangKendaraanController.delete
+)
 
-module.exports = dashboardRouter
+module.exports = aktivitasGerbangKendaraanRouter
