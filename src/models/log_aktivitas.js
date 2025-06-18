@@ -22,7 +22,11 @@ module.exports = (sequelize, DataTypes) => {
         {
             sequelize,
             modelName: 'log_aktivitas',
+            timestamps: true,
+            createdAt: 'createdAt',
+            updatedAt: 'updatedAt',
         }
     )
+
     return log_aktivitas
 }
