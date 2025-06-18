@@ -74,6 +74,111 @@ module.exports = {
             return errorhandler(res, err)
         }
     },
+    getRiwayatTransaksiGantiNopol: async (req, res) => {
+        try {
+            const limit = parseInt(req.query.limit) || 5
+            const page = parseInt(req.query.page) || 1
+            const offset = (page - 1) * limit
+            const sortBy = req.query.sortBy || 'id'
+            const sortOrder = req.query.sortOrder || 'asc'
+            const { count, rows } =
+                await riwayat_transaksi_ganti_nopol.findAndCountAll({
+                    include: [
+                        {
+                            model: user,
+                            as: 'user',
+                            attributes: ['id', 'nama'],
+                        },
+                    ],
+                    order: [[sortBy, sortOrder]],
+                    offset: offset,
+                    limit: limit,
+                })
+            return res.json({
+                success: true,
+                message: 'Get all riwayat transaksi ganti nopol successfully',
+                results: {
+                    data: rows,
+                    totalData: count,
+                    totalPages: Math.ceil(count / limit),
+                    currentPage: page,
+                    pageSize: limit,
+                },
+            })
+        } catch (err) {
+            return errorhandler(res, err)
+        }
+    },
+    getRiwayatTransaksiKartuMember: async (req, res) => {
+        try {
+            const limit = parseInt(req.query.limit) || 5
+            const page = parseInt(req.query.page) || 1
+            const offset = (page - 1) * limit
+            const sortBy = req.query.sortBy || 'id'
+            const sortOrder = req.query.sortOrder || 'asc'
+            const { count, rows } =
+                await riwayat_transaksi_kartu_member.findAndCountAll({
+                    include: [
+                        {
+                            model: user,
+                            as: 'user',
+                            attributes: ['id', 'nama'],
+                        },
+                    ],
+                    order: [[sortBy, sortOrder]],
+                    offset: offset,
+                    limit: limit,
+                })
+            return res.json({
+                success: true,
+                message: 'Get all riwayat transaksi kartu member successfully',
+                results: {
+                    data: rows,
+                    totalData: count,
+                    totalPages: Math.ceil(count / limit),
+                    currentPage: page,
+                    pageSize: limit,
+                },
+            })
+        } catch (err) {
+            return errorhandler(res, err)
+        }
+    },
+    getRiwayatTransaksiMember: async (req, res) => {
+        try {
+            const limit = parseInt(req.query.limit) || 5
+            const page = parseInt(req.query.page) || 1
+            const offset = (page - 1) * limit
+            const sortBy = req.query.sortBy || 'id'
+            const sortOrder = req.query.sortOrder || 'asc'
+            const { count, rows } =
+                await riwayat_transaksi_member.findAndCountAll({
+                    include: [
+                        {
+                            model: user,
+                            as: 'user',
+                            attributes: ['id', 'nama'],
+                        },
+                    ],
+                    order: [[sortBy, sortOrder]],
+                    offset: offset,
+                    limit: limit,
+                })
+            return res.json({
+                success: true,
+                message: 'Get all riwayat transaksi member successfully',
+                results: {
+                    data: rows,
+                    totalData: count,
+                    totalPages: Math.ceil(count / limit),
+                    currentPage: page,
+                    pageSize: limit,
+                },
+            })
+        } catch (err) {
+            return errorhandler(res, err)
+        }
+    },
     generatePdf: async (req, res) => {
         try {
             const data = await data_member.findAll({
