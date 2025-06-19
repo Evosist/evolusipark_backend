@@ -124,6 +124,10 @@ module.exports = {
                             as: 'user',
                             attributes: ['id', 'nama'],
                         },
+                        {
+                            model: produk_member,
+                            as: 'produk_member',
+                        },
                     ],
                     order: [[sortBy, sortOrder]],
                     offset: offset,
