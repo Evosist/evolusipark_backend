@@ -14,6 +14,7 @@ const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
 const dayjs = require('dayjs')
 const sequelize = require('../../models/index').sequelize
+const Op = require('sequelize').Op
 
 // Utility to fill the HTML template
 function generateTableRows(data) {
@@ -192,6 +193,14 @@ module.exports = {
                     { model: data_nomor_polisi, as: 'data_nomor_polisi' },
                     { model: user, as: 'user', attributes: ['id', 'nama'] },
                 ],
+                where: {
+                    createdAt: {
+                        [Op.between]: [
+                            req.query.start_date,
+                            req.query.end_date,
+                        ],
+                    },
+                },
             })
 
             const tableData = data.map((item, index) => {
