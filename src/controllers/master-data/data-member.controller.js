@@ -276,6 +276,14 @@ module.exports = {
                     { model: data_nomor_polisi, as: 'data_nomor_polisi' },
                     { model: user, as: 'user', attributes: ['id', 'nama'] },
                 ],
+                where: {
+                    createdAt: {
+                        [Op.between]: [
+                            req.query.start_date,
+                            req.query.end_date,
+                        ],
+                    },
+                },
             })
 
             const workbook = new ExcelJS.Workbook()
