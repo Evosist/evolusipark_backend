@@ -13,16 +13,16 @@ function generateTableRows(data) {
             (item) => `
     <tr>
       <td>${item.no}</td>
-      <td>${item.nama_operator}</td>
-      <td>${item.email_operator}</td>
-      <td>${item.no_telp_operator}</td>
-      <td>${item.no_fax_operator}</td>
-      <td>${item.alamat_operator}</td>
-      <td>${item.nama_lokasi}</td>
-      <td>${item.email_lokasi}</td>
-      <td>${item.no_telp_lokasi}</td>
-      <td>${item.no_fax_lokasi}</td>
-      <td>${item.alamat_lokasi}</td>
+      <td>${item.kendaraan}</td>
+      <td>${item.grace_period}</td>
+      <td>${item.tarif_grace_period}</td>
+      <td>${item.rotasi_pertama}</td>
+      <td>${item.tarif_rotasi_pertama}</td>
+      <td>${item.rotasi_kedua}</td>
+      <td>${item.tarif_rotasi_kedua}</td>
+      <td>${item.rotasi_ketiga}</td>
+      <td>${item.tarif_rotasi_ketiga}</td>
+      <td>${item.tarif_maksimal}</td>
       <td>${item.created}</td>
       <td>${item.updated}</td>
     </tr>
@@ -67,7 +67,7 @@ module.exports = {
     },
     generatePdf: async (req, res) => {
         try {
-            const data = await global_setting.findAll({
+            const data = await tarif_parkir.findAll({
                 where: {
                     createdAt: {
                         [Op.between]: [
@@ -80,22 +80,22 @@ module.exports = {
 
             const tableData = data.map((item, index) => ({
                 no: index + 1,
-                nama_operator: item.nama_operator,
-                email_operator: item.email_operator,
-                no_telp_operator: item.no_telp_operator,
-                no_fax_operator: item.no_fax_operator,
-                alamat_operator: item.alamat_operator,
-                nama_lokasi: item.nama_lokasi,
-                email_lokasi: item.email_lokasi,
-                no_telp_lokasi: item.no_telp_lokasi,
-                no_fax_lokasi: item.no_fax_lokasi,
-                alamat_lokasi: item.alamat_lokasi,
+                kendaraan: item.kendaraan.nama,
+                grace_period: item.grace_period,
+                tarif_grace_period: item.tarif_grace_period,
+                rotasi_pertama: item.rotasi_pertama,
+                tarif_rotasi_pertama: item.tarif_rotasi_pertama,
+                rotasi_kedua: item.rotasi_kedua,
+                tarif_rotasi_kedua: item.tarif_rotasi_kedua,
+                rotasi_ketiga: item.rotasi_ketiga,
+                tarif_rotasi_ketiga: item.tarif_rotasi_ketiga,
+                tarif_maksimal: item.tarif_maksimal,
                 created: dayjs(item.createdAt).format('DD-MM-YYYY'),
                 updated: dayjs(item.updatedAt).format('DD-MM-YYYY'),
             }))
 
             const template = fs.readFileSync(
-                'src/templates/setting/global-settings.template.html',
+                'src/templates/setting/tarif-parkir.template.html',
                 'utf-8'
             )
             const rowsHtml = generateTableRows(tableData)
@@ -126,7 +126,7 @@ module.exports = {
     },
     generateExcel: async (req, res) => {
         try {
-            const data = await global_setting.findAll({
+            const data = await tarif_parkir.findAll({
                 where: {
                     createdAt: {
                         [Op.between]: [
@@ -138,7 +138,7 @@ module.exports = {
             })
 
             const workbook = new ExcelJS.Workbook()
-            const worksheet = workbook.addWorksheet('Data Global Settings')
+            const worksheet = workbook.addWorksheet('Data Tarif Parkir')
 
             const dateStr = new Date().toLocaleDateString('id-ID', {
                 day: '2-digit',
@@ -148,16 +148,16 @@ module.exports = {
 
             const headers = [
                 'No.',
-                'Nama Operator',
-                'Email Operator',
-                'No Telp Operator',
-                'No Fax Operator',
-                'Alamat Operator',
-                'Nama Lokasi',
-                'Email Lokasi',
-                'No Telp Lokasi',
-                'No Fax Lokasi',
-                'Alamat Lokasi',
+                'Kendaraan',
+                'Grace Period',
+                'Tarif Grace Period',
+                'Rotasi Pertama',
+                'Tarif Rotasi Pertama',
+                'Rotasi Kedua',
+                'Tarif Rotasi Kedua',
+                'Rotasi Ketiga',
+                'Tarif Rotasi Ketiga',
+                'Tarif Maksimal',
                 'Status',
                 'Added',
             ]
