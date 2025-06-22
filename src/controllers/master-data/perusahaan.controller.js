@@ -4,6 +4,7 @@ const { perusahaan, user } = require('../../models/index')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
+const Op = require('sequelize').Op
 
 // Utility to fill the HTML template
 function generateTableRows(data) {
@@ -82,6 +83,14 @@ module.exports = {
                         attributes: ['id', 'nama'],
                     },
                 ],
+                where: {
+                    createdAt: {
+                        [Op.between]: [
+                            req.query.start_date,
+                            req.query.end_date,
+                        ],
+                    },
+                },
             })
 
             const tableData = data.map((item, index) => ({
@@ -134,6 +143,14 @@ module.exports = {
                         attributes: ['id', 'nama'],
                     },
                 ],
+                where: {
+                    createdAt: {
+                        [Op.between]: [
+                            req.query.start_date,
+                            req.query.end_date,
+                        ],
+                    },
+                },
             })
 
             const workbook = new ExcelJS.Workbook()

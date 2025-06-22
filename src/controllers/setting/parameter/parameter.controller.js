@@ -3,6 +3,7 @@ const { parameter } = require('../../../models/index')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
+const Op = require('sequelize').Op
 
 function generateTableRows(data) {
     return data
@@ -51,7 +52,16 @@ module.exports = {
     },
     generatePdf: async (req, res) => {
         try {
-            const data = await parameter.findAll()
+            const data = await parameter.findAll({
+                where: {
+                    createdAt: {
+                        [Op.between]: [
+                            req.query.start_date,
+                            req.query.end_date,
+                        ],
+                    },
+                },
+            })
 
             const tableData = data.map((item, index) => {
                 return {
@@ -96,7 +106,16 @@ module.exports = {
     },
     generateExcel: async (req, res) => {
         try {
-            const data = await parameter.findAll()
+            const data = await parameter.findAll({
+                where: {
+                    createdAt: {
+                        [Op.between]: [
+                            req.query.start_date,
+                            req.query.end_date,
+                        ],
+                    },
+                },
+            })
 
             const workbook = new ExcelJS.Workbook()
             const worksheet = workbook.addWorksheet('Parameter')

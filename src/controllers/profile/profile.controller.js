@@ -5,6 +5,7 @@ const dayjs = require('dayjs')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
+const Op = require('sequelize').Op
 
 function generateTableRows(data) {
     return data
@@ -85,10 +86,17 @@ module.exports = {
                         attributes: ['id', 'nama'],
                     },
                 ],
+                where: {
+                    createdAt: {
+                        [Op.between]: [
+                            req.query.start_date,
+                            req.query.end_date,
+                        ],
+                    },
+                },
             })
 
             const tableData = data.map((item, index) => {
-                console.log(item)
                 return {
                     no: index + 1,
                     nama: item.nama,
@@ -142,6 +150,14 @@ module.exports = {
                         attributes: ['id', 'nama'],
                     },
                 ],
+                where: {
+                    createdAt: {
+                        [Op.between]: [
+                            req.query.start_date,
+                            req.query.end_date,
+                        ],
+                    },
+                },
             })
 
             const workbook = new ExcelJS.Workbook()

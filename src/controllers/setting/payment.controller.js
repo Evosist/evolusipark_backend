@@ -4,6 +4,7 @@ const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
 const dayjs = require('dayjs')
+const Op = require('sequelize').Op
 
 // Utility to fill the HTML template
 function generateTableRows(data) {
@@ -52,7 +53,16 @@ module.exports = {
     },
     generatePdf: async (req, res) => {
         try {
-            const data = await payment.findAll()
+            const data = await payment.findAll({
+                where: {
+                    createdAt: {
+                        [Op.between]: [
+                            req.query.start_date,
+                            req.query.end_date,
+                        ],
+                    },
+                },
+            })
 
             const tableData = data.map((item, index) => ({
                 no: index + 1,
@@ -94,7 +104,16 @@ module.exports = {
     },
     generateExcel: async (req, res) => {
         try {
-            const data = await payment.findAll()
+            const data = await payment.findAll({
+                where: {
+                    createdAt: {
+                        [Op.between]: [
+                            req.query.start_date,
+                            req.query.end_date,
+                        ],
+                    },
+                },
+            })
 
             const workbook = new ExcelJS.Workbook()
             const worksheet = workbook.addWorksheet('Data Payment')

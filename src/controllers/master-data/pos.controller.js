@@ -10,6 +10,7 @@ const {
 const puppeteer = require('puppeteer')
 const fs = require('fs')
 const ExcelJS = require('exceljs')
+const Op = require('sequelize').Op
 
 // Utility to fill the HTML template
 function generateTableRows(data) {
@@ -107,6 +108,14 @@ module.exports = {
                         as: 'interface',
                     },
                 ],
+                where: {
+                    createdAt: {
+                        [Op.between]: [
+                            req.query.start_date,
+                            req.query.end_date,
+                        ],
+                    },
+                },
             })
 
             const tableData = data.map((item, index) => ({
@@ -179,6 +188,14 @@ module.exports = {
                         as: 'interface',
                     },
                 ],
+                where: {
+                    createdAt: {
+                        [Op.between]: [
+                            req.query.start_date,
+                            req.query.end_date,
+                        ],
+                    },
+                },
             })
 
             const workbook = new ExcelJS.Workbook()
