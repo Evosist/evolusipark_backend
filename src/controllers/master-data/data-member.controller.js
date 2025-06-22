@@ -24,12 +24,12 @@ function generateTableRows(data) {
       <td>${item.no}</td>
       <td>${item.nama}</td>
       <td>${item.no_hp}</td>
-      <td>${item.perusahaan.nama}</td>
+      <td>${item.perusahaan}</td>
       <td>${item.akses_tiket}</td>
       <td>${item.akses_kartu}</td>
       <td>${item.no_kartu}</td>
       <td>${item.tgl_input}</td>
-      <td>${item.produk_member.nama}</td>
+      <td>${item.produk_member}</td>
       <td>${item.tarif}</td>
       <td>${item.masa_aktif}</td>
       <td>${item.created}</td>
