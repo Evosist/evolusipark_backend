@@ -67,6 +67,25 @@ module.exports = {
             return errorhandler(res, err)
         }
     },
+    updateNama: async (req, res) => {
+        try {
+            const data = await level_pengguna.update(
+                { nama: req.body.nama, perusahaan_id: req.body.perusahaan_id },
+                {
+                    where: {
+                        id: req.params.id,
+                    },
+                }
+            )
+            return res.json({
+                success: true,
+                message: 'Update nama level pengguna successfully',
+                results: data,
+            })
+        } catch (err) {
+            return errorhandler(res, err)
+        }
+    },
     update: async (req, res) => {
         try {
             const data = await level_pengguna.update(

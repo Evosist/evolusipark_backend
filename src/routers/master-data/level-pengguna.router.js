@@ -4,6 +4,7 @@ const levelPenggunaController = require('../../controllers/master-data/level-pen
 levelPenggunaRouter.get('/', levelPenggunaController.getAll)
 levelPenggunaRouter.get('/:id', levelPenggunaController.findOneById)
 levelPenggunaRouter.post('/', levelPenggunaController.create)
+levelPenggunaRouter.patch('/nama/:id', levelPenggunaController.updateNama)
 levelPenggunaRouter.patch('/:id', levelPenggunaController.update)
 levelPenggunaRouter.delete('/:id', levelPenggunaController.delete)
 
