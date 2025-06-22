@@ -205,16 +205,16 @@ module.exports = {
             data.forEach((item, index) => {
                 const row = worksheet.addRow([
                     index + 1,
-                    item.nama_operator,
-                    item.email_operator,
-                    item.no_telp_operator,
-                    item.no_fax_operator,
-                    item.alamat_operator,
-                    item.nama_lokasi,
-                    item.email_lokasi,
-                    item.no_telp_lokasi,
-                    item.no_fax_lokasi,
-                    item.alamat_lokasi,
+                    item.kendaraan,
+                    item.grace_period,
+                    item.tarif_grace_period,
+                    item.rotasi_pertama,
+                    item.tarif_rotasi_pertama,
+                    item.rotasi_kedua,
+                    item.tarif_rotasi_kedua,
+                    item.rotasi_ketiga,
+                    item.tarif_rotasi_ketiga,
+                    item.tarif_maksimal,
 
                     new Date(item.createdAt).toLocaleString('id-ID'),
                 ])
@@ -249,7 +249,7 @@ module.exports = {
             )
             res.setHeader(
                 'Content-Disposition',
-                'attachment; filename=DataGlobalSettings.xlsx'
+                'attachment; filename=DataTarifParkir.xlsx'
             )
             await workbook.xlsx.write(res)
             res.end()
