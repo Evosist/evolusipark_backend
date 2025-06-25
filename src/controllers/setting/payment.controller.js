@@ -53,13 +53,15 @@ module.exports = {
     },
     generatePdf: async (req, res) => {
         try {
+            const startDate = new Date(req.query.start_date)
+            const endDate = new Date(req.query.end_date)
+
+            endDate.setHours(23, 59, 59, 999)
+
             const data = await payment.findAll({
                 where: {
                     createdAt: {
-                        [Op.between]: [
-                            req.query.start_date,
-                            req.query.end_date,
-                        ],
+                        [Op.between]: [startDate, endDate],
                     },
                 },
             })
