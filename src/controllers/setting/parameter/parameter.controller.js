@@ -4,6 +4,7 @@ const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
 const Op = require('sequelize').Op
+const dayjs = require('dayjs')
 
 function generateTableRows(data) {
     return data
@@ -77,7 +78,7 @@ module.exports = {
             })
 
             const template = fs.readFileSync(
-                'src/templates/master-data/parameter.template.html',
+                'src/templates/setting/parameter.template.html',
                 'utf-8'
             )
             const rowsHtml = generateTableRows(tableData)
