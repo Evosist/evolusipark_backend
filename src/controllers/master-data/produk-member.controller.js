@@ -165,7 +165,10 @@ module.exports = {
             )
 
             const rowsHtml = generateTableRows(tableData)
-            const finalHtml = template.replace('{{rows}}', rowsHtml)
+            const downloadDate = dayjs().format('DD-MM-YYYY HH:mm')
+            const finalHtml = template
+                .replace('{{rows}}', rowsHtml)
+                .replace('{{date}}', downloadDate)
 
             const browser = await puppeteer.launch()
             const page = await browser.newPage()

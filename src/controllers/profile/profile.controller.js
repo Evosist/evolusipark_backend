@@ -114,8 +114,11 @@ module.exports = {
                 'src/templates/master-data/data-member.template.html',
                 'utf-8'
             )
+            const downloadDate = dayjs().format('DD-MM-YYYY HH:mm')
             const rowsHtml = generateTableRows(tableData)
-            const finalHtml = template.replace('{{rows}}', rowsHtml)
+            const finalHtml = template
+                .replace('{{rows}}', rowsHtml)
+                .replace('{{date}}', downloadDate)
 
             const browser = await puppeteer.launch()
             const page = await browser.newPage()
