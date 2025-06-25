@@ -118,23 +118,25 @@ module.exports = {
                 },
             })
 
-            const tableData = data.map((item, index) => ({
-                no: index + 1,
-                kode: item.kode,
-                keterangan: item.keterangan,
-                tipe_pos: item.tipe_pos,
-                tipe_manless: item.tipe_manless,
-                tipe_kendaraan: item.tipe_kendaraan,
-                kamera_1: item.kamera_1,
-                kamera_2: item.kamera_2,
-                nama_printer: item.nama_printer,
-                nama_interface: item.nama_interface,
-                com_port: item.com_port,
-                otorisasi: item.otorisasi,
-                synchronize: item.synchronize,
-                created: dayjs(item.createdAt).format('DD-MM-YYYY'),
-                updated: dayjs(item.updatedAt).format('DD-MM-YYYY'),
-            }))
+            const tableData = data.map((item, index) => {
+                return {
+                    no: index + 1,
+                    kode: item.kode,
+                    keterangan: item.keterangan,
+                    tipe_pos: item.tipe_pos,
+                    tipe_manless: item.tipe_manless.tipe_manless,
+                    tipe_kendaraan: item.tipe_kendaraan,
+                    kamera_1: item.kamera_1 === true ? 'Ya' : 'Tidak',
+                    kamera_2: item.kamera_2 === true ? 'Ya' : 'Tidak',
+                    nama_printer: item.printer.nama_printer,
+                    nama_interface: item.interface.nama_interface,
+                    com_port: item.com_port,
+                    otorisasi: item.otorisasi === true ? 'Ya' : 'Tidak',
+                    synchronize: item.synchronize,
+                    created: dayjs(item.createdAt).format('DD-MM-YYYY'),
+                    updated: dayjs(item.updatedAt).format('DD-MM-YYYY'),
+                }
+            })
 
             const template = fs.readFileSync(
                 'src/templates/master-data/pos.template.html',
