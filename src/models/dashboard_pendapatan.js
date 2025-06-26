@@ -13,7 +13,12 @@ module.exports = (sequelize, DataTypes) => {
     }
     dashboard_pendapatan.init(
         {
-            periode: DataTypes.ENUM,
+            periode: DataTypes.ENUM(
+                'hari_ini',
+                'minggu_ini',
+                'bulan_ini',
+                'tahun_ini'
+            ),
             tanggal: DataTypes.DATE,
             pendapatan: DataTypes.INTEGER,
             jumlah_kendaraan: DataTypes.INTEGER,
