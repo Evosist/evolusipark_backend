@@ -9,22 +9,22 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            data_kendaraan_keluar.belongsTo(models.kendaraan, {
+            data_kendaraan_masuk.belongsTo(models.kendaraan, {
                 foreignKey: 'jenis_kendaraan_id',
                 as: 'kendaraan',
             })
 
-            data_kendaraan_keluar.belongsTo(models.pos, {
+            data_kendaraan_masuk.belongsTo(models.pos, {
                 foreignKey: 'pintu_masuk_id',
                 as: 'pintu_masuk',
             })
 
-            data_kendaraan_keluar.belongsTo(models.pos, {
+            data_kendaraan_masuk.belongsTo(models.pos, {
                 foreignKey: 'pintu_keluar_id',
                 as: 'pintu_keluar',
             })
 
-            data_kendaraan_keluar.belongsTo(models.perusahaan, {
+            data_kendaraan_masuk.belongsTo(models.perusahaan, {
                 foreignKey: 'asal_perusahaan_id',
                 as: 'perusahaan',
             })

@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
                 models.pos,
                 {
                     foreignKey: 'pos_id',
-                    as: 'pos_id',
+                    as: 'pos',
                 }
             )
 

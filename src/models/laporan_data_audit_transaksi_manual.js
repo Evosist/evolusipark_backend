@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
             // define association here
             laporan_data_audit_transaksi_manual.belongsTo(models.pos, {
                 foreignKey: 'pos_id',
-                as: 'pos_id',
+                as: 'pos',
             })
 
             laporan_data_audit_transaksi_manual.belongsTo(models.user, {

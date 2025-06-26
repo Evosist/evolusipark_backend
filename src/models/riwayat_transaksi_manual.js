@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
                 as: 'pintu_keluar',
             })
 
-            riwayat_transaksi_manual.belongsTo(models.jenis_kendaraan, {
+            riwayat_transaksi_manual.belongsTo(models.kendaraan, {
                 foreignKey: 'jenis_kendaraan_id',
                 as: 'jenis_kendaraan',
             })
