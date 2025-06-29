@@ -243,6 +243,43 @@ module.exports = {
                     },
                 }
             )
+
+            const dataTransaksi = await transaksi_manual.findOne({
+                include: [
+                    {
+                        model: pos,
+                        as: 'pintu_masuk',
+                    },
+                    {
+                        model: pos,
+                        as: 'pintu_keluar',
+                    },
+                    {
+                        model: kendaraan,
+                        as: 'kendaraan',
+                    },
+                    {
+                        model: shift,
+                        as: 'shift',
+                    },
+                    {
+                        model: user,
+                        as: 'petugas',
+                        attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: payment,
+                        as: 'jenis_pembayaran',
+                    },
+                ],
+                where: {
+                    no_tiket_atau_tiket_manual:
+                        req.query.no_tiket_atau_tiket_manual,
+                },
+            })
+
+            console.log(dataTransaksi)
+
             return res.json({
                 success: true,
                 message: 'Update transaksi manual successfully',
