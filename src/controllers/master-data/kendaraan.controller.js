@@ -136,6 +136,40 @@ module.exports = {
             res.status(500).send('Error generating PDF')
         }
     },
+    getAllKendaraanDataWithoutPagination: async (req, res) => {
+        const startDate = new Date(req.query.start_date)
+        const endDate = new Date(req.query.end_date)
+
+        endDate.setHours(23, 59, 59, 999)
+
+        try {
+            const data = await kendaraan.findAll({
+                include: [
+                    {
+                        model: user,
+                        as: 'user',
+                        attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: tipe_kendaraan,
+                        as: 'tipe_kendaraan',
+                    },
+                ],
+                where: {
+                    createdAt: {
+                        [Op.between]: [startDate, endDate],
+                    },
+                },
+            })
+            return res.json({
+                success: true,
+                message: 'Get all kendaraan successfully',
+                results: data,
+            })
+        } catch (err) {
+            return errorhandler(res, err)
+        }
+    },
     generateExcel: async (req, res) => {
         try {
             const data = await kendaraan.findAll({
