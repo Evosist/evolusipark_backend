@@ -1,37 +1,39 @@
 const { Sequelize } = require('sequelize')
+
 const errorhandler = (res, err) => {
-    console.log(err)
-    if (err?.message?.includes('unauthorized')) {
-        return res.status(401).json({
-            success: false,
-            message: 'unauthorized',
-        })
+    console.error(err)
+
+    const authErrors = {
+        unauthorized: 401,
+        auth_wrong_password: 400,
+        auth_no_email: 404,
+        auth_no_username: 404,
     }
 
-    if (err?.message?.includes('auth_wrong_password')) {
-        return res.status(400).json({
-            success: false,
-            message: 'auth_wrong_password',
-        })
+    for (const key in authErrors) {
+        if (err?.message?.includes(key)) {
+            return res.status(authErrors[key]).json({
+                success: false,
+                message: key,
+            })
+        }
     }
 
-    if (err?.message?.includes('auth_no_email')) {
-        return res.status(404).json({
-            success: false,
-            message: 'auth_no_email',
-        })
-    }
+    if (err instanceof Sequelize.BaseError) {
+        const status = 400
 
-    if (err?.message?.includes('auth_no_username')) {
-        return res.status(404).json({
+        return res.status(status).json({
             success: false,
-            message: 'auth_no_username',
+            message: 'Database error',
+            type: err.name,
+            detail: err.parent?.detail || err.message,
         })
     }
 
     return res.status(500).json({
         success: false,
         message: 'Error: Internal server error',
+        error: err.message,
     })
 }
 
