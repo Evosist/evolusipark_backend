@@ -4,6 +4,10 @@ const transaksiManualMixController = require('../../controllers/transaksi/transa
 transaksiManualRouter.get('/', transaksiManualMixController.getAll)
 transaksiManualRouter.get('/:id', transaksiManualMixController.findOneById)
 transaksiManualRouter.post('/', transaksiManualMixController.create)
+transaksiManualRouter.post(
+    '/laporan',
+    transaksiManualMixController.createLaporan
+)
 transaksiManualRouter.patch(
     '/cancel-transaksi',
     transaksiManualMixController.updateTransaksi

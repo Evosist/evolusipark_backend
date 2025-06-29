@@ -8,6 +8,7 @@ const {
     tarif_parkir,
     tarif_denda,
     payment,
+    laporan_transaksi_batal_laporan,
 } = require('../../models/index')
 const dayjs = require('dayjs')
 const relativeTime = require('dayjs/plugin/relativeTime')
@@ -173,6 +174,28 @@ module.exports = {
             return errorhandler(res, err)
         }
     },
+    createLaporan: async (req, res) => {
+        try {
+            const dataTransaksi = await transaksi_manual.findOne({
+                where: {
+                    no_tiket_atau_tiket_manual:
+                        req.body.no_tiket_atau_tiket_manual,
+                },
+            })
+
+            const data = await laporan_transaksi_batal_laporan.create({
+                ...req.body,
+                no_tiket: dataTransaksi.no_tiket,
+            })
+            return res.json({
+                success: true,
+                message: 'Create laporan transaksi manual successfully',
+                results: data,
+            })
+        } catch (err) {
+            return errorhandler(res, err)
+        }
+    },
     findOneById: async (req, res) => {
         try {
             const data = await transaksi_manual.findAll({
@@ -278,7 +301,15 @@ module.exports = {
                 },
             })
 
-            console.log(dataTransaksi)
+            await laporan_transaksi_batal_laporan.create({
+                no: dataTransaksi.no,
+                no_tiket: req.query.no_tiket_atau_tiket_manual,
+                tanggal_masuk: dataTransaksi.tanggal_masuk,
+                pintu_masuk_id: dataTransaksi.pintu_masuk.keterangan,
+                tanggal_pembatalan: req.body.alasan_pembatalan,
+                alasan_pembatalan: req.body.alasan_pembatalan,
+                user_id: dataTransaksi.user_id,
+            })
 
             return res.json({
                 success: true,
