@@ -1,6 +1,5 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
 const {
-    laporan_data_audit_transaksi_kendaraan_keluar,
     laporan_data_audit_transaksi_manual,
     laporan_data_audit_transaksi_pembatalan_transaksi,
     laporan_data_audit_transaksi_penggunaan_voucher,
@@ -11,19 +10,11 @@ module.exports = {
     getAllAuditTransaksiKendaraanKeluar: async (req, res) => {
         try {
             const [results, metadata] = await sequelize.query(`
-                SELECT 
-                t.nomor_polisi,
-                m.nama,
-                COUNT(*) AS total_keluar,
-                SUM(t.diskon_voucher) AS total_voucher_discount,
-                SUM(t.tarif_bayar) AS total_pembayaran,
-                MAX(t.tanggal) AS tanggal_terakhir_keluar,
-                AVG(t.tarif_bayar) AS rata_tarif_per_keluar
-                FROM transaksi_manuals t
-                LEFT JOIN data_members m
-                ON t.nomor_polisi = m.nomor_polisi
-                GROUP BY t.nomor_polisi, m.nama
-                ORDER BY total_keluar DESC;
+                SELECT t.tanggal_masuk as tanggal,
+                       t.no_tiket_atau_tiket_manual as no_tiket_atau_id_transaksi,
+                       t.nomor_polisi as nopol,
+                       m.nama as nama_member,
+                       
               `)
 
             return res.json({
