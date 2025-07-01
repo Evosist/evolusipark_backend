@@ -5,6 +5,10 @@ aktivitasGerbangKendaraanRouter.get(
     '/',
     aktivitasGerbangKendaraanController.getAll
 )
+aktivitasGerbangKendaraanRouter.post(
+    '/',
+    aktivitasGerbangKendaraanController.create
+)
 aktivitasGerbangKendaraanRouter.get(
     '/pdf',
     aktivitasGerbangKendaraanController.generatePdf

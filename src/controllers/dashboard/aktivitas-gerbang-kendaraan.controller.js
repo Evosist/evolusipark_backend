@@ -73,6 +73,19 @@ module.exports = {
             return errorhandler(res, err)
         }
     },
+    create: async (req, res) => {
+        try {
+            const data = await aktivitas_gerbang_kendaraan.create(req.body)
+
+            return res.json({
+                success: true,
+                message: 'Create aktivitas gerbang kendaraan successfully',
+                results: data,
+            })
+        } catch (err) {
+            return errorhandler(res, err)
+        }
+    },
     generatePdf: async (req, res) => {
         try {
             const startDate = new Date(req.query.start_date)
