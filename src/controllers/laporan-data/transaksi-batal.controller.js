@@ -5,7 +5,7 @@ const {
 } = require('../../models/index')
 
 module.exports = {
-    getAllDataKendaraanIn: async (req, res) => {
+    getAllPembatalanTransaksi: async (req, res) => {
         try {
             const search = req.query.search || ''
             const limit = req.query.limit ? parseInt(req.query.limit) : null
@@ -43,35 +43,6 @@ module.exports = {
                     totalPages: limit ? Math.ceil(count / limit) : 1,
                     currentPage: page || 1,
                     pageSize: limit || count,
-                },
-            })
-        } catch (err) {
-            return errorhandler(res, err)
-        }
-    },
-    getAllDataKendaraanOut: async (req, res) => {
-        try {
-            const limit = parseInt(req.query.limit) || 5
-            const page = parseInt(req.query.page) || 1
-            const offset = (page - 1) * limit
-            const sortBy = req.query.sortBy || 'id'
-            const sortOrder = req.query.sortOrder || 'asc'
-            const { count, rows } = await data_kendaraan_keluar.findAndCountAll(
-                {
-                    order: [[sortBy, sortOrder]],
-                    offset: offset,
-                    limit: limit,
-                }
-            )
-            return res.json({
-                success: true,
-                message: 'Get all data kendaraan keluar successfully',
-                results: {
-                    data: rows,
-                    totalData: count,
-                    totalPages: Math.ceil(count / limit),
-                    currentPage: page,
-                    pageSize: limit,
                 },
             })
         } catch (err) {
