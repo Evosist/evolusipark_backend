@@ -1,10 +1,10 @@
 const kendaraanRouter = require('express').Router()
-const kendaraanController = require('../../controllers/dashboard/aktivitas-gerbang-kendaraan.controller')
+const kendaraanController = require('../../controllers/laporan-data/kendaraan.controller')
 
-kendaraanRouter.get('/', kendaraanController.getAll)
-kendaraanRouter.get('/:id', kendaraanController.findOneById)
-kendaraanRouter.post('/', kendaraanController.create)
-kendaraanRouter.patch('/:id', kendaraanController.update)
-kendaraanRouter.delete('/:id', kendaraanController.delete)
+kendaraanRouter.get('/kendaraan-in', kendaraanController.getAllDataKendaraanIn)
+kendaraanRouter.get(
+    '/kendaraan-out',
+    kendaraanController.getAllDataKendaraanOut
+)
 
 module.exports = kendaraanRouter

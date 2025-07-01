@@ -6,20 +6,12 @@ aktivitasGerbangKendaraanRouter.get(
     aktivitasGerbangKendaraanController.getAll
 )
 aktivitasGerbangKendaraanRouter.get(
-    '/:id',
-    aktivitasGerbangKendaraanController.findOneById
+    '/pdf',
+    aktivitasGerbangKendaraanController.generatePdf
 )
-aktivitasGerbangKendaraanRouter.post(
-    '/',
-    aktivitasGerbangKendaraanController.create
-)
-aktivitasGerbangKendaraanRouter.patch(
-    '/:id',
-    aktivitasGerbangKendaraanController.update
-)
-aktivitasGerbangKendaraanRouter.delete(
-    '/:id',
-    aktivitasGerbangKendaraanController.delete
+aktivitasGerbangKendaraanRouter.get(
+    '/excel',
+    aktivitasGerbangKendaraanController.generateExcel
 )
 
 module.exports = aktivitasGerbangKendaraanRouter

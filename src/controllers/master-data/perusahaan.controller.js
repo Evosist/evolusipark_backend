@@ -4,6 +4,7 @@ const { perusahaan, user } = require('../../models/index')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
+const { error } = require('console')
 const Op = require('sequelize').Op
 
 // Utility to fill the HTML template
@@ -29,12 +30,13 @@ module.exports = {
     getAll: async (req, res) => {
         try {
             const search = req.query.search || ''
-            const limit = parseInt(req.query.limit) || 5
-            const page = parseInt(req.query.page) || 1
-            const offset = (page - 1) * limit
+            const limit = req.query.limit ? parseInt(req.query.limit) : null
+            const page = req.query.page ? parseInt(req.query.page) : null
+            const offset = page && limit ? (page - 1) * limit : null
             const sortBy = req.query.sortBy || 'id'
             const sortOrder = req.query.sortOrder || 'asc'
-            const { count, rows } = await perusahaan.findAndCountAll({
+
+            const options = {
                 include: [
                     {
                         model: user,
@@ -43,18 +45,24 @@ module.exports = {
                     },
                 ],
                 order: [[sortBy, sortOrder]],
-                offset: offset,
-                limit: limit,
-            })
+            }
+
+            if (limit !== null && offset !== null) {
+                options.limit = limit
+                options.offset = offset
+            }
+
+            const { count, rows } = await perusahaan.findAndCountAll(options)
+
             return res.json({
                 success: true,
                 message: 'Get all perusahaan successfully',
                 results: {
                     data: rows,
                     totalData: count,
-                    totalPages: Math.ceil(count / limit),
-                    currentPage: page,
-                    pageSize: limit,
+                    totalPages: limit ? Math.ceil(count / limit) : 1,
+                    currentPage: page || 1,
+                    pageSize: limit || count,
                 },
             })
         } catch (err) {
@@ -260,6 +268,33 @@ module.exports = {
             )
             await workbook.xlsx.write(res)
             res.end()
+        } catch (err) {
+            return errorhandler(res, err)
+        }
+    },
+    getAllPerusahaanDataWithoutPagination: async (req, res) => {
+        try {
+            const startDate = new Date(req.query.start_date)
+            const endDate = new Date(req.query.end_date)
+
+            endDate.setHours(23, 59, 59, 999)
+
+            const data = await perusahaan.findAll({
+                include: [
+                    {
+                        model: user,
+                        as: 'user',
+                        attributes: ['id', 'nama'],
+                    },
+                ],
+                where: {
+                    createdAt: {
+                        [Op.between]: [startDate, endDate],
+                    },
+                },
+            })
+
+            console.log(data)
         } catch (err) {
             return errorhandler(res, err)
         }

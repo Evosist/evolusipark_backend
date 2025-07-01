@@ -1,10 +1,10 @@
 const auditTransaksiRouter = require('express').Router()
-const auditTransaksiController = require('../../controllers/dashboard/aktivitas-gerbang-kendaraan.controller')
+const auditTransaksiController = require('../../controllers//laporan-data/transaksi-batal.controller')
 
-auditTransaksiRouter.get('/', auditTransaksiController.getAll)
-auditTransaksiRouter.get('/:id', auditTransaksiController.findOneById)
-auditTransaksiRouter.post('/', auditTransaksiController.create)
-auditTransaksiRouter.patch('/:id', auditTransaksiController.update)
-auditTransaksiRouter.delete('/:id', auditTransaksiController.delete)
+auditTransaksiRouter.get('/', auditTransaksiController.getAllDataKendaraanIn)
+auditTransaksiRouter.get(
+    '/:id',
+    auditTransaksiController.getAllDataKendaraanOut
+)
 
 module.exports = auditTransaksiRouter

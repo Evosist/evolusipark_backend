@@ -1,10 +1,13 @@
 const settlementCashlessRouter = require('express').Router()
-const settlementCashlessController = require('../../controllers/dashboard/aktivitas-gerbang-kendaraan.controller')
+const settlementCashlessController = require('../../controllers/laporan-data/settlement-cashless.controller')
 
-settlementCashlessRouter.get('/', settlementCashlessController.getAll)
-settlementCashlessRouter.get('/:id', settlementCashlessController.findOneById)
-settlementCashlessRouter.post('/', settlementCashlessController.create)
-settlementCashlessRouter.patch('/:id', settlementCashlessController.update)
-settlementCashlessRouter.delete('/:id', settlementCashlessController.delete)
+settlementCashlessRouter.get(
+    '/',
+    settlementCashlessController.getAllDataKendaraanIn
+)
+settlementCashlessRouter.get(
+    '/:id',
+    settlementCashlessController.getAllDataKendaraanOut
+)
 
 module.exports = settlementCashlessRouter

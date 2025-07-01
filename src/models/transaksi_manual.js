@@ -43,6 +43,11 @@ module.exports = (sequelize, DataTypes) => {
                 as: 'tipe_denda',
                 foreignKey: 'tipe_denda_id',
             })
+
+            transaksi_manual.belongsTo(models.data_voucher, {
+                foreignKey: 'id_data_voucher',
+                as: 'data_voucher',
+            })
         }
     }
     transaksi_manual.init(
@@ -61,6 +66,7 @@ module.exports = (sequelize, DataTypes) => {
             is_active: DataTypes.BOOLEAN,
             jenis_pembayaran_id: DataTypes.INTEGER,
             parkir: DataTypes.STRING,
+            id_data_voucher: DataTypes.INTEGER,
             jumlah_denda_stnk: {
                 type: DataTypes.INTEGER,
                 allowNull: false,

@@ -1,10 +1,13 @@
 const pendapatanParkirRouter = require('express').Router()
-const pendapatanParkirController = require('../../controllers/dashboard/aktivitas-gerbang-kendaraan.controller')
+const pendapatanParkirController = require('../../controllers/laporan-data/pendapatan-parkir.controller')
 
-pendapatanParkirRouter.get('/', pendapatanParkirController.getAll)
-pendapatanParkirRouter.get('/:id', pendapatanParkirController.findOneById)
-pendapatanParkirRouter.post('/', pendapatanParkirController.create)
-pendapatanParkirRouter.patch('/:id', pendapatanParkirController.update)
-pendapatanParkirRouter.delete('/:id', pendapatanParkirController.delete)
+pendapatanParkirRouter.get(
+    '/',
+    pendapatanParkirController.getAllDataKendaraanIn
+)
+pendapatanParkirRouter.get(
+    '/:id',
+    pendapatanParkirController.getAllDataKendaraanOut
+)
 
 module.exports = pendapatanParkirRouter
