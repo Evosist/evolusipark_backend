@@ -44,12 +44,14 @@ function generateTableRows(data) {
 module.exports = {
     getAll: async (req, res) => {
         try {
-            const limit = parseInt(req.query.limit) || 5
-            const page = parseInt(req.query.page) || 1
-            const offset = (page - 1) * limit
+            const search = req.query.search || ''
+            const limit = req.query.limit ? parseInt(req.query.limit) : null
+            const page = req.query.page ? parseInt(req.query.page) : null
+            const offset = page && limit ? (page - 1) * limit : null
             const sortBy = req.query.sortBy || 'id'
             const sortOrder = req.query.sortOrder || 'asc'
-            const { count, rows } = await data_member.findAndCountAll({
+
+            const options = {
                 include: [
                     { model: perusahaan, as: 'perusahaan' },
                     { model: produk_member, as: 'produk_member' },
@@ -57,9 +59,15 @@ module.exports = {
                     { model: user, as: 'user', attributes: ['id', 'nama'] },
                 ],
                 order: [[sortBy, sortOrder]],
-                offset: offset,
-                limit: limit,
-            })
+            }
+
+            if (limit !== null && offset !== null) {
+                options.limit = limit
+                options.offset = offset
+            }
+
+            const { count, rows } = await data_member.findAndCountAll(options)
+
             return res.json({
                 success: true,
                 message: 'Get all data member successfully',
@@ -77,24 +85,32 @@ module.exports = {
     },
     getRiwayatTransaksiGantiNopol: async (req, res) => {
         try {
-            const limit = parseInt(req.query.limit) || 5
-            const page = parseInt(req.query.page) || 1
-            const offset = (page - 1) * limit
+            const search = req.query.search || ''
+            const limit = req.query.limit ? parseInt(req.query.limit) : null
+            const page = req.query.page ? parseInt(req.query.page) : null
+            const offset = page && limit ? (page - 1) * limit : null
             const sortBy = req.query.sortBy || 'id'
             const sortOrder = req.query.sortOrder || 'asc'
+
+            const options = {
+                include: [
+                    {
+                        model: user,
+                        as: 'user',
+                        attributes: ['id', 'nama'],
+                    },
+                ],
+                order: [[sortBy, sortOrder]],
+            }
+
+            if (limit !== null && offset !== null) {
+                options.limit = limit
+                options.offset = offset
+            }
+
             const { count, rows } =
-                await riwayat_transaksi_ganti_nopol.findAndCountAll({
-                    include: [
-                        {
-                            model: user,
-                            as: 'user',
-                            attributes: ['id', 'nama'],
-                        },
-                    ],
-                    order: [[sortBy, sortOrder]],
-                    offset: offset,
-                    limit: limit,
-                })
+                await riwayat_transaksi_ganti_nopol.findAndCountAll(options)
+
             return res.json({
                 success: true,
                 message: 'Get all riwayat transaksi ganti nopol successfully',
@@ -112,24 +128,32 @@ module.exports = {
     },
     getRiwayatTransaksiKartuMember: async (req, res) => {
         try {
-            const limit = parseInt(req.query.limit) || 5
-            const page = parseInt(req.query.page) || 1
-            const offset = (page - 1) * limit
+            const search = req.query.search || ''
+            const limit = req.query.limit ? parseInt(req.query.limit) : null
+            const page = req.query.page ? parseInt(req.query.page) : null
+            const offset = page && limit ? (page - 1) * limit : null
             const sortBy = req.query.sortBy || 'id'
             const sortOrder = req.query.sortOrder || 'asc'
+
+            const options = {
+                include: [
+                    {
+                        model: user,
+                        as: 'user',
+                        attributes: ['id', 'nama'],
+                    },
+                ],
+                order: [[sortBy, sortOrder]],
+            }
+
+            if (limit !== null && offset !== null) {
+                options.limit = limit
+                options.offset = offset
+            }
+
             const { count, rows } =
-                await riwayat_transaksi_kartu_member.findAndCountAll({
-                    include: [
-                        {
-                            model: user,
-                            as: 'user',
-                            attributes: ['id', 'nama'],
-                        },
-                    ],
-                    order: [[sortBy, sortOrder]],
-                    offset: offset,
-                    limit: limit,
-                })
+                await riwayat_transaksi_kartu_member.findAndCountAll(options)
+
             return res.json({
                 success: true,
                 message: 'Get all riwayat transaksi kartu member successfully',
@@ -147,28 +171,32 @@ module.exports = {
     },
     getRiwayatTransaksiMember: async (req, res) => {
         try {
-            const limit = parseInt(req.query.limit) || 5
-            const page = parseInt(req.query.page) || 1
-            const offset = (page - 1) * limit
+            const search = req.query.search || ''
+            const limit = req.query.limit ? parseInt(req.query.limit) : null
+            const page = req.query.page ? parseInt(req.query.page) : null
+            const offset = page && limit ? (page - 1) * limit : null
             const sortBy = req.query.sortBy || 'id'
             const sortOrder = req.query.sortOrder || 'asc'
+
+            const options = {
+                include: [
+                    {
+                        model: user,
+                        as: 'user',
+                        attributes: ['id', 'nama'],
+                    },
+                ],
+                order: [[sortBy, sortOrder]],
+            }
+
+            if (limit !== null && offset !== null) {
+                options.limit = limit
+                options.offset = offset
+            }
+
             const { count, rows } =
-                await riwayat_transaksi_member.findAndCountAll({
-                    include: [
-                        {
-                            model: user,
-                            as: 'user',
-                            attributes: ['id', 'nama'],
-                        },
-                        {
-                            model: produk_member,
-                            as: 'produk_member',
-                        },
-                    ],
-                    order: [[sortBy, sortOrder]],
-                    offset: offset,
-                    limit: limit,
-                })
+                await riwayat_transaksi_member.findAndCountAll(options)
+
             return res.json({
                 success: true,
                 message: 'Get all riwayat transaksi member successfully',
