@@ -1,15 +1,10 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const {
-    laporan_data_audit_transaksi_manual,
-    laporan_data_audit_transaksi_pembatalan_transaksi,
-    laporan_data_audit_transaksi_penggunaan_voucher,
-    sequelize,
-} = require('../../models/index')
+const { sequelize } = require('../../models/index')
 
 module.exports = {
     getAllAuditTransaksiKendaraanKeluar: async (req, res) => {
         try {
-            const [results, metadata] = await sequelize.query(`
+            const [results] = await sequelize.query(`
                 SELECT t.tanggal_masuk as tanggal,
                        t.no_tiket_atau_tiket_manual as no_tiket_atau_id_transaksi,
                        t.nomor_polisi as nopol,
@@ -21,6 +16,7 @@ module.exports = {
                 success: true,
                 message:
                     'Get all audit transaksi kendaraan keluar successfully',
+                results: results,
             })
         } catch (err) {
             return errorhandler(res, err)
@@ -28,44 +24,18 @@ module.exports = {
     },
     getAllAuditTransaksiManual: async (req, res) => {
         try {
-            const search = req.query.search || ''
-            const limit = req.query.limit ? parseInt(req.query.limit) : null
-            const page = req.query.page ? parseInt(req.query.page) : null
-            const offset = page && limit ? (page - 1) * limit : null
-            const sortBy = req.query.sortBy || 'id'
-            const sortOrder = req.query.sortOrder || 'asc'
-
-            const options = {
-                include: [
-                    {
-                        model: user,
-                        as: 'user',
-                        attributes: ['id', 'nama'],
-                    },
-                ],
-                order: [[sortBy, sortOrder]],
-            }
-
-            if (limit !== null && offset !== null) {
-                options.limit = limit
-                options.offset = offset
-            }
-
-            const { count, rows } =
-                await laporan_data_audit_transaksi_manual.findAndCountAll(
-                    options
-                )
+            const [results] = await sequelize.query(`
+                SELECT t.tanggal_masuk as tanggal,
+                       t.no_tiket_atau_tiket_manual as no_tiket_atau_id_transaksi,
+                       t.nomor_polisi as nopol,
+                       m.nama as nama_member,
+                       
+              `)
 
             return res.json({
                 success: true,
                 message: 'Get all audit transaksi manual successfully',
-                results: {
-                    data: rows,
-                    totalData: count,
-                    totalPages: limit ? Math.ceil(count / limit) : 1,
-                    currentPage: page || 1,
-                    pageSize: limit || count,
-                },
+                results: results,
             })
         } catch (err) {
             return errorhandler(res, err)
@@ -73,45 +43,18 @@ module.exports = {
     },
     getAllAuditTransaksiPenggunaanVoucher: async (req, res) => {
         try {
-            const search = req.query.search || ''
-            const limit = req.query.limit ? parseInt(req.query.limit) : null
-            const page = req.query.page ? parseInt(req.query.page) : null
-            const offset = page && limit ? (page - 1) * limit : null
-            const sortBy = req.query.sortBy || 'id'
-            const sortOrder = req.query.sortOrder || 'asc'
-
-            const options = {
-                include: [
-                    {
-                        model: user,
-                        as: 'user',
-                        attributes: ['id', 'nama'],
-                    },
-                ],
-                order: [[sortBy, sortOrder]],
-            }
-
-            if (limit !== null && offset !== null) {
-                options.limit = limit
-                options.offset = offset
-            }
-
-            const { count, rows } =
-                await laporan_data_audit_transaksi_penggunaan_voucher.findAndCountAll(
-                    options
-                )
+            const [results] = await sequelize.query(`
+                SELECT t.tanggal_masuk as tanggal,
+                       t.no_tiket_atau_tiket_manual as no_tiket_atau_id_transaksi,
+                       t.nomor_polisi as nopol,
+                       m.nama as nama_member,
+                       
+              `)
 
             return res.json({
                 success: true,
-                message:
-                    'Get all audit transaksi penggunaan voucher successfully',
-                results: {
-                    data: rows,
-                    totalData: count,
-                    totalPages: limit ? Math.ceil(count / limit) : 1,
-                    currentPage: page || 1,
-                    pageSize: limit || count,
-                },
+                message: 'Get all audit transaksi manual successfully',
+                results: results,
             })
         } catch (err) {
             return errorhandler(res, err)
@@ -119,44 +62,18 @@ module.exports = {
     },
     getAllAuditPembatalanTransaksi: async (req, res) => {
         try {
-            const search = req.query.search || ''
-            const limit = req.query.limit ? parseInt(req.query.limit) : null
-            const page = req.query.page ? parseInt(req.query.page) : null
-            const offset = page && limit ? (page - 1) * limit : null
-            const sortBy = req.query.sortBy || 'id'
-            const sortOrder = req.query.sortOrder || 'asc'
-
-            const options = {
-                include: [
-                    {
-                        model: user,
-                        as: 'user',
-                        attributes: ['id', 'nama'],
-                    },
-                ],
-                order: [[sortBy, sortOrder]],
-            }
-
-            if (limit !== null && offset !== null) {
-                options.limit = limit
-                options.offset = offset
-            }
-
-            const { count, rows } =
-                await laporan_data_audit_transaksi_pembatalan_transaksi.findAndCountAll(
-                    options
-                )
+            const [results] = await sequelize.query(`
+                SELECT t.tanggal_masuk as tanggal,
+                       t.no_tiket_atau_tiket_manual as no_tiket_atau_id_transaksi,
+                       t.nomor_polisi as nopol,
+                       m.nama as nama_member,
+                       
+              `)
 
             return res.json({
                 success: true,
-                message: 'Get all audit pembatalan transaksi successfully',
-                results: {
-                    data: rows,
-                    totalData: count,
-                    totalPages: Math.ceil(count / limit),
-                    currentPage: page,
-                    pageSize: limit,
-                },
+                message: 'Get all audit transaksi manual successfully',
+                results: results,
             })
         } catch (err) {
             return errorhandler(res, err)
