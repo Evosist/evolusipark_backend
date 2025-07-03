@@ -18,12 +18,14 @@ dayjs.extend(relativeTime)
 module.exports = {
     getAll: async (req, res) => {
         try {
-            const limit = parseInt(req.query.limit) || 5
-            const page = parseInt(req.query.page) || 1
-            const offset = (page - 1) * limit
+            const search = req.query.search || ''
+            const limit = req.query.limit ? parseInt(req.query.limit) : null
+            const page = req.query.page ? parseInt(req.query.page) : null
+            const offset = page && limit ? (page - 1) * limit : null
             const sortBy = req.query.sortBy || 'id'
             const sortOrder = req.query.sortOrder || 'asc'
-            const { count, rows } = await transaksi_manual.findAndCountAll({
+
+            const options = {
                 include: [
                     {
                         model: pos,
@@ -52,9 +54,17 @@ module.exports = {
                     },
                 ],
                 order: [[sortBy, sortOrder]],
-                offset: offset,
-                limit: limit,
-            })
+            }
+
+            if (limit !== null && offset !== null) {
+                options.limit = limit
+                options.offset = offset
+            }
+
+            const { count, rows } = await transaksi_manual.findAndCountAll(
+                options
+            )
+
             return res.json({
                 success: true,
                 message: 'Get all transaksi manual successfully',
