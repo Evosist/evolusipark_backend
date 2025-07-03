@@ -40,13 +40,6 @@ module.exports = {
             const sortOrder = req.query.sortOrder || 'asc'
 
             const options = {
-                include: [
-                    {
-                        model: user,
-                        as: 'user',
-                        attributes: ['id', 'nama'],
-                    },
-                ],
                 order: [[sortBy, sortOrder]],
             }
 
