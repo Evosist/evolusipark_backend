@@ -65,17 +65,17 @@ module.exports = {
             const [results] = await sequelize.query(
                 `
                 SELECT
-                ROW_NUMBER() OVER (ORDER BY tgl_masuk) AS "No",
-                trx.no_tiket AS "NoTiket",
-                TO_CHAR(trx.tgl_masuk, 'YYYY-MM-DD HH24:MI') AS "TanggalMasuk",
-                pos.kode AS "PintuMasuk",
-                CASE WHEN dm.id IS NOT NULL THEN 'Ya' ELSE 'Tidak' END AS "IsMember",
-                CONCAT(ROUND(trx.durasi_jam), ' Jam') AS "Interval",
+                ROW_NUMBER() OVER (ORDER BY tgl_masuk) AS "no",
+                trx.no_tiket AS "no_tiket",
+                TO_CHAR(trx.tgl_masuk, 'YYYY-MM-DD HH24:MI') AS "tanggal_masuk",
+                pos.kode AS "pintu_masuk",
+                CASE WHEN dm.id IS NOT NULL THEN 'Ya' ELSE 'Tidak' END AS "is_member",
+                CONCAT(ROUND(trx.durasi_jam), ' Jam') AS "interval",
                 COALESCE(
                   TO_CHAR(trx.tgl_keluar, 'YYYY-MM-DD HH24:MI'),
                   'Masih di dalam'
-                ) AS "TanggalKeluar",
-                CONCAT('Melebihi ', ROUND(trx.durasi_jam - 6), ' Jam') AS "DurasiOvernight"
+                ) AS "tanggal_keluar",
+                CONCAT('Melebihi ', ROUND(trx.durasi_jam - 6), ' Jam') AS "durasi_overnight"
                 FROM (
                   SELECT 
                     t.no_tiket_atau_tiket_manual AS no_tiket,

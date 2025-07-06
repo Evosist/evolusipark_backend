@@ -3,26 +3,42 @@ const { sequelize } = require('../../models/index')
 
 module.exports = {
     getAllAuditTransaksiKendaraanKeluar: async (req, res) => {
+        const { start_date, end_date } = req.query
+
+        if (!start_date || !end_date) {
+            return res
+                .status(400)
+                .json({ message: 'start_date dan end_date wajib diisi' })
+        }
+
         try {
-            const [results] = await sequelize.query(`
-            SELECT
-            tm.tanggal_keluar::date AS "Tanggal",
-            'Casual' AS "Kategori",
-            tm.no_tiket_atau_tiket_manual AS "NoTiket",
-            tm.nomor_polisi AS "Nopol",
-            '-' AS "NamaMember",
-            tm.parkir AS "TarifAsli",
-            pv.nama AS "NamaVoucher",
-            COALESCE(dv.tarif, 0) AS "PotonganVoucher",
-            (CAST(tm.parkir AS INTEGER) - COALESCE(dv.tarif, 0)) AS "TarifDibayar",
-            pay.jenis_payment AS "Pembayaran"
-            FROM transaksi_manuals tm
-            LEFT JOIN data_vouchers dv ON tm.id_data_voucher = dv.id
-            LEFT JOIN produk_vouchers pv ON dv.produk_voucher_id = pv.id
-            LEFT JOIN payments pay ON tm.jenis_pembayaran_id = pay.id
-            WHERE tm.tanggal_keluar BETWEEN '2025-06-29' AND '2025-07-06'
-            ORDER BY tm.tanggal_keluar DESC  
-            `)
+            const [results] = await sequelize.query(
+                `
+                SELECT
+                tm.tanggal_keluar::date AS "tanggal",
+                'Casual' AS "kategori",
+                tm.no_tiket_atau_tiket_manual AS "no_tiket",
+                tm.nomor_polisi AS "nopol",
+                '-' AS "nama_member",
+                tm.parkir AS "tarif_asli",
+                pv.nama AS "nama_voucher",
+                COALESCE(dv.tarif, 0) AS "potongan_voucher",
+                (CAST(tm.parkir AS INTEGER) - COALESCE(dv.tarif, 0)) AS "tarif_dibayar",
+                pay.jenis_payment AS "pembayaran"
+                FROM transaksi_manuals tm
+                LEFT JOIN data_vouchers dv ON tm.id_data_voucher = dv.id
+                LEFT JOIN produk_vouchers pv ON dv.produk_voucher_id = pv.id
+                LEFT JOIN payments pay ON tm.jenis_pembayaran_id = pay.id
+                WHERE tm.tanggal_keluar:date BETWEEN :startDate AND :endDate
+                ORDER BY tm.tanggal_keluar DESC  
+                `,
+                {
+                    replacements: {
+                        startDate: start_date,
+                        endDate: end_date,
+                    },
+                }
+            )
 
             return res.json({
                 success: true,
@@ -38,16 +54,16 @@ module.exports = {
         try {
             const [results] = await sequelize.query(`
               SELECT
-              pos.kode AS "Pos",
-              u.nama AS "NamaPetugas",
-              COUNT(tm.id) AS "QtyTransaksi",
-              SUM(CAST(regexp_replace(tm.parkir, '[^0-9]', '', 'g') AS INTEGER)) AS "TotalNominal"
+              pos.kode AS "pos",
+              u.nama AS "nama_petugas",
+              COUNT(tm.id) AS "qty_transaksi",
+              SUM(CAST(regexp_replace(tm.parkir, '[^0-9]', '', 'g') AS INTEGER)) AS "total_nominal"
               FROM transaksi_manuals tm
               LEFT JOIN users u ON tm.petugas_id = u.id
               LEFT JOIN pos ON tm.pintu_keluar_id = pos.id
               WHERE tm.tanggal_keluar BETWEEN '2025-06-29' AND '2025-07-06'
               GROUP BY pos.kode, u.nama
-              ORDER BY "QtyTransaksi" DESC          
+              ORDER BY "qty_transaksi" DESC          
               `)
 
             return res.json({
@@ -63,10 +79,10 @@ module.exports = {
         try {
             const [results] = await sequelize.query(`
                  SELECT
-                 pv.nama AS "NamaVoucher",
-                 CONCAT('Rp ', COALESCE(dv.tarif, 0)) AS "PotonganVoucher",
-                 u.nama AS "NamaPetugasPos",
-                 COUNT(tm.id) AS "QtyVoucherDigunakan"
+                 pv.nama AS "nama_voucher",
+                 CONCAT('Rp ', COALESCE(dv.tarif, 0)) AS "potongan_voucher",
+                 u.nama AS "nama_petugas_pos",
+                 COUNT(tm.id) AS "qty_voucher_digunakan"
                  FROM transaksi_manuals tm
                  INNER JOIN data_vouchers dv ON tm.id_data_voucher = dv.id
                  INNER JOIN produk_vouchers pv ON dv.produk_voucher_id = pv.id
@@ -90,10 +106,10 @@ module.exports = {
         try {
             const [results] = await sequelize.query(`
                 SELECT
-                pos.kode AS "Pos",
-                u.nama AS "NamaPetugas",
-                COUNT(ltb.id) AS "QtyTransaksiDibatalkan",
-                SUM(CAST(regexp_replace(ltb.total_pembayaran, '[^0-9]', '', 'g') AS INTEGER)) AS "TotalNominalPembatalan"
+                pos.kode AS "pos",
+                u.nama AS "nama_petugas",
+                COUNT(ltb.id) AS "qty_transaksi_dibatalkan",
+                SUM(CAST(regexp_replace(ltb.total_pembayaran, '[^0-9]', '', 'g') AS INTEGER)) AS "total_nominal_pembatalan"
                 FROM laporan_transaksi_batals ltb
                 LEFT JOIN users u ON ltb.petugas_id = u.id
                 LEFT JOIN pos ON ltb.gerbang_keluar_id = pos.id

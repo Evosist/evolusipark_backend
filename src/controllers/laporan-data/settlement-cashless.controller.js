@@ -6,35 +6,35 @@ module.exports = {
         try {
             const [results] = await sequelize.query(`
                   SELECT
-                  tm.no_tiket_atau_tiket_manual AS "NoTiket",
-                  tm.tanggal_keluar AS "TanggalKeluar",
-                  pos_out.kode AS "PintuKeluar",
-                  tm.nomor_polisi AS "Nopol",
-                  k.nama_kendaraan AS "Kendaraan",
-                  tm."interval" AS "Interval",
-                  tm.parkir AS "Tarif",
-                  (tm.jumlah_denda_tiket + tm.jumlah_denda_stnk) AS "Denda",
-                  COALESCE(td.tipe_denda, 'Tidak Ada') AS "TipeDenda",
-                  pay.jenis_payment AS "Pembayaran",
+                  tm.no_tiket_atau_tiket_manual AS "no_tiket",
+                  tm.tanggal_keluar AS "tanggal_keluar",
+                  pos_out.kode AS "pintu_keluar",
+                  tm.nomor_polisi AS "nopol",
+                  k.nama_kendaraan AS "kendaraan",
+                  tm."interval" AS "interval",
+                  tm.parkir AS "tarif",
+                  (tm.jumlah_denda_tiket + tm.jumlah_denda_stnk) AS "denda",
+                  COALESCE(td.tipe_denda, 'Tidak Ada') AS "tipe_denda",
+                  pay.jenis_payment AS "pembayaran",
                   CASE
                     WHEN pay.jenis_payment ILIKE '%QRIS%' THEN 'GoPay'
                     WHEN pay.jenis_payment ILIKE '%VA%' THEN 'Mandiri VA'
                     WHEN pay.jenis_payment ILIKE '%Wallet%' THEN 'OVO'
                     ELSE 'Credit Card'
-                  END AS "Channel",
+                  END AS "channel",
                   '-' AS "VA_QR",
-                  u.nama AS "Petugas",
-                  s.nama_shift AS "Shift",
-                  CONCAT('mtd-', tm.id) AS "TransactionID",
-                  CONCAT('ORD-', tm.id) AS "OrderID",
-                  tm.tanggal_keluar AS "TransactionTime",
-                  TO_DATE('2025-07-10', 'YYYY-MM-DD') AS "SettlementTime",
+                  u.nama AS "petugas",
+                  s.nama_shift AS "shift",
+                  CONCAT('mtd-', tm.id) AS "transaction_id",
+                  CONCAT('ORD-', tm.id) AS "order_id",
+                  tm.tanggal_keluar AS "transaction_time",
+                  TO_DATE('2025-07-10', 'YYYY-MM-DD') AS "settlement_time",
                   CASE
                     WHEN tm.is_active = true THEN 'Settled'
                     WHEN tm.is_active = false AND tm.denda = true THEN 'Gagal'
                     ELSE 'Pending'
-                  END AS "SettlementStatus",
-                  CONCAT('st_', TO_CHAR(tm.tanggal_keluar, 'YYYYMMDD'), '.csv') AS "FileSettlement"
+                  END AS "settlement_status",
+                  CONCAT('st_', TO_CHAR(tm.tanggal_keluar, 'YYYYMMDD'), '.csv') AS "file_settlement"
                   FROM transaksi_manuals tm
                   LEFT JOIN pos pos_out ON tm.pintu_keluar_id = pos_out.id
                   LEFT JOIN kendaraans k ON tm.kendaraan_id = k.id

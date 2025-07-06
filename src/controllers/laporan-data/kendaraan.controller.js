@@ -80,28 +80,28 @@ module.exports = {
             const [results] = await sequelize.query(`
                 SELECT
                 ltb.no AS "No",
-                ltb.nomor_tiket AS "NoTiket",
-                CASE WHEN ltb.member THEN 'Ya' ELSE 'Tidak' END AS "IsMember",
-                CASE WHEN ltb.manual_input THEN 'Ya' ELSE 'Tidak' END AS "IsManual",
-                TO_CHAR(ltb.waktu_masuk, 'YYYY-MM-DD HH24:MI') AS "TglMasuk",
-                TO_CHAR(ltb.waktu_keluar, 'YYYY-MM-DD HH24:MI') AS "TglKeluar",
-                pos_in.kode AS "PintuMasuk",
-                pos_out.kode AS "PintuKeluar",
-                ltb.nomor_polisi AS "Nopol",
-                tk.tipe_kendaraan AS "Kendaraan",
-                ltb.durasi_parkir AS "Interval",
+                ltb.nomor_tiket AS "no_tiket",
+                CASE WHEN ltb.member THEN 'Ya' ELSE 'Tidak' END AS "is_member",
+                CASE WHEN ltb.manual_input THEN 'Ya' ELSE 'Tidak' END AS "is_manual",
+                TO_CHAR(ltb.waktu_masuk, 'YYYY-MM-DD HH24:MI') AS "tgl_masuk",
+                TO_CHAR(ltb.waktu_keluar, 'YYYY-MM-DD HH24:MI') AS "tgl_keluar",
+                pos_in.kode AS "pintu_masuk",
+                pos_out.kode AS "pintu_keluar",
+                ltb.nomor_polisi AS "nopol",
+                tk.tipe_kendaraan AS "kendaraan",
+                ltb.durasi_parkir AS "interval",
                 CASE 
                   WHEN ltb.total_pembayaran = '0' THEN 'Gratis'
                   ELSE ltb.total_pembayaran 
-                END AS "Tarif",
-                ltb.denda AS "Denda",
-                CASE WHEN ltb.status THEN 'Selesai' ELSE 'Batal' END AS "Status",
-                ltb.tipe AS "Tipe",
-                ltb.pembayaran AS "Pembayaran",
-                CASE WHEN ltb.kartu_member THEN 'Ya' ELSE 'Tidak' END AS "PrepaidCard",
-                COALESCE(dm.no_kartu, '-') AS "NoPrepaidCard",
-                u.nama AS "Petugas",
-                s.nama_shift AS "Shift"
+                END AS "tarif",
+                ltb.denda AS "denda",
+                CASE WHEN ltb.status THEN 'Selesai' ELSE 'Batal' END AS "status",
+                ltb.tipe AS "tipe",
+                ltb.pembayaran AS "pembayaran",
+                CASE WHEN ltb.kartu_member THEN 'Ya' ELSE 'Tidak' END AS "prepaid_card",
+                COALESCE(dm.no_kartu, '-') AS "no_prepaid_card",
+                u.nama AS "petugas",
+                s.nama_shift AS "shift"
                 FROM public.laporan_transaksi_batals ltb
                 LEFT JOIN public.kendaraans k ON k.id = ltb.jenis_kendaraan_id
                 LEFT JOIN public.tipe_kendaraans tk ON tk.id = k.tipe_kendaraan_id
