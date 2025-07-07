@@ -43,53 +43,61 @@ module.exports = {
     getAll: async (req, res) => {
         try {
             const search = req.query.search || ''
-            const limit = req.query.limit ? parseInt(req.query.limit) : null
-            const page = req.query.page ? parseInt(req.query.page) : null
-            const offset = page && limit ? (page - 1) * limit : null
+            const limit = req.query.limit ? parseInt(req.query.limit) : 10
+            const page = req.query.page ? parseInt(req.query.page) : 1
+            const offset = limit && page ? (page - 1) * limit : 0
             const sortBy = req.query.sortBy || 'id'
-            const sortOrder = req.query.sortOrder || 'asc'
+            const sortOrder =
+                req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
+
+            const allowedSortColumns = [
+                'id',
+                'nama',
+                'kontak',
+                'createdAt',
+                'updatedAt',
+            ]
+            const validSortBy = allowedSortColumns.includes(sortBy)
+                ? sortBy
+                : 'id'
 
             const options = {
+                where: {},
                 include: [
                     {
                         model: user,
                         as: 'user',
                         attributes: ['id', 'nama'],
                     },
-                    {
-                        model: tipe_manless,
-                        as: 'tipe_manless',
-                    },
-                    {
-                        model: nama_printer,
-                        as: 'printer',
-                    },
-                    {
-                        model: nama_interface,
-                        as: 'interface',
-                    },
                 ],
-                order: [[sortBy, sortOrder]],
+                order: [[validSortBy, sortOrder]],
             }
 
-            if (limit !== null && offset !== null) {
+            if (search) {
+                options.where[Op.or] = [
+                    { nama: { [Op.iLike]: `%${search}%` } },
+                    { kontak: { [Op.iLike]: `%${search}%` } },
+                    { '$user.nama$': { [Op.iLike]: `%${search}%` } },
+                    { jenis_perusahaan: { [Op.iLike]: `%${search}%` } },
+                ]
+            }
+
+            if (limit) {
                 options.limit = limit
                 options.offset = offset
             }
 
-            const { count, rows } = await level_pengguna.findAndCountAll(
-                options
-            )
+            const { count, rows } = await perusahaan.findAndCountAll(options)
 
             return res.json({
                 success: true,
-                message: 'Get all pos successfully',
+                message: 'Get all perusahaan successfully',
                 results: {
                     data: rows,
                     totalData: count,
-                    totalPages: Math.ceil(count / limit),
+                    totalPages: limit ? Math.ceil(count / limit) : 1,
                     currentPage: page,
-                    pageSize: limit,
+                    pageSize: limit || count,
                 },
             })
         } catch (err) {

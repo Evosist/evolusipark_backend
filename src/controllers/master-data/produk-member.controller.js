@@ -37,13 +37,28 @@ module.exports = {
     getAll: async (req, res) => {
         try {
             const search = req.query.search || ''
-            const limit = req.query.limit ? parseInt(req.query.limit) : null
-            const page = req.query.page ? parseInt(req.query.page) : null
-            const offset = page && limit ? (page - 1) * limit : null
+            const limit = req.query.limit ? parseInt(req.query.limit) : 10
+            const page = req.query.page ? parseInt(req.query.page) : 1
+            const offset = limit && page ? (page - 1) * limit : 0
             const sortBy = req.query.sortBy || 'id'
-            const sortOrder = req.query.sortOrder || 'asc'
+            const sortOrder =
+                req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
+
+            const allowedSortColumns = [
+                'id',
+                'nama',
+                'tarif',
+                'biaya_kartu',
+                'biaya_ganti_nopol',
+                'createdAt',
+                'updatedAt',
+            ]
+            const validSortBy = allowedSortColumns.includes(sortBy)
+                ? sortBy
+                : 'id'
 
             const options = {
+                where: {},
                 include: [
                     {
                         model: user,
@@ -53,12 +68,27 @@ module.exports = {
                     {
                         model: data_member,
                         as: 'data_member',
+                        attributes: [
+                            'id',
+                            'nama',
+                            'no_hp',
+                            'perusahaan_id',
+                            'produk_id',
+                        ],
                     },
                 ],
-                order: [[sortBy, sortOrder]],
+                order: [[validSortBy, sortOrder]],
             }
 
-            if (limit !== null && offset !== null) {
+            if (search) {
+                options.where[Op.or] = [
+                    { nama: { [Op.iLike]: `%${search}%` } },
+                    { '$user.nama$': { [Op.iLike]: `%${search}%` } },
+                    { '$data_member.nama$': { [Op.iLike]: `%${search}%` } },
+                ]
+            }
+
+            if (limit) {
                 options.limit = limit
                 options.offset = offset
             }
@@ -71,9 +101,9 @@ module.exports = {
                 results: {
                     data: rows,
                     totalData: count,
-                    totalPages: Math.ceil(count / limit),
+                    totalPages: limit ? Math.ceil(count / limit) : 1,
                     currentPage: page,
-                    pageSize: limit,
+                    pageSize: limit || count,
                 },
             })
         } catch (err) {

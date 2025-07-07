@@ -17,29 +17,57 @@ module.exports = {
     getAll: async (req, res) => {
         try {
             const search = req.query.search || ''
-            const limit = req.query.limit ? parseInt(req.query.limit) : null
-            const page = req.query.page ? parseInt(req.query.page) : null
-            const offset = page && limit ? (page - 1) * limit : null
+            const limit = req.query.limit ? parseInt(req.query.limit) : 10
+            const page = req.query.page ? parseInt(req.query.page) : 1
+            const offset = limit && page ? (page - 1) * limit : 0
             const sortBy = req.query.sortBy || 'id'
-            const sortOrder = req.query.sortOrder || 'asc'
+            const sortOrder =
+                req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
+
+            const allowedSortColumns = [
+                'id',
+                'nopol',
+                'nomor_kartu',
+                'waktu_masuk',
+                'waktu_keluar',
+                'biaya',
+                'denda',
+                'createdAt',
+                'updatedAt',
+            ]
+            const validSortBy = allowedSortColumns.includes(sortBy)
+                ? sortBy
+                : 'id'
 
             const options = {
+                where: {},
                 include: [
                     {
                         model: pos,
                         as: 'pintu_masuk',
+                        attributes: ['id', 'nama'],
                     },
                     {
                         model: pos,
                         as: 'pintu_keluar',
+                        attributes: ['id', 'nama'],
                     },
                     {
                         model: kendaraan,
                         as: 'kendaraan',
+                        attributes: ['id', 'nopol', 'tipe_kendaraan_id'],
+                        include: [
+                            {
+                                model: tipe_kendaraan,
+                                as: 'tipe_kendaraan',
+                                attributes: ['id', 'tipe_kendaraan'],
+                            },
+                        ],
                     },
                     {
                         model: shift,
                         as: 'shift',
+                        attributes: ['id', 'nama', 'jam_masuk', 'jam_keluar'],
                     },
                     {
                         model: user,
@@ -47,10 +75,27 @@ module.exports = {
                         attributes: ['id', 'nama'],
                     },
                 ],
-                order: [[sortBy, sortOrder]],
+                order: [[validSortBy, sortOrder]],
             }
 
-            if (limit !== null && offset !== null) {
+            if (search) {
+                options.where[Op.or] = [
+                    { nopol: { [Op.iLike]: `%${search}%` } },
+                    { nomor_kartu: { [Op.iLike]: `%${search}%` } },
+                    { '$pintu_masuk.nama$': { [Op.iLike]: `%${search}%` } },
+                    { '$pintu_keluar.nama$': { [Op.iLike]: `%${search}%` } },
+                    { '$kendaraan.nopol$': { [Op.iLike]: `%${search}%` } },
+                    {
+                        '$kendaraan.tipe_kendaraan.tipe_kendaraan$': {
+                            [Op.iLike]: `%${search}%`,
+                        },
+                    },
+                    { '$shift.nama$': { [Op.iLike]: `%${search}%` } },
+                    { '$petugas.nama$': { [Op.iLike]: `%${search}%` } },
+                ]
+            }
+
+            if (limit) {
                 options.limit = limit
                 options.offset = offset
             }
@@ -65,9 +110,9 @@ module.exports = {
                 results: {
                     data: rows,
                     totalData: count,
-                    totalPages: Math.ceil(count / limit),
+                    totalPages: limit ? Math.ceil(count / limit) : 1,
                     currentPage: page,
-                    pageSize: limit,
+                    pageSize: limit || count,
                 },
             })
         } catch (err) {

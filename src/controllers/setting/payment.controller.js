@@ -27,17 +27,39 @@ module.exports = {
     getAll: async (req, res) => {
         try {
             const search = req.query.search || ''
-            const limit = req.query.limit ? parseInt(req.query.limit) : null
-            const page = req.query.page ? parseInt(req.query.page) : null
-            const offset = page && limit ? (page - 1) * limit : null
+            const limit = req.query.limit ? parseInt(req.query.limit) : 10
+            const page = req.query.page ? parseInt(req.query.page) : 1
+            const offset = limit && page ? (page - 1) * limit : 0
             const sortBy = req.query.sortBy || 'id'
-            const sortOrder = req.query.sortOrder || 'asc'
+            const sortOrder =
+                req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
+
+            const allowedSortColumns = [
+                'id',
+                'payment_id',
+                'payment_type',
+                'payment_status',
+                'createdAt',
+                'updatedAt',
+            ]
+            const validSortBy = allowedSortColumns.includes(sortBy)
+                ? sortBy
+                : 'id'
 
             const options = {
-                order: [[sortBy, sortOrder]],
+                where: {},
+                order: [[validSortBy, sortOrder]],
             }
 
-            if (limit !== null && offset !== null) {
+            if (search) {
+                options.where[Op.or] = [
+                    { payment_id: { [Op.iLike]: `%${search}%` } },
+                    { payment_type: { [Op.iLike]: `%${search}%` } },
+                    { payment_status: { [Op.iLike]: `%${search}%` } },
+                ]
+            }
+
+            if (limit) {
                 options.limit = limit
                 options.offset = offset
             }
@@ -50,9 +72,9 @@ module.exports = {
                 results: {
                     data: rows,
                     totalData: count,
-                    totalPages: Math.ceil(count / limit),
+                    totalPages: limit ? Math.ceil(count / limit) : 1,
                     currentPage: page,
-                    pageSize: limit,
+                    pageSize: limit || count,
                 },
             })
         } catch (err) {

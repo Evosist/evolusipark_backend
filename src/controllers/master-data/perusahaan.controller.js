@@ -30,13 +30,26 @@ module.exports = {
     getAll: async (req, res) => {
         try {
             const search = req.query.search || ''
-            const limit = req.query.limit ? parseInt(req.query.limit) : null
-            const page = req.query.page ? parseInt(req.query.page) : null
-            const offset = page && limit ? (page - 1) * limit : null
+            const limit = req.query.limit ? parseInt(req.query.limit) : 10
+            const page = req.query.page ? parseInt(req.query.page) : 1
+            const offset = limit && page ? (page - 1) * limit : 0
             const sortBy = req.query.sortBy || 'id'
-            const sortOrder = req.query.sortOrder || 'asc'
+            const sortOrder =
+                req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
+
+            const allowedSortColumns = [
+                'id',
+                'nama',
+                'kontak',
+                'createdAt',
+                'updatedAt',
+            ]
+            const validSortBy = allowedSortColumns.includes(sortBy)
+                ? sortBy
+                : 'id'
 
             const options = {
+                where: {},
                 include: [
                     {
                         model: user,
@@ -44,10 +57,19 @@ module.exports = {
                         attributes: ['id', 'nama'],
                     },
                 ],
-                order: [[sortBy, sortOrder]],
+                order: [[validSortBy, sortOrder]],
             }
 
-            if (limit !== null && offset !== null) {
+            if (search) {
+                options.where[Op.or] = [
+                    { nama: { [Op.iLike]: `%${search}%` } },
+                    { kontak: { [Op.iLike]: `%${search}%` } },
+                    { '$user.nama$': { [Op.iLike]: `%${search}%` } },
+                    { jenis_perusahaan: { [Op.iLike]: `%${search}%` } },
+                ]
+            }
+
+            if (limit) {
                 options.limit = limit
                 options.offset = offset
             }
@@ -61,7 +83,7 @@ module.exports = {
                     data: rows,
                     totalData: count,
                     totalPages: limit ? Math.ceil(count / limit) : 1,
-                    currentPage: page || 1,
+                    currentPage: page,
                     pageSize: limit || count,
                 },
             })
