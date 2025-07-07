@@ -51,8 +51,17 @@ module.exports = {
         }
     },
     getAllAuditTransaksiManual: async (req, res) => {
+        const { start_date, end_date } = req.query
+
+        if (!start_date || !end_date) {
+            return res
+                .status(400)
+                .json({ message: 'start_date dan end_date wajib diisi' })
+        }
+
         try {
-            const [results] = await sequelize.query(`
+            const [results] = await sequelize.query(
+                `
               SELECT
               pos.kode AS "pos",
               u.nama AS "nama_petugas",
@@ -61,10 +70,17 @@ module.exports = {
               FROM transaksi_manuals tm
               LEFT JOIN users u ON tm.petugas_id = u.id
               LEFT JOIN pos ON tm.pintu_keluar_id = pos.id
-              WHERE tm.tanggal_keluar BETWEEN '2025-06-29' AND '2025-07-06'
+              WHERE tm.tanggal_keluar:date BETWEEN :startDate AND :endDate
               GROUP BY pos.kode, u.nama
               ORDER BY "qty_transaksi" DESC          
-              `)
+              `,
+                {
+                    replacements: {
+                        startDate: start_date,
+                        endDate: end_date,
+                    },
+                }
+            )
 
             return res.json({
                 success: true,
@@ -76,8 +92,17 @@ module.exports = {
         }
     },
     getAllAuditTransaksiPenggunaanVoucher: async (req, res) => {
+        const { start_date, end_date } = req.query
+
+        if (!start_date || !end_date) {
+            return res
+                .status(400)
+                .json({ message: 'start_date dan end_date wajib diisi' })
+        }
+
         try {
-            const [results] = await sequelize.query(`
+            const [results] = await sequelize.query(
+                `
                  SELECT
                  pv.nama AS "nama_voucher",
                  CONCAT('Rp ', COALESCE(dv.tarif, 0)) AS "potongan_voucher",
@@ -87,10 +112,17 @@ module.exports = {
                  INNER JOIN data_vouchers dv ON tm.id_data_voucher = dv.id
                  INNER JOIN produk_vouchers pv ON dv.produk_voucher_id = pv.id
                  INNER JOIN users u ON tm.petugas_id = u.id
-                 WHERE tm.tanggal_keluar::date BETWEEN '2025-06-29' AND '2025-07-06'
+                 WHERE tm.tanggal_keluar:date BETWEEN :startDate AND :endDate
                  GROUP BY pv.nama, dv.tarif, u.nama
                  ORDER BY COUNT(tm.id) DESC
-              `)
+              `,
+                {
+                    replacements: {
+                        startDate: start_date,
+                        endDate: end_date,
+                    },
+                }
+            )
 
             return res.json({
                 success: true,
@@ -104,7 +136,8 @@ module.exports = {
     },
     getAllAuditPembatalanTransaksi: async (req, res) => {
         try {
-            const [results] = await sequelize.query(`
+            const [results] = await sequelize.query(
+                `
                 SELECT
                 pos.kode AS "pos",
                 u.nama AS "nama_petugas",
@@ -113,10 +146,17 @@ module.exports = {
                 FROM laporan_transaksi_batals ltb
                 LEFT JOIN users u ON ltb.petugas_id = u.id
                 LEFT JOIN pos ON ltb.gerbang_keluar_id = pos.id
-                WHERE ltb."createdAt"::date BETWEEN '2025-06-29' AND '2025-07-06'
+                WHERE ltb."createdAt"::date BETWEEN :startDate AND :endDate
                 GROUP BY pos.kode, u.nama
                 ORDER BY COUNT(ltb.id) DESC
-              `)
+              `,
+                {
+                    replacements: {
+                        startDate: start_date,
+                        endDate: end_date,
+                    },
+                }
+            )
 
             return res.json({
                 success: true,
