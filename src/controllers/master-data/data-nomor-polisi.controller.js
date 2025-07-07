@@ -20,13 +20,35 @@ module.exports = {
                     {
                         model: kendaraan,
                         as: 'kendaraan',
+                        attributes: ['id', 'nama_kendaraan'],
                     },
                     {
                         model: data_member,
                         as: 'data_member',
+                        attributes: ['id', 'nama', 'no_kartu'],
                     },
                 ],
                 order: [[sortBy, sortOrder]],
+                where: {},
+            }
+
+            if (search) {
+                options.where = {
+                    [Op.or]: [
+                        { nomor_polisi: { [Op.iLike]: `%${search}%` } },
+                        {
+                            '$kendaraan.nama_kendaraan$': {
+                                [Op.iLike]: `%${search}%`,
+                            },
+                        },
+                        { '$data_member.nama$': { [Op.iLike]: `%${search}%` } },
+                        {
+                            '$data_member.no_kartu$': {
+                                [Op.iLike]: `%${search}%`,
+                            },
+                        },
+                    ],
+                }
             }
 
             if (limit !== null && offset !== null) {
@@ -44,7 +66,7 @@ module.exports = {
                 results: {
                     data: rows,
                     totalData: count,
-                    totalPages: Math.ceil(count / limit),
+                    totalPages: limit ? Math.ceil(count / limit) : null,
                     currentPage: page,
                     pageSize: limit,
                 },

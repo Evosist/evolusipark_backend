@@ -40,7 +40,21 @@ module.exports = {
             const sortOrder = req.query.sortOrder || 'asc'
 
             const options = {
+                where: {},
                 order: [[sortBy, sortOrder]],
+            }
+
+            if (search) {
+                options.where = {
+                    [Op.or]: [
+                        { tiket: { [Op.iLike]: `%${search}%` } },
+                        { plat_nomor: { [Op.iLike]: `%${search}%` } },
+                        { lokasi_gerbang: { [Op.iLike]: `%${search}%` } },
+                        { petugas: { [Op.iLike]: `%${search}%` } },
+                        { buka_atau_tutup: { [Op.iLike]: `%${search}%` } },
+                        { status_palang: { [Op.iLike]: `%${search}%` } },
+                    ],
+                }
             }
 
             if (limit !== null && offset !== null) {

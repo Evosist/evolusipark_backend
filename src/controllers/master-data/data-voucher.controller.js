@@ -34,8 +34,7 @@ module.exports = {
                 options.offset = offset
             }
 
-            const { count, rows } =
-                await aktivitas_gerbang_kendaraan.findAndCountAll(options)
+            const { count, rows } = await data_voucher.findAndCountAll(options)
 
             return res.json({
                 success: true,

@@ -7,6 +7,7 @@ const {
     riwayat_transaksi_member,
     riwayat_transaksi_kartu_member,
     riwayat_transaksi_ganti_nopol,
+    laporan_riwayat_transaksi_member,
     user,
 } = require('../../models/index')
 const fs = require('fs')
@@ -16,7 +17,6 @@ const dayjs = require('dayjs')
 const sequelize = require('../../models/index').sequelize
 const Op = require('sequelize').Op
 
-// Utility to fill the HTML template
 function generateTableRows(data) {
     return data
         .map(
@@ -53,12 +53,52 @@ module.exports = {
 
             const options = {
                 include: [
-                    { model: perusahaan, as: 'perusahaan' },
-                    { model: produk_member, as: 'produk_member' },
-                    { model: data_nomor_polisi, as: 'data_nomor_polisi' },
-                    { model: user, as: 'user', attributes: ['id', 'nama'] },
+                    {
+                        model: perusahaan,
+                        as: 'perusahaan',
+                        attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: produk_member,
+                        as: 'produk_member',
+                        attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: data_nomor_polisi,
+                        as: 'data_nomor_polisi',
+                        attributes: ['id', 'nomor_polisi'],
+                    },
+                    {
+                        model: user,
+                        as: 'user',
+                        attributes: ['id', 'nama'],
+                    },
                 ],
                 order: [[sortBy, sortOrder]],
+                where: {},
+            }
+
+            if (search) {
+                options.where = {
+                    [Op.or]: [
+                        { nama: { [Op.iLike]: `%${search}%` } },
+                        { no_hp: { [Op.iLike]: `%${search}%` } },
+                        { no_kartu: { [Op.iLike]: `%${search}%` } },
+                        {
+                            '$perusahaan.nama$': { [Op.iLike]: `%${search}%` },
+                        },
+                        {
+                            '$produk_member.nama$': {
+                                [Op.iLike]: `%${search}%`,
+                            },
+                        },
+                        {
+                            '$data_nomor_polisi.nomor_polisi$': {
+                                [Op.iLike]: `%${search}%`,
+                            },
+                        },
+                    ],
+                }
             }
 
             if (limit !== null && offset !== null) {
@@ -74,7 +114,7 @@ module.exports = {
                 results: {
                     data: rows,
                     totalData: count,
-                    totalPages: Math.ceil(count / limit),
+                    totalPages: limit ? Math.ceil(count / limit) : null,
                     currentPage: page,
                     pageSize: limit,
                 },
@@ -101,6 +141,20 @@ module.exports = {
                     },
                 ],
                 order: [[sortBy, sortOrder]],
+                where: {},
+            }
+
+            if (search) {
+                options.where = {
+                    [Op.or]: [
+                        { nomor_polisi_lama: { [Op.iLike]: `%${search}%` } },
+                        { nomor_polisi_baru: { [Op.iLike]: `%${search}%` } },
+                        { keterangan: { [Op.iLike]: `%${search}%` } },
+                        {
+                            '$user.nama$': { [Op.iLike]: `%${search}%` },
+                        },
+                    ],
+                }
             }
 
             if (limit !== null && offset !== null) {
@@ -117,7 +171,7 @@ module.exports = {
                 results: {
                     data: rows,
                     totalData: count,
-                    totalPages: Math.ceil(count / limit),
+                    totalPages: limit ? Math.ceil(count / limit) : null,
                     currentPage: page,
                     pageSize: limit,
                 },
@@ -144,6 +198,19 @@ module.exports = {
                     },
                 ],
                 order: [[sortBy, sortOrder]],
+                where: {},
+            }
+
+            if (search) {
+                options.where = {
+                    [Op.or]: [
+                        { no_kartu: { [Op.iLike]: `%${search}%` } },
+                        { keterangan: { [Op.iLike]: `%${search}%` } },
+                        {
+                            '$user.nama$': { [Op.iLike]: `%${search}%` },
+                        },
+                    ],
+                }
             }
 
             if (limit !== null && offset !== null) {
@@ -160,7 +227,7 @@ module.exports = {
                 results: {
                     data: rows,
                     totalData: count,
-                    totalPages: Math.ceil(count / limit),
+                    totalPages: limit ? Math.ceil(count / limit) : null,
                     currentPage: page,
                     pageSize: limit,
                 },
@@ -185,8 +252,53 @@ module.exports = {
                         as: 'user',
                         attributes: ['id', 'nama'],
                     },
+                    {
+                        model: pos,
+                        as: 'gerbang_masuk',
+                        attributes: ['id', 'kode', 'keterangan'],
+                    },
+                    {
+                        model: pos,
+                        as: 'pintu_keluar',
+                        attributes: ['id', 'kode', 'keterangan'],
+                    },
+                    {
+                        model: kendaraan,
+                        as: 'jenis_kendaraan',
+                        attributes: ['id', 'nama_kendaraan'],
+                    },
                 ],
                 order: [[sortBy, sortOrder]],
+                where: {},
+            }
+
+            if (search) {
+                options.where = {
+                    [Op.or]: [
+                        { nomor_tiket: { [Op.iLike]: `%${search}%` } },
+                        { nomor_polisi: { [Op.iLike]: `%${search}%` } },
+                        { durasi_parkir: { [Op.iLike]: `%${search}%` } },
+                        { denda: { [Op.iLike]: `%${search}%` } },
+                        { total_pembayaran: { [Op.iLike]: `%${search}%` } },
+                        { jenis_transaksi: { [Op.iLike]: `%${search}%` } },
+                        { '$user.nama$': { [Op.iLike]: `%${search}%` } },
+                        {
+                            '$gerbang_masuk.kode$': {
+                                [Op.iLike]: `%${search}%`,
+                            },
+                        },
+                        {
+                            '$pintu_keluar.kode$': {
+                                [Op.iLike]: `%${search}%`,
+                            },
+                        },
+                        {
+                            '$jenis_kendaraan.nama_kendaraan$': {
+                                [Op.iLike]: `%${search}%`,
+                            },
+                        },
+                    ],
+                }
             }
 
             if (limit !== null && offset !== null) {
@@ -195,7 +307,7 @@ module.exports = {
             }
 
             const { count, rows } =
-                await riwayat_transaksi_member.findAndCountAll(options)
+                await laporan_riwayat_transaksi_member.findAndCountAll(options)
 
             return res.json({
                 success: true,
@@ -203,7 +315,7 @@ module.exports = {
                 results: {
                     data: rows,
                     totalData: count,
-                    totalPages: Math.ceil(count / limit),
+                    totalPages: limit ? Math.ceil(count / limit) : null,
                     currentPage: page,
                     pageSize: limit,
                 },
@@ -254,7 +366,7 @@ module.exports = {
                     tgl_input: dayjs(item.tgl_input).format('DD/MM/YYYY'),
                     produk_member: item.produk_member.nama,
                     tarif: item.tarif,
-                    masa_aktif, // otomatis dihitung dari periode
+                    masa_aktif,
                     created: dayjs(item.createdAt).format('DD/MM/YYYY'),
                     updated: dayjs(item.updatedAt).format('DD/MM/YYYY'),
                 }
@@ -276,7 +388,7 @@ module.exports = {
 
             const pdfBuffer = await page.pdf({
                 path: 'data-member.pdf',
-                format: 'A3', // atau coba 'A3' untuk lebih besar
+                format: 'A3',
                 margin: {
                     top: '10mm',
                     bottom: '10mm',
@@ -342,7 +454,7 @@ module.exports = {
                 'Masa Aktif',
                 'Added',
             ]
-            const lastColLetter = String.fromCharCode(65 + headers.length - 1) // Convert to Excel letter
+            const lastColLetter = String.fromCharCode(65 + headers.length - 1)
 
             const mergeAndStyle = (value, font, rowIdx) => {
                 worksheet.mergeCells(`A${rowIdx}:${lastColLetter}${rowIdx}`)
