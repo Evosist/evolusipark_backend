@@ -26,7 +26,7 @@ function generateTableRows(data) {
 }
 
 module.exports = {
-    ggetAll: async (req, res) => {
+    getAll: async (req, res) => {
         try {
             const search = req.query.search || ''
             const limit = req.query.limit ? parseInt(req.query.limit) : 10
