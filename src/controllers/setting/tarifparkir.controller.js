@@ -1,5 +1,9 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { tarif_parkir, kendaraan } = require('../../models/index')
+const {
+    tarif_parkir,
+    kendaraan,
+    tipe_kendaraan,
+} = require('../../models/index')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
@@ -59,7 +63,11 @@ module.exports = {
                     {
                         model: kendaraan,
                         as: 'kendaraan',
-                        attributes: ['id', 'nopol', 'tipe_kendaraan_id'],
+                        attributes: [
+                            'id',
+                            'nama_kendaraan',
+                            'tipe_kendaraan_id',
+                        ],
                         include: [
                             {
                                 model: tipe_kendaraan,
@@ -75,7 +83,11 @@ module.exports = {
             if (search) {
                 options.where[Op.or] = [
                     { nama: { [Op.iLike]: `%${search}%` } },
-                    { '$kendaraan.nopol$': { [Op.iLike]: `%${search}%` } },
+                    {
+                        '$kendaraan.nama_kendaraan$': {
+                            [Op.iLike]: `%${search}%`,
+                        },
+                    },
                     {
                         '$kendaraan.tipe_kendaraan.tipe_kendaraan$': {
                             [Op.iLike]: `%${search}%`,
