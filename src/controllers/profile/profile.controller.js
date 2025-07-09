@@ -75,10 +75,12 @@ module.exports = {
             if (search) {
                 options.where[Op.or] = [
                     { nama: { [Op.iLike]: `%${search}%` } },
-                    { email: { [Op.iLike]: `%${search}%` } },
+                    { jenis_kelamin: { [Op.iLike]: `%${search}%` } },
                     { no_hp: { [Op.iLike]: `%${search}%` } },
+                    { alamat_lengkap: { [Op.iLike]: `%${search}%` } },
+                    { username: { [Op.iLike]: `%${search}%` } },
+                    { '$perusahaan.nama$': { [Op.iLike]: `%${search}%` } },
                     { '$level_pengguna.nama$': { [Op.iLike]: `%${search}%` } },
-                    { '$asal_perusahaan.nama$': { [Op.iLike]: `%${search}%` } },
                 ]
             }
 

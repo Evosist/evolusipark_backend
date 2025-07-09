@@ -52,11 +52,23 @@ module.exports = {
 
             const allowedSortColumns = [
                 'id',
-                'nama',
-                'kontak',
+                'kode',
+                'keterangan',
+                'tipe_pos',
+                'tipe_manless_id',
+                'tipe_kendaraan',
+                'kamera_1',
+                'kamera_2',
+                'nama_printer_id',
+                'nama_interface_id',
+                'com_port',
+                'otorisasi',
+                'synchronize',
+                'user_id',
                 'createdAt',
                 'updatedAt',
             ]
+
             const validSortBy = allowedSortColumns.includes(sortBy)
                 ? sortBy
                 : 'id'
@@ -74,11 +86,45 @@ module.exports = {
             }
 
             if (search) {
+                const searchLower = search.toLowerCase()
+                let statusFilter = null
+
+                if (searchLower === 'true' || searchLower === '1') {
+                    statusFilter = true
+                } else if (searchLower === 'false' || searchLower === '0') {
+                    statusFilter = false
+                }
+
                 options.where[Op.or] = [
-                    { nama: { [Op.iLike]: `%${search}%` } },
-                    { kontak: { [Op.iLike]: `%${search}%` } },
+                    { kode: { [Op.iLike]: `%${search}%` } },
+                    { keterangan: { [Op.iLike]: `%${search}%` } },
+                    { tipe_pos: { [Op.iLike]: `%${search}%` } },
+                    {
+                        '$tipe_manless.tipe_manless$': {
+                            [Op.iLike]: `%${search}%`,
+                        },
+                    },
+                    { tipe_kendaraan: { [Op.iLike]: `%${search}%` } },
+
+                    ...(statusFilter !== null
+                        ? [
+                              {
+                                  kamera_1: statusFilter,
+                                  kamera_2: statusFilter,
+                              },
+                          ]
+                        : []),
+
+                    literal(
+                        `CAST("nama_printer_id" AS TEXT) ILIKE '%${search}%'`
+                    ),
+                    literal(
+                        `CAST("nama_interface_id" AS TEXT) ILIKE '%${search}%'`
+                    ),
+                    { com_port: { [Op.iLike]: `%${search}%` } },
+                    literal(`CAST("otorisasi" AS TEXT) ILIKE '%${search}%'`),
+                    { synchronize: { [Op.iLike]: `%${search}%` } },
                     { '$user.nama$': { [Op.iLike]: `%${search}%` } },
-                    { jenis_perusahaan: { [Op.iLike]: `%${search}%` } },
                 ]
             }
 
@@ -87,11 +133,11 @@ module.exports = {
                 options.offset = offset
             }
 
-            const { count, rows } = await perusahaan.findAndCountAll(options)
+            const { count, rows } = await pos.findAndCountAll(options)
 
             return res.json({
                 success: true,
-                message: 'Get all perusahaan successfully',
+                message: 'Get all pos successfully',
                 results: {
                     data: rows,
                     totalData: count,

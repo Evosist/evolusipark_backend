@@ -5,6 +5,7 @@ const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
 const { error } = require('console')
+const { literal } = require('sequelize')
 const Op = require('sequelize').Op
 
 // Utility to fill the HTML template
@@ -66,6 +67,7 @@ module.exports = {
                     { kontak: { [Op.iLike]: `%${search}%` } },
                     { '$user.nama$': { [Op.iLike]: `%${search}%` } },
                     { jenis_perusahaan: { [Op.iLike]: `%${search}%` } },
+                    literal(`CAST("status" AS TEXT) ILIKE '%${search}%'`),
                 ]
             }
 

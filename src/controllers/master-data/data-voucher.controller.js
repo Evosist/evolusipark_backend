@@ -1,3 +1,4 @@
+const { literal } = require('sequelize')
 const errorhandler = require('../../helpers/errorhandler.helper')
 const {
     data_voucher,
@@ -27,6 +28,37 @@ module.exports = {
                     },
                 ],
                 order: [[sortBy, sortOrder]],
+                where: {},
+            }
+
+            if (search) {
+                options.where = {
+                    [Op.or]: [
+                        {
+                            '$produk_voucher.nama$': {
+                                [Op.iLike]: `%${search}%`,
+                            },
+                        },
+                        literal(`CAST("tarif" AS TEXT) ILIKE '%${search}%'`),
+                        literal(
+                            `CAST("model_bayar" AS TEXT) ILIKE '%${search}%'`
+                        ),
+                        literal(
+                            `CAST("verifikasi" AS TEXT) ILIKE '%${search}%'`
+                        ),
+                        { no_tiket_atau_nopol: { [Op.iLike]: `%${search}%` } },
+                        {
+                            '$kendaraan.nama_kendaraan$': {
+                                [Op.iLike]: `%${search}%`,
+                            },
+                        },
+                        {
+                            keterangan: {
+                                [Op.iLike]: `%${search}%`,
+                            },
+                        },
+                    ],
+                }
             }
 
             if (limit !== null && offset !== null) {
@@ -42,7 +74,7 @@ module.exports = {
                 results: {
                     data: rows,
                     totalData: count,
-                    totalPages: Math.ceil(count / limit),
+                    totalPages: limit ? Math.ceil(count / limit) : null,
                     currentPage: page,
                     pageSize: limit,
                 },

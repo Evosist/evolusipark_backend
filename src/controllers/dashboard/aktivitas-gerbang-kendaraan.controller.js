@@ -49,9 +49,15 @@ module.exports = {
                     [Op.or]: [
                         { tiket: { [Op.iLike]: `%${search}%` } },
                         { plat_nomor: { [Op.iLike]: `%${search}%` } },
+                        {
+                            '$kendaraan.nama_kendaraan$': {
+                                [Op.iLike]: `%${search}%`,
+                            },
+                        },
+                        { waktu: { [Op.iLike]: `%${search}%` } },
                         { lokasi_gerbang: { [Op.iLike]: `%${search}%` } },
-                        { petugas: { [Op.iLike]: `%${search}%` } },
                         { buka_atau_tutup: { [Op.iLike]: `%${search}%` } },
+                        { petugas: { [Op.iLike]: `%${search}%` } },
                         { status_palang: { [Op.iLike]: `%${search}%` } },
                     ],
                 }

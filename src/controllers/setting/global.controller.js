@@ -44,7 +44,16 @@ module.exports = {
 
             const allowedSortColumns = [
                 'id',
-                'nama',
+                'nama_operator',
+                'email_operator',
+                'no_telp_operator',
+                'no_fax_operator',
+                'alamat_operator',
+                'nama_lokasi',
+                'email_lokasi',
+                'no_telp_lokasi',
+                'no_fax_lokasi',
+                'alamat_lokasi',
                 'value',
                 'createdAt',
                 'updatedAt',
@@ -60,8 +69,16 @@ module.exports = {
 
             if (search) {
                 options.where[Op.or] = [
-                    { nama: { [Op.iLike]: `%${search}%` } },
-                    { value: { [Op.iLike]: `%${search}%` } },
+                    { nama_operator: { [Op.iLike]: `%${search}%` } },
+                    { email_operator: { [Op.iLike]: `%${search}%` } },
+                    { no_telp_operator: { [Op.iLike]: `%${search}%` } },
+                    { no_fax_operator: { [Op.iLike]: `%${search}%` } },
+                    { alamat_operator: { [Op.iLike]: `%${search}%` } },
+                    { nama_lokasi: { [Op.iLike]: `%${search}%` } },
+                    { email_lokasi: { [Op.iLike]: `%${search}%` } },
+                    { no_telp_lokasi: { [Op.iLike]: `%${search}%` } },
+                    { no_fax_lokasi: { [Op.iLike]: `%${search}%` } },
+                    { alamat_lokasi: { [Op.iLike]: `%${search}%` } },
                 ]
             }
 

@@ -9,6 +9,7 @@ const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
 const dayjs = require('dayjs')
 const Op = require('sequelize').Op
+const { literal } = require('sequelize')
 
 // Utility to fill the HTML template
 function generateTableRows(data) {
@@ -48,8 +49,16 @@ module.exports = {
 
             const allowedSortColumns = [
                 'id',
-                'nama',
-                'tarif',
+                'kendaraan_id',
+                'grace_period',
+                'tarif_grace_period',
+                'rotasi_pertama',
+                'tarif_rotasi_pertama',
+                'rotasi_kedua',
+                'tarif_rotasi_kedua',
+                'rotasi_ketiga',
+                'tarif_rotasi_ketiga',
+                'tarif_maksimal',
                 'createdAt',
                 'updatedAt',
             ]
@@ -82,7 +91,29 @@ module.exports = {
 
             if (search) {
                 options.where[Op.or] = [
-                    { nama: { [Op.iLike]: `%${search}%` } },
+                    literal(`CAST("grace_period" AS TEXT) ILIKE '%${search}%'`),
+                    literal(
+                        `CAST("tarif_grace_period" AS TEXT) ILIKE '%${search}%'`
+                    ),
+                    literal(
+                        `CAST("rotasi_pertama" AS TEXT) ILIKE '%${search}%'`
+                    ),
+                    literal(
+                        `CAST("tarif_rotasi_pertama" AS TEXT) ILIKE '%${search}%'`
+                    ),
+                    literal(`CAST("rotasi_kedua" AS TEXT) ILIKE '%${search}%'`),
+                    literal(
+                        `CAST("tarif_rotasi_kedua" AS TEXT) ILIKE '%${search}%'`
+                    ),
+                    literal(
+                        `CAST("rotasi_ketiga" AS TEXT) ILIKE '%${search}%'`
+                    ),
+                    literal(
+                        `CAST("tarif_rotasi_ketiga" AS TEXT) ILIKE '%${search}%'`
+                    ),
+                    literal(
+                        `CAST("tarif_maksimal" AS TEXT) ILIKE '%${search}%'`
+                    ),
                     {
                         '$kendaraan.nama_kendaraan$': {
                             [Op.iLike]: `%${search}%`,

@@ -79,19 +79,46 @@ module.exports = {
             }
 
             if (search) {
+                const searchLower = search.toLowerCase()
+                let statusFilter = null
+
+                if (searchLower === 'true' || searchLower === '1') {
+                    statusFilter = true
+                } else if (searchLower === 'false' || searchLower === '0') {
+                    statusFilter = false
+                }
+
                 options.where = {
                     [Op.or]: [
                         { nama: { [Op.iLike]: `%${search}%` } },
                         { no_hp: { [Op.iLike]: `%${search}%` } },
-                        { no_kartu: { [Op.iLike]: `%${search}%` } },
                         {
                             '$perusahaan.nama$': { [Op.iLike]: `%${search}%` },
                         },
+
+                        ...(statusFilter !== null
+                            ? [
+                                  {
+                                      akses_tiket: statusFilter,
+                                      akses_kartu: statusFilter,
+                                  },
+                              ]
+                            : []),
+
+                        { no_kartu: { [Op.iLike]: `%${search}%` } },
+                        { tgl_input: { [Op.iLike]: `%${search}%` } },
                         {
                             '$produk_member.nama$': {
                                 [Op.iLike]: `%${search}%`,
                             },
                         },
+                        literal(`CAST("tarif" AS TEXT) ILIKE '%${search}%'`),
+                        literal(
+                            `CAST("biaya_member" AS TEXT) ILIKE '%${search}%'`
+                        ),
+                        literal(
+                            `CAST("biaya_kartu" AS TEXT) ILIKE '%${search}%'`
+                        ),
                         {
                             '$data_nomor_polisi.nomor_polisi$': {
                                 [Op.iLike]: `%${search}%`,

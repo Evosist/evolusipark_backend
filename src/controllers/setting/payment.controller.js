@@ -36,8 +36,7 @@ module.exports = {
 
             const allowedSortColumns = [
                 'id',
-                'payment_id',
-                'payment_type',
+                'jenis_payment',
                 'payment_status',
                 'createdAt',
                 'updatedAt',
@@ -53,8 +52,7 @@ module.exports = {
 
             if (search) {
                 options.where[Op.or] = [
-                    { payment_id: { [Op.iLike]: `%${search}%` } },
-                    { payment_type: { [Op.iLike]: `%${search}%` } },
+                    { jenis_payment: { [Op.iLike]: `%${search}%` } },
                     { payment_status: { [Op.iLike]: `%${search}%` } },
                 ]
             }

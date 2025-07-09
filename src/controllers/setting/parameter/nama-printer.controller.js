@@ -12,7 +12,12 @@ module.exports = {
             const sortOrder =
                 req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
 
-            const allowedSortColumns = ['id', 'nama', 'createdAt', 'updatedAt']
+            const allowedSortColumns = [
+                'id',
+                'nama_printer',
+                'createdAt',
+                'updatedAt',
+            ]
             const validSortBy = allowedSortColumns.includes(sortBy)
                 ? sortBy
                 : 'id'
@@ -23,7 +28,9 @@ module.exports = {
             }
 
             if (search) {
-                options.where[Op.or] = [{ nama: { [Op.iLike]: `%${search}%` } }]
+                options.where[Op.or] = [
+                    { nama_printer: { [Op.iLike]: `%${search}%` } },
+                ]
             }
 
             if (limit) {

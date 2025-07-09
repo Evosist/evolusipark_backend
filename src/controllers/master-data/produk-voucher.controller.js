@@ -1,3 +1,4 @@
+const { literal } = require('sequelize')
 const errorhandler = require('../../helpers/errorhandler.helper')
 const { produk_voucher, user } = require('../../models/index')
 
@@ -29,7 +30,33 @@ module.exports = {
             }
 
             if (search) {
-                options.where[Op.or] = [{ nama: { [Op.iLike]: `%${search}%` } }]
+                const searchLower = search.toLowerCase()
+                let statusFilter = null
+
+                if (searchLower === 'true' || searchLower === '1') {
+                    statusFilter = true
+                } else if (searchLower === 'false' || searchLower === '0') {
+                    statusFilter = false
+                }
+
+                options.where[Op.or] = [
+                    { nama: { [Op.iLike]: `%${search}%` } },
+                    literal(`CAST("periode" AS TEXT) ILIKE '%${search}%'`),
+                    literal(
+                        `CAST("list_id_kendaraan" AS TEXT) ILIKE '%${search}%'`
+                    ),
+                    literal(`CAST("tarif" AS TEXT) ILIKE '%${search}%'`),
+                    { model_pembayaran: { [Op.iLike]: `%${search}%` } },
+                    { metode_verifikasi: { [Op.iLike]: `%${search}%` } },
+                    ...(statusFilter !== null
+                        ? [
+                              {
+                                  status: statusFilter,
+                              },
+                          ]
+                        : []),
+                    { '$user.nama$': { [Op.iLike]: `%${search}%` } },
+                ]
             }
 
             if (limit) {

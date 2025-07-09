@@ -8,6 +8,7 @@ const {
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
+const { literal } = require('sequelize')
 const Op = require('sequelize').Op
 
 // Utility to fill the HTML template
@@ -47,9 +48,14 @@ module.exports = {
             const allowedSortColumns = [
                 'id',
                 'nama',
+                'periode',
+                'list_id_kendaraan',
+                'max_kendaraan',
                 'tarif',
                 'biaya_kartu',
                 'biaya_ganti_nopol',
+                'status',
+                'user_id',
                 'createdAt',
                 'updatedAt',
             ]
@@ -81,10 +87,37 @@ module.exports = {
             }
 
             if (search) {
+                const searchLower = search.toLowerCase()
+                let statusFilter = null
+
+                if (searchLower === 'true' || searchLower === '1') {
+                    statusFilter = true
+                } else if (searchLower === 'false' || searchLower === '0') {
+                    statusFilter = false
+                }
+
                 options.where[Op.or] = [
                     { nama: { [Op.iLike]: `%${search}%` } },
-                    { '$user.nama$': { [Op.iLike]: `%${search}%` } },
-                    { '$data_member.nama$': { [Op.iLike]: `%${search}%` } },
+                    literal(`CAST("periode" AS TEXT) ILIKE '%${search}%'`),
+                    literal(
+                        `CAST("list_id_kendaraan" AS TEXT) ILIKE '%${search}%'`
+                    ),
+                    literal(
+                        `CAST("max_kendaraan" AS TEXT) ILIKE '%${search}%'`
+                    ),
+                    literal(`CAST("tarif" AS TEXT) ILIKE '%${search}%'`),
+                    literal(`CAST("biaya_kartu" AS TEXT) ILIKE '%${search}%'`),
+                    literal(
+                        `CAST("biaya_ganti_nopol" AS TEXT) ILIKE '%${search}%'`
+                    ),
+
+                    ...(statusFilter !== null
+                        ? [
+                              {
+                                  status: statusFilter,
+                              },
+                          ]
+                        : []),
                 ]
             }
 

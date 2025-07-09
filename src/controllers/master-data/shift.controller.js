@@ -4,6 +4,7 @@ const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
 const dayjs = require('dayjs')
+const { literal } = require('sequelize')
 const Op = require('sequelize').Op
 
 // Utility to fill the HTML template
@@ -61,8 +62,26 @@ module.exports = {
             }
 
             if (search) {
+                const searchLower = search.toLowerCase()
+                let statusFilter = null
+
+                if (searchLower === 'true' || searchLower === '1') {
+                    statusFilter = true
+                } else if (searchLower === 'false' || searchLower === '0') {
+                    statusFilter = false
+                }
+
                 options.where[Op.or] = [
-                    { nama: { [Op.iLike]: `%${search}%` } },
+                    { nama_shift: { [Op.iLike]: `%${search}%` } },
+                    literal(`CAST("awal_shift" AS TEXT) ILIKE '%${search}%'`),
+                    literal(`CAST("akhir_shift" AS TEXT) ILIKE '%${search}%'`),
+                    ...(statusFilter !== null
+                        ? [
+                              {
+                                  status: statusFilter,
+                              },
+                          ]
+                        : []),
                     { '$user.nama$': { [Op.iLike]: `%${search}%` } },
                 ]
             }

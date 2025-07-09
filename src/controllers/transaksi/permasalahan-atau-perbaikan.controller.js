@@ -4,6 +4,7 @@ const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
 const dayjs = require('dayjs')
+const { literal } = require('sequelize')
 const Op = require('sequelize').Op
 
 // Utility to fill the HTML template
@@ -73,9 +74,23 @@ module.exports = {
 
             if (search) {
                 options.where[Op.or] = [
-                    { nama: { [Op.iLike]: `%${search}%` } },
-                    { deskripsi: { [Op.iLike]: `%${search}%` } },
-                    { '$pos.nama$': { [Op.iLike]: `%${search}%` } },
+                    { judul_permasalahan: { [Op.iLike]: `%${search}%` } },
+                    { tanggal_permasalahan: { [Op.iLike]: `%${search}%` } },
+                    { kategori_permasalahan: { [Op.iLike]: `%${search}%` } },
+                    literal(
+                        `pos.keterangan ILIKE '%${search}%' OR pos.nama ILIKE '%${search}%'`
+                    ),
+                    { hardware_atau_alat: { [Op.iLike]: `%${search}%` } },
+                    { penyebab_permasalahan: { [Op.iLike]: `%${search}%` } },
+                    { keterangan_permasalahan: { [Op.iLike]: `%${search}%` } },
+                    { nama_pelapor: { [Op.iLike]: `%${search}%` } },
+                    { status_permasalahan: { [Op.iLike]: `%${search}%` } },
+                    { tanggal_perbaikan: { [Op.iLike]: `%${search}%` } },
+                    { jenis_perbaikan: { [Op.iLike]: `%${search}%` } },
+                    { status_perbaikan: { [Op.iLike]: `%${search}%` } },
+                    { penangangan: { [Op.iLike]: `%${search}%` } },
+                    { keterangan_penanganan: { [Op.iLike]: `%${search}%` } },
+                    { nama_yang_menangani: { [Op.iLike]: `%${search}%` } },
                 ]
             }
 

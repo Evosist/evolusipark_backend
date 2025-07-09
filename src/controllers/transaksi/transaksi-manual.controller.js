@@ -1,3 +1,4 @@
+const { literal } = require('sequelize')
 const errorhandler = require('../../helpers/errorhandler.helper')
 const {
     transaksi_manual,
@@ -91,26 +92,100 @@ module.exports = {
             }
 
             if (search) {
+                const searchLower = search.toLowerCase()
+                let statusFilter = null
+
+                if (searchLower === 'true' || searchLower === '1') {
+                    statusFilter = true
+                } else if (searchLower === 'false' || searchLower === '0') {
+                    statusFilter = false
+                }
+
                 options.where[Op.or] = [
-                    { nopol: { [Op.iLike]: `%${search}%` } },
-                    { nomor_kartu: { [Op.iLike]: `%${search}%` } },
-                    { '$pintu_masuk.nama$': { [Op.iLike]: `%${search}%` } },
-                    { '$pintu_keluar.nama$': { [Op.iLike]: `%${search}%` } },
-                    { '$kendaraan.nopol$': { [Op.iLike]: `%${search}%` } },
+                    literal(
+                        `CAST("tanggal_masuk" AS TEXT) ILIKE '%${search}%'`
+                    ),
                     {
-                        '$kendaraan.tipe_kendaraan.tipe_kendaraan$': {
-                            [Op.iLike]: `%${search}%`,
-                        },
-                    },
-                    { '$shift.nama$': { [Op.iLike]: `%${search}%` } },
-                    { '$petugas.nama$': { [Op.iLike]: `%${search}%` } },
-                    {
-                        '$jenis_pembayaran.payment_id$': {
+                        '$pintu_masuk.keterangan$': {
                             [Op.iLike]: `%${search}%`,
                         },
                     },
                     {
-                        '$jenis_pembayaran.payment_type$': {
+                        no_tiket_atau_tiket_manual: {
+                            [Op.iLike]: `%${search}%`,
+                        },
+                    },
+                    {
+                        '$kendaraan.nama_kendaraan$': {
+                            [Op.iLike]: `%${search}%`,
+                        },
+                    },
+                    { nomor_polisi: { [Op.iLike]: `%${search}%` } },
+                    {
+                        '$pintu_keluar.keterangan$': {
+                            [Op.iLike]: `%${search}%`,
+                        },
+                    },
+                    {
+                        tanggal_keluar: {
+                            [Op.iLike]: `%${search}%`,
+                        },
+                    },
+                    {
+                        '$petugas.nama$': {
+                            [Op.iLike]: `%${search}%`,
+                        },
+                    },
+                    {
+                        '$shift.nama_shift$': {
+                            [Op.iLike]: `%${search}%`,
+                        },
+                    },
+
+                    ...(statusFilter !== null
+                        ? [{ denda: statusFilter, is_active: statusFilter }]
+                        : []),
+
+                    {
+                        '$kendaraan.nama_kendaraan$': {
+                            [Op.iLike]: `%${search}%`,
+                        },
+                    },
+
+                    {
+                        '$tipe_denda.tipe_denda$': {
+                            [Op.iLike]: `%${search}%`,
+                        },
+                    },
+
+                    {
+                        '$jenis_pembayaran.jenis_payment$': {
+                            [Op.iLike]: `%${search}%`,
+                        },
+                    },
+
+                    {
+                        parkir: {
+                            [Op.iLike]: `%${search}%`,
+                        },
+                    },
+
+                    literal(
+                        `CAST("jumlah_denda_stnk" AS TEXT) ILIKE '%${search}%'`
+                    ),
+
+                    literal(
+                        `CAST("jumlah_denda_tiket" AS TEXT) ILIKE '%${search}%'`
+                    ),
+
+                    {
+                        interval: {
+                            [Op.iLike]: `%${search}%`,
+                        },
+                    },
+
+                    {
+                        keterangan_atau_penjelasan: {
                             [Op.iLike]: `%${search}%`,
                         },
                     },

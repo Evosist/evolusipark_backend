@@ -14,8 +14,7 @@ module.exports = {
 
             const allowedSortColumns = [
                 'id',
-                'nama',
-                'biaya',
+                'tipe_denda',
                 'createdAt',
                 'updatedAt',
             ]
@@ -25,20 +24,12 @@ module.exports = {
 
             const options = {
                 where: {},
-                include: [
-                    {
-                        model: user,
-                        as: 'user',
-                        attributes: ['id', 'nama'],
-                    },
-                ],
                 order: [[validSortBy, sortOrder]],
             }
 
             if (search) {
                 options.where[Op.or] = [
-                    { nama: { [Op.iLike]: `%${search}%` } },
-                    { '$user.nama$': { [Op.iLike]: `%${search}%` } },
+                    { tipe_denda: { [Op.iLike]: `%${search}%` } },
                 ]
             }
 

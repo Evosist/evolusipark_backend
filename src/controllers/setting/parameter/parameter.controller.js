@@ -53,7 +53,8 @@ module.exports = {
             if (search) {
                 options.where[Op.or] = [
                     { nama: { [Op.iLike]: `%${search}%` } },
-                    { value: { [Op.iLike]: `%${search}%` } },
+                    { nilai: { [Op.iLike]: `%${search}%` } },
+                    { keterangan: { [Op.iLike]: `%${search}%` } },
                 ]
             }
 

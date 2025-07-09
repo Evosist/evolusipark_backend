@@ -1,10 +1,11 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { tarif_denda, kendaraan } = require('../../models/index')
+const { tarif_denda, kendaraan, tipe_kendaraan } = require('../../models/index')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
 const dayjs = require('dayjs')
 const Op = require('sequelize').Op
+const { literal } = require('sequelize')
 
 // Utility to fill the HTML template
 function generateTableRows(data) {
@@ -14,15 +15,10 @@ function generateTableRows(data) {
     <tr>
       <td>${item.no}</td>
       <td>${item.kendaraan.nama}</td>
-      <td>${item.grace_period}</td>
-      <td>${item.tarif_grace_period}</td>
-      <td>${item.rotasi_pertama}</td>
-      <td>${item.tarif_rotasi_pertama}</td>
-      <td>${item.rotasi_kedua}</td>
-      <td>${item.tarif_rotasi_kedua}</td>
-      <td>${item.rotasi_ketiga}</td>
-      <td>${item.tarif_rotasi_ketiga}</td>
-      <td>${item.tarif_maksimal}</td>
+      <td>${item.denda_tiket}</td>
+      <td>${item.denda_stnk}</td>
+      <td>${item.denda_member}</td>
+      <td>${item.status}</td>
       <td>${item.created}</td>
       <td>${item.updated}</td>
     </tr>
@@ -44,8 +40,11 @@ module.exports = {
 
             const allowedSortColumns = [
                 'id',
-                'nama',
-                'biaya',
+                'kendaraan_id',
+                'denda_tiket',
+                'denda_stnk',
+                'denda_member',
+                'status',
                 'createdAt',
                 'updatedAt',
             ]
@@ -59,7 +58,12 @@ module.exports = {
                     {
                         model: kendaraan,
                         as: 'kendaraan',
-                        attributes: ['id', 'nopol', 'tipe_kendaraan_id'],
+                        attributes: [
+                            'id',
+                            'nama_kendaraan',
+                            'tipe_kendaraan_id',
+                            'status',
+                        ],
                         include: [
                             {
                                 model: tipe_kendaraan,
@@ -73,9 +77,29 @@ module.exports = {
             }
 
             if (search) {
+                const searchLower = search.toLowerCase()
+                let statusFilter = null
+
+                if (searchLower === 'true' || searchLower === '1') {
+                    statusFilter = true
+                } else if (searchLower === 'false' || searchLower === '0') {
+                    statusFilter = false
+                }
+
                 options.where[Op.or] = [
-                    { nama: { [Op.iLike]: `%${search}%` } },
-                    { '$kendaraan.nopol$': { [Op.iLike]: `%${search}%` } },
+                    literal(`CAST("denda_tiket" AS TEXT) ILIKE '%${search}%'`),
+                    literal(`CAST("denda_stnk" AS TEXT) ILIKE '%${search}%'`),
+                    literal(`CAST("denda_member" AS TEXT) ILIKE '%${search}%'`),
+
+                    ...(statusFilter !== null
+                        ? [{ status: statusFilter }]
+                        : []),
+
+                    {
+                        '$kendaraan.nama_kendaraan$': {
+                            [Op.iLike]: `%${search}%`,
+                        },
+                    },
                     {
                         '$kendaraan.tipe_kendaraan.tipe_kendaraan$': {
                             [Op.iLike]: `%${search}%`,

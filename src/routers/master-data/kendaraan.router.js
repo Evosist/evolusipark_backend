@@ -4,10 +4,6 @@ const kendaraanController = require('../../controllers/master-data/kendaraan.con
 kendaraanRouter.get('/', kendaraanController.getAll)
 kendaraanRouter.get('/pdf', kendaraanController.generatePdf)
 kendaraanRouter.get('/excel', kendaraanController.generateExcel)
-kendaraanRouter.get(
-    '/all',
-    kendaraanController.getAllKendaraanDataWithoutPagination
-)
 kendaraanRouter.get('/:id', kendaraanController.findOneById)
 kendaraanRouter.post('/', kendaraanController.create)
 kendaraanRouter.patch('/:id', kendaraanController.update)
