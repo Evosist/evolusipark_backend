@@ -12,6 +12,12 @@ module.exports = (sequelize, DataTypes) => {
 
             aktivitas_gerbang_kendaraan.belongsTo(models.kendaraan, {
                 foreignKey: 'kendaraan_id',
+                as: 'kendaraan',
+            })
+
+            aktivitas_gerbang_kendaraan.belongsTo(models.user, {
+                foreignKey: 'petugas_id',
+                as: 'petugas',
             })
         }
     }
@@ -21,10 +27,10 @@ module.exports = (sequelize, DataTypes) => {
             plat_nomor: DataTypes.STRING,
             kendaraan_id: DataTypes.INTEGER,
             waktu: DataTypes.TIME,
-            lokasi_gerbang: DataTypes.STRING,
-            buka_atau_tutup: DataTypes.STRING,
-            petugas: DataTypes.STRING,
-            status_palang: DataTypes.STRING,
+            lokasi_gerbang: DataTypes.ENUM('Masuk', 'Keluar'),
+            buka_atau_tutup: DataTypes.ENUM('Terbuka', 'Tertutup'),
+            petugas_id: DataTypes.INTEGER,
+            status_palang: DataTypes.ENUM('Sukses', 'Gagal (Sensor)'),
         },
         {
             sequelize,
