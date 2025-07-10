@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             tiket: DataTypes.STRING,
             plat_nomor: DataTypes.STRING,
             kendaraan_id: DataTypes.INTEGER,
-            waktu: DataTypes.DATE,
+            waktu: DataTypes.TIME,
             lokasi_gerbang: DataTypes.STRING,
             buka_atau_tutup: DataTypes.STRING,
             petugas: DataTypes.STRING,

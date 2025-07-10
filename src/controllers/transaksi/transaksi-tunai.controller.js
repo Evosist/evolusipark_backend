@@ -350,6 +350,7 @@ module.exports = {
                     },
                 }
             )
+
             return res.json({
                 success: true,
                 message: 'Update transaksi tunai successfully',
