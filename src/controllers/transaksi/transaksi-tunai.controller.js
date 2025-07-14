@@ -45,17 +45,21 @@ module.exports = {
                     {
                         model: pos,
                         as: 'pintu_masuk',
-                        attributes: ['id', 'nama'],
+                        attributes: ['id', 'keterangan'],
                     },
                     {
                         model: pos,
                         as: 'pintu_keluar',
-                        attributes: ['id', 'nama'],
+                        attributes: ['id', 'keterangan'],
                     },
                     {
                         model: kendaraan,
                         as: 'kendaraan',
-                        attributes: ['id', 'nopol', 'tipe_kendaraan_id'],
+                        attributes: [
+                            'id',
+                            'nama_kendaraan',
+                            'tipe_kendaraan_id',
+                        ],
                         include: [
                             {
                                 model: tipe_kendaraan,
@@ -67,12 +71,22 @@ module.exports = {
                     {
                         model: shift,
                         as: 'shift',
-                        attributes: ['id', 'nama', 'jam_masuk', 'jam_keluar'],
+                        attributes: [
+                            'id',
+                            'nama_shift',
+                            'awal_shift',
+                            'akhir_shift',
+                        ],
                     },
                     {
                         model: user,
                         as: 'petugas',
                         attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: payment,
+                        as: 'jenis_pembayaran',
+                        attributes: ['id', 'jenis_payment', 'status'],
                     },
                 ],
                 order: [[validSortBy, sortOrder]],

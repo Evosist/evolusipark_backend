@@ -10,6 +10,7 @@ const {
     tarif_denda,
     payment,
     laporan_transaksi_batal_laporan,
+    tipe_kendaraan,
 } = require('../../models/index')
 const dayjs = require('dayjs')
 const relativeTime = require('dayjs/plugin/relativeTime')
@@ -48,17 +49,21 @@ module.exports = {
                     {
                         model: pos,
                         as: 'pintu_masuk',
-                        attributes: ['id', 'nama'],
+                        attributes: ['id', 'keterangan'],
                     },
                     {
                         model: pos,
                         as: 'pintu_keluar',
-                        attributes: ['id', 'nama'],
+                        attributes: ['id', 'keterangan'],
                     },
                     {
                         model: kendaraan,
                         as: 'kendaraan',
-                        attributes: ['id', 'nopol', 'tipe_kendaraan_id'],
+                        attributes: [
+                            'id',
+                            'nama_kendaraan',
+                            'tipe_kendaraan_id',
+                        ],
                         include: [
                             {
                                 model: tipe_kendaraan,
@@ -70,7 +75,12 @@ module.exports = {
                     {
                         model: shift,
                         as: 'shift',
-                        attributes: ['id', 'nama', 'jam_masuk', 'jam_keluar'],
+                        attributes: [
+                            'id',
+                            'nama_shift',
+                            'awal_shift',
+                            'akhir_shift',
+                        ],
                     },
                     {
                         model: user,
@@ -80,12 +90,7 @@ module.exports = {
                     {
                         model: payment,
                         as: 'jenis_pembayaran',
-                        attributes: [
-                            'id',
-                            'payment_id',
-                            'payment_type',
-                            'payment_status',
-                        ],
+                        attributes: ['id', 'jenis_payment', 'status'],
                     },
                 ],
                 order: [[validSortBy, sortOrder]],
