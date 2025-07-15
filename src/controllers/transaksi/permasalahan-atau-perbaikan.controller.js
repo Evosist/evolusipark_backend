@@ -66,7 +66,7 @@ module.exports = {
                     {
                         model: pos,
                         as: 'pos',
-                        attributes: ['id', 'nama'],
+                        attributes: ['id', 'keterangan'],
                     },
                 ],
                 order: [[validSortBy, sortOrder]],

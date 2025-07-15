@@ -7,6 +7,8 @@ const {
     shift,
     tarif_parkir,
     tarif_denda,
+    tipe_kendaraan,
+    payment,
 } = require('../../models/index')
 const dayjs = require('dayjs')
 const relativeTime = require('dayjs/plugin/relativeTime')
