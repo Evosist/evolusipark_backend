@@ -31,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
             buka_atau_tutup: DataTypes.ENUM('Terbuka', 'Tertutup'),
             petugas_id: DataTypes.INTEGER,
             status_palang: DataTypes.ENUM('Sukses', 'Gagal (Sensor)'),
+            tipe_gerbang: DataTypes.ENUM('In', 'Out'),
         },
         {
             sequelize,

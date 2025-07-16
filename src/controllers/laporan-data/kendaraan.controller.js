@@ -1,103 +1,96 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
 const { sequelize } = require('../../models/index')
+const { QueryTypes } = require('sequelize')
 
 module.exports = {
     getAllDataKendaraanIn: async (req, res) => {
         try {
             let {
-                page = 1,
-                limit = 10,
-                search = '',
-                sortOrder = 'DESC',
-                sortBy = 'tanggalMasuk',
                 start_date,
                 end_date,
+                search,
+                sortBy = 'tanggal_masuk',
+                sortOrder = 'DESC',
+                limit = 10,
+                page = 1,
             } = req.query
 
-            page = parseInt(page)
             limit = parseInt(limit)
+            page = parseInt(page)
             const offset = (page - 1) * limit
 
-            const startDate = start_date ? `'${start_date}'` : `'1970-01-01'`
-            const endDate = end_date ? `'${end_date}'` : `'2100-01-01'`
+            // kolom yang diizinkan untuk sort
+            const allowedSort = [
+                'tanggal_masuk',
+                'no_tiket_atau_tiket_manual',
+                'nomor_polisi',
+            ]
+            if (!allowedSort.includes(sortBy)) sortBy = 'tanggal_masuk'
+            if (!['ASC', 'DESC'].includes(sortOrder.toUpperCase()))
+                sortOrder = 'DESC'
 
-            const replacements = {
-                search: `%${search}%`,
-                limit,
-                offset,
+            // base condition
+            let whereClause = `WHERE t.tanggal_keluar IS NULL`
+
+            if (start_date && end_date) {
+                whereClause += ` AND DATE(t.tanggal_masuk) BETWEEN '${start_date}' AND '${end_date}'`
             }
 
-            const baseQuery = (table, isManual) => `
-            SELECT
-              t.id,
-              t.no_tiket_atau_tiket_manual AS "noTiket",
-              t.nomor_polisi AS "nopol",
-              k.nama_kendaraan AS "jenisKendaraan",
-              pm.kode AS "pintuMasuk",
-              t.tanggal_masuk AS "tanggalMasuk",
-              NULL AS "tanggalKeluar",
-              NULL AS "pintuKeluar",
-              CONCAT(EXTRACT(HOUR FROM NOW() - t.tanggal_masuk), ' jam ', EXTRACT(MINUTE FROM NOW() - t.tanggal_masuk), ' menit') AS "durasiParkir",
-              CONCAT('Rp ', t.parkir) AS "tarif",
-              CASE
-                WHEN dm.periode @> CURRENT_DATE THEN 'Ya'
-                ELSE 'Tidak'
-              END AS "statusMember",
-              COALESCE(p.nama, '-') AS "asalPerusahaan",
-              ${isManual} AS "isManual"
-            FROM ${table} t
-            LEFT JOIN kendaraans k ON t.kendaraan_id = k.id
-            LEFT JOIN pos pm ON t.pintu_masuk_id = pm.id
-            LEFT JOIN data_nomor_polisis dnp ON dnp.kendaraan_id = t.kendaraan_id
-            LEFT JOIN data_members dm ON dm.id = dnp.data_member_id
-            LEFT JOIN perusahaans p ON p.id = dm.perusahaan_id
-            WHERE t.tanggal_keluar IS NULL
-              AND (t.no_tiket_atau_tiket_manual ILIKE :search OR t.nomor_polisi ILIKE :search)
-              AND t."createdAt" BETWEEN ${startDate} AND ${endDate}
-            `
+            if (search) {
+                whereClause += ` AND (t.no_tiket_atau_tiket_manual ILIKE '%${search}%' OR t.nomor_polisi ILIKE '%${search}%')`
+            }
 
-            const fullQuery = `
-              (${baseQuery('transaksi_tunais', `'Tidak'`)})
-              UNION ALL
-              (${baseQuery('transaksi_manuals', `'Ya'`)})
-              ORDER BY "tanggalMasuk" ${sortOrder}
-              LIMIT :limit OFFSET :offset;
-            `
-
+            // hitung total
             const countQuery = `
-            SELECT COUNT(*) AS total FROM (
-              (${baseQuery('transaksi_tunais', `'Tidak'`)})
-              UNION ALL
-              (${baseQuery('transaksi_manuals', `'Ya'`)})
-            ) AS sub;
+            SELECT COUNT(*) AS total
+            FROM transaksi_tunais t
+            ${whereClause}
             `
 
-            const data = await sequelize.query(fullQuery, {
-                replacements,
-                type: sequelize.QueryTypes.SELECT,
+            // ambil data
+            const dataQuery = `
+            SELECT 
+              t.id,
+              t.no_tiket_atau_tiket_manual AS no_tiket,
+              t.tanggal_masuk,
+              t.tanggal_keluar,
+              t.nomor_polisi AS nopol,
+              k.nama_kendaraan AS jenis_kendaraan,
+              t.pintu_masuk_id,
+              t.pintu_keluar_id,
+              t.parkir AS durasi_parkir,
+              t.jumlah_denda_tiket,
+              t.jumlah_denda_stnk
+            FROM transaksi_tunais t
+            LEFT JOIN kendaraans k ON k.id = t.kendaraan_id
+            ${whereClause}
+            ORDER BY ${sortBy} ${sortOrder}
+            LIMIT ${limit} OFFSET ${offset}
+            `
+
+            const totalResult = await sequelize.query(countQuery, {
+                type: QueryTypes.SELECT,
+            })
+            const rows = await sequelize.query(dataQuery, {
+                type: QueryTypes.SELECT,
             })
 
-            const countResult = await sequelize.query(countQuery, {
-                replacements,
-                type: sequelize.QueryTypes.SELECT,
-            })
-
-            const totalData = parseInt(countResult[0].total)
+            const totalData = parseInt(totalResult[0].total, 10)
             const totalPages = Math.ceil(totalData / limit)
 
-            return res.status(200).json({
+            res.json({
                 success: true,
                 message: 'Get all kendaraan in successfully',
                 results: {
-                    data,
+                    data: rows,
                     totalData,
                     totalPages,
                     currentPage: page,
                     pageSize: limit,
                 },
             })
-        } catch (error) {
-            return errorhandler(res, error)
+        } catch (err) {
+            return errorhandler(res, err)
         }
     },
     getAllDataKendaraanOut: async (req, res) => {
