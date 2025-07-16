@@ -19,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'petugas_id',
                 as: 'petugas',
             })
+
+            aktivitas_gerbang_kendaraan.belongsTo(models.data_member, {
+                foreignKey: 'data_member_id',
+                as: 'data_member',
+            })
         }
     }
     aktivitas_gerbang_kendaraan.init(
@@ -32,6 +37,7 @@ module.exports = (sequelize, DataTypes) => {
             petugas_id: DataTypes.INTEGER,
             status_palang: DataTypes.ENUM('Sukses', 'Gagal (Sensor)'),
             tipe_gerbang: DataTypes.ENUM('In', 'Out'),
+            data_member_id: DataTypes.INTEGER,
         },
         {
             sequelize,

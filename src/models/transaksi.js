@@ -48,18 +48,15 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'id_data_voucher',
                 as: 'data_voucher',
             })
-
-            transaksi.belongsTo(models.jenis_transaksi, {
-                foreignKey: 'jenis_transaksi_id',
-                as: 'jenis_transaksi',
-            })
         }
     }
     transaksi.init(
         {
             tanggal_masuk: DataTypes.DATE,
             pintu_masuk_id: DataTypes.INTEGER,
-            no_tiket_atau_tiket_manual: DataTypes.STRING,
+            no_tiket: DataTypes.STRING,
+            is_member: DataTypes.BOOLEAN,
+            is_manual: DataTypes.BOOLEAN,
             kendaraan_id: DataTypes.INTEGER,
             nomor_polisi: DataTypes.STRING,
             pintu_keluar_id: DataTypes.INTEGER,
@@ -84,7 +81,6 @@ module.exports = (sequelize, DataTypes) => {
             },
             interval: DataTypes.STRING,
             keterangan_atau_penjelasan: DataTypes.STRING,
-            jenis_transaksi_id: DataTypes.INTEGER,
         },
         {
             sequelize,
