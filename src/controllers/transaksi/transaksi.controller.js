@@ -1,16 +1,14 @@
-const { literal } = require('sequelize')
 const errorhandler = require('../../helpers/errorhandler.helper')
 const {
-    transaksi_manual,
+    transaksi,
     pos,
     kendaraan,
     user,
     shift,
     tarif_parkir,
     tarif_denda,
-    payment,
-    laporan_transaksi_batal_laporan,
     tipe_kendaraan,
+    payment,
 } = require('../../models/index')
 const dayjs = require('dayjs')
 const relativeTime = require('dayjs/plugin/relativeTime')
@@ -202,13 +200,11 @@ module.exports = {
                 options.offset = offset
             }
 
-            const { count, rows } = await transaksi_manual.findAndCountAll(
-                options
-            )
+            const { count, rows } = await transaksi.findAndCountAll(options)
 
             return res.json({
                 success: true,
-                message: 'Get all transaksi manual successfully',
+                message: 'Get all transaksi successfully',
                 results: {
                     data: rows,
                     totalData: count,
@@ -308,7 +304,7 @@ module.exports = {
                 }
             }
 
-            const data = await transaksi_manual.create({
+            const data = await transaksi.create({
                 ...req.body,
                 parkir: biaya,
                 jumlah_denda_tiket: biayaDendaTiket,
@@ -318,29 +314,7 @@ module.exports = {
 
             return res.json({
                 success: true,
-                message: 'Create transaksi manual successfully',
-                results: data,
-            })
-        } catch (err) {
-            return errorhandler(res, err)
-        }
-    },
-    createLaporan: async (req, res) => {
-        try {
-            const dataTransaksi = await transaksi_manual.findOne({
-                where: {
-                    no_tiket_atau_tiket_manual:
-                        req.body.no_tiket_atau_tiket_manual,
-                },
-            })
-
-            const data = await laporan_transaksi_batal_laporan.create({
-                ...req.body,
-                no_tiket: dataTransaksi.no_tiket,
-            })
-            return res.json({
-                success: true,
-                message: 'Create laporan transaksi manual successfully',
+                message: 'Create transaksi tunai successfully',
                 results: data,
             })
         } catch (err) {
@@ -349,41 +323,14 @@ module.exports = {
     },
     findOneById: async (req, res) => {
         try {
-            const data = await transaksi_manual.findAll({
+            const data = await transaksi.findAll({
                 where: {
                     id: req.params.id,
                 },
-                include: [
-                    {
-                        model: pos,
-                        as: 'pintu_masuk',
-                    },
-                    {
-                        model: pos,
-                        as: 'pintu_keluar',
-                    },
-                    {
-                        model: kendaraan,
-                        as: 'kendaraan',
-                    },
-                    {
-                        model: shift,
-                        as: 'shift',
-                    },
-                    {
-                        model: user,
-                        as: 'petugas',
-                        attributes: ['id', 'nama'],
-                    },
-                    {
-                        model: payment,
-                        as: 'jenis_pembayaran',
-                    },
-                ],
             })
             return res.json({
                 success: true,
-                message: 'Get transaksi manual successfully',
+                message: 'Get transaksi tunai successfully',
                 results: data,
             })
         } catch (err) {
@@ -392,14 +339,14 @@ module.exports = {
     },
     update: async (req, res) => {
         try {
-            const data = await transaksi_manual.update(req.body, {
+            const data = await transaksi.update(req.body, {
                 where: {
                     id: req.params.id,
                 },
             })
             return res.json({
                 success: true,
-                message: 'Update transaksi manual successfully',
+                message: 'Update transaksi tunai successfully',
                 results: data,
             })
         } catch (err) {
@@ -408,7 +355,7 @@ module.exports = {
     },
     updateTransaksi: async (req, res) => {
         try {
-            const data = await transaksi_manual.update(
+            const data = await transaksi.update(
                 { ...req.body, is_active: false },
                 {
                     where: {
@@ -418,26 +365,9 @@ module.exports = {
                 }
             )
 
-            const dataTransaksi = await transaksi_manual.findOne({
-                where: {
-                    no_tiket_atau_tiket_manual:
-                        req.query.no_tiket_atau_tiket_manual,
-                },
-            })
-
-            await laporan_transaksi_batal_laporan.create({
-                no: dataTransaksi.no,
-                no_tiket: req.query.no_tiket_atau_tiket_manual,
-                tanggal_masuk: dataTransaksi.tanggal_masuk,
-                pintu_masuk_id: dataTransaksi.pintu_masuk.keterangan,
-                tanggal_pembatalan: req.body.alasan_pembatalan,
-                alasan_pembatalan: req.body.alasan_pembatalan,
-                user_id: dataTransaksi.user_id,
-            })
-
             return res.json({
                 success: true,
-                message: 'Update transaksi manual successfully',
+                message: 'Update transaksi tunai successfully',
                 results: data,
             })
         } catch (err) {
@@ -446,14 +376,14 @@ module.exports = {
     },
     delete: async (req, res) => {
         try {
-            const data = await transaksi_manual.destroy({
+            const data = await transaksi.destroy({
                 where: {
                     id: req.params.id,
                 },
             })
             return res.json({
                 success: true,
-                message: 'Delete transaksi manual successfully',
+                message: 'Delete transaksi tunai successfully',
                 results: data,
             })
         } catch (err) {

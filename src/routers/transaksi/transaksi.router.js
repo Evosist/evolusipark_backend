@@ -1,10 +1,12 @@
-const router = require('express').Router()
-const transaksiManualRouter = require('./transaksi-manual.router')
-const transaksiTunaiRouter = require('./transaksi-tunai.router')
-const permasalahanAtauPerbaikanRouter = require('./permasalahan-atau-perbaikan.router')
+const transaksiRouter = require('express').Router()
+const transaksiController = require('../../controllers/transaksi/transaksi.controller')
 
-router.use('/manual', transaksiManualRouter)
-router.use('/tunai', transaksiTunaiRouter)
-router.use('/permasalahan-atau-perbaikan', permasalahanAtauPerbaikanRouter)
+transaksiRouter.get('/', transaksiController.getAll)
+transaksiRouter.get('/:id', transaksiController.findOneById)
+transaksiRouter.post('/', transaksiController.create)
+transaksiRouter.post('/laporan', transaksiController.createLaporan)
+transaksiRouter.patch('/cancel-transaksi', transaksiController.updateTransaksi)
+transaksiRouter.patch('/:id', transaksiController.update)
+transaksiRouter.delete('/:id', transaksiController.delete)
 
-module.exports = router
+module.exports = transaksiRouter
