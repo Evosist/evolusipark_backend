@@ -55,7 +55,6 @@ module.exports = (sequelize, DataTypes) => {
             tanggal_masuk: DataTypes.DATE,
             pintu_masuk_id: DataTypes.INTEGER,
             no_tiket: DataTypes.STRING,
-            is_member: DataTypes.BOOLEAN,
             is_manual: DataTypes.BOOLEAN,
             kendaraan_id: DataTypes.INTEGER,
             nomor_polisi: DataTypes.STRING,

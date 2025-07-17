@@ -17,8 +17,8 @@ module.exports = {
             'level_penggunas',
             [
                 {
-                    id: 1,
-                    nama: 'Super Admin',
+                    id: 2,
+                    nama: 'Super Administrator',
                     hak_akses: JSON.stringify([
                         {
                             nama_menu: 'Dashboard',
