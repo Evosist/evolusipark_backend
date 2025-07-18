@@ -10,6 +10,7 @@ const {
     tipe_kendaraan,
     payment,
     data_voucher,
+    data_member,
 } = require('../../models/index')
 const dayjs = require('dayjs')
 const relativeTime = require('dayjs/plugin/relativeTime')
@@ -94,6 +95,10 @@ module.exports = {
                     {
                         model: data_voucher,
                         as: 'data_voucher',
+                    },
+                    {
+                        model: data_member,
+                        as: 'data_member',
                     },
                 ],
                 order: [[validSortBy, sortOrder]],
