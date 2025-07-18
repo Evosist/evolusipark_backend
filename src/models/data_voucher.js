@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             })
         }
     }
+
     data_voucher.init(
         {
             produk_voucher_id: DataTypes.INTEGER,
@@ -31,7 +32,8 @@ module.exports = (sequelize, DataTypes) => {
             },
             model_bayar: DataTypes.ENUM('Check In', 'Check Out'),
             verifikasi: DataTypes.ENUM('Tiket', 'Nopol'),
-            no_tiket_atau_nopol: DataTypes.STRING,
+            no_tiket: { type: DataTypes.STRING, allowNull: true },
+            nomor_polisi: { type: DataTypes.STRING, allowNull: true },
             kendaraan_id: DataTypes.INTEGER,
             keterangan: DataTypes.STRING,
         },

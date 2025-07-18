@@ -9,6 +9,7 @@ const {
     tarif_denda,
     tipe_kendaraan,
     payment,
+    data_voucher,
 } = require('../../models/index')
 const dayjs = require('dayjs')
 const relativeTime = require('dayjs/plugin/relativeTime')
@@ -89,6 +90,10 @@ module.exports = {
                         model: payment,
                         as: 'jenis_pembayaran',
                         attributes: ['id', 'jenis_payment', 'status'],
+                    },
+                    {
+                        model: data_voucher,
+                        as: 'data_voucher',
                     },
                 ],
                 order: [[validSortBy, sortOrder]],
@@ -219,24 +224,16 @@ module.exports = {
     },
     create: async (req, res) => {
         try {
+            // ===============================
+            // Ambil data tarif parkir & denda
+            // ===============================
             const dataTarifParkir = await tarif_parkir.findOne({
-                where: {
-                    kendaraan_id: req.body.kendaraan_id,
-                },
+                where: { kendaraan_id: req.body.kendaraan_id },
             })
 
             const dataTarifDenda = await tarif_denda.findOne({
-                where: {
-                    kendaraan_id: req.body.kendaraan_id,
-                },
+                where: { kendaraan_id: req.body.kendaraan_id },
             })
-
-            if (!dataTarifDenda) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Tarif denda tidak ditemukan',
-                })
-            }
 
             if (!dataTarifParkir) {
                 return res.status(404).json({
@@ -245,6 +242,16 @@ module.exports = {
                 })
             }
 
+            if (!dataTarifDenda) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Tarif denda tidak ditemukan',
+                })
+            }
+
+            // ===============================
+            // Validasi waktu masuk & keluar
+            // ===============================
             const waktu_masuk = dayjs(req.body.tanggal_masuk).format(
                 'YYYY-MM-DD HH:mm:ss'
             )
@@ -253,9 +260,10 @@ module.exports = {
             )
 
             if (!waktu_masuk || !waktu_keluar) {
-                return res
-                    .status(400)
-                    .json({ error: 'Waktu Masuk dan Waktu Keluar wajib diisi' })
+                return res.status(400).json({
+                    success: false,
+                    message: 'Waktu Masuk dan Waktu Keluar wajib diisi',
+                })
             }
 
             const masuk = new Date(waktu_masuk)
@@ -263,47 +271,66 @@ module.exports = {
 
             if (keluar < masuk) {
                 return res.status(400).json({
-                    error: 'waktu_keluar tidak boleh lebih awal dari waktu_masuk',
+                    success: false,
+                    message:
+                        'waktu_keluar tidak boleh lebih awal dari waktu_masuk',
                 })
             }
 
             const selisihMs = keluar - masuk
             const selisihJam = Math.ceil(selisihMs / (1000 * 60 * 60))
 
-            // Pastikan tarif adalah angka
+            // ===============================
+            // Hitung biaya parkir dasar
+            // ===============================
             const tarifPertama = dataTarifParkir.tarif_rotasi_pertama || 0
             const tarifKedua = dataTarifParkir.tarif_rotasi_kedua || 0
             const tarifKetiga = dataTarifParkir.tarif_rotasi_ketiga || 0
 
             let biaya = 0
-
             if (selisihJam >= 1) biaya += tarifPertama
             if (selisihJam >= 2) biaya += tarifKedua
             if (selisihJam >= 3) biaya += (selisihJam - 2) * tarifKetiga
 
+            // ===============================
+            // Hitung biaya denda
+            // ===============================
+            const isDenda = req.body.denda === true || req.body.denda === 'true'
+            const isTiketHilang =
+                req.body.is_tiket_hilang === true ||
+                req.body.is_tiket_hilang === 'true'
+            const isStnkHilang =
+                req.body.is_stnk_hilang === true ||
+                req.body.is_stnk_hilang === 'true'
+
             let biayaDendaTiket = 0
             let biayaDendaStnk = 0
 
-            if (req.body.denda === 'true') {
-                const dataDenda = await tarif_denda.findOne({
-                    where: {
-                        kendaraan_id: req.body.kendaraan_id,
-                    },
+            if (isDenda) {
+                if (isTiketHilang)
+                    biayaDendaTiket = dataTarifDenda.denda_tiket || 0
+                if (isStnkHilang)
+                    biayaDendaStnk = dataTarifDenda.denda_stnk || 0
+            }
+
+            // ===============================
+            // Jika ada voucher, kurangi biaya parkir
+            // ===============================
+            if (req.body.id_data_voucher) {
+                const dataVoucher = await data_voucher.findOne({
+                    where: { id: req.body.id_data_voucher },
                 })
 
-                const dendaTiket = dataDenda.denda_tiket || 0
-
-                const dendaStnk = dataDenda.denda_stnk || 0
-
-                if (req.body.is_tiket_hilang === 'true') {
-                    biayaDendaTiket += dendaTiket
-                }
-
-                if (req.body.is_stnk_hilang === 'true') {
-                    biayaDendaStnk += dendaStnk
+                if (dataVoucher) {
+                    const nilaiVoucher = dataVoucher.tarif || 0
+                    biaya = biaya - nilaiVoucher
+                    if (biaya < 0) biaya = 0 // jangan minus
                 }
             }
 
+            // ===============================
+            // Simpan transaksi
+            // ===============================
             const data = await transaksi.create({
                 ...req.body,
                 parkir: biaya,

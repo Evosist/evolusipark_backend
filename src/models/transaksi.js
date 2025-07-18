@@ -67,7 +67,7 @@ module.exports = (sequelize, DataTypes) => {
             is_active: DataTypes.BOOLEAN,
             jenis_pembayaran_id: DataTypes.INTEGER,
             parkir: DataTypes.STRING,
-            id_data_voucher: DataTypes.INTEGER,
+            id_data_voucher: { type: DataTypes.INTEGER, allowNull: true },
             jumlah_denda_stnk: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
