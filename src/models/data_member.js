@@ -56,7 +56,6 @@ module.exports = (sequelize, DataTypes) => {
                 validate: { min: 0 },
             },
             periode: DataTypes.RANGE(DataTypes.DATEONLY),
-            id_data_member: { type: DataTypes.INTEGER, allowNull: true },
             user_id: DataTypes.INTEGER,
         },
         {

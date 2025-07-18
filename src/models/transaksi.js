@@ -48,6 +48,11 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'id_data_voucher',
                 as: 'data_voucher',
             })
+
+            transaksi.belongsTo(models.data_member, {
+                foreignKey: 'id_data_member',
+                as: 'data_member',
+            })
         }
     }
     transaksi.init(
@@ -80,6 +85,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             interval: DataTypes.STRING,
             keterangan_atau_penjelasan: DataTypes.STRING,
+            id_data_member: { type: DataTypes.INTEGER, allowNull: true },
         },
         {
             sequelize,
