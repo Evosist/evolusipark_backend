@@ -178,7 +178,7 @@ module.exports = {
                     },
 
                     {
-                        parkir: {
+                        biaya_parkir: {
                             [Op.iLike]: `%${search}%`,
                         },
                     },
@@ -338,7 +338,7 @@ module.exports = {
             // ===============================
             const data = await transaksi.create({
                 ...req.body,
-                parkir: biaya,
+                biaya_parkir: biaya,
                 jumlah_denda_tiket: biayaDendaTiket,
                 jumlah_denda_stnk: biayaDendaStnk,
                 interval: selisihJam,

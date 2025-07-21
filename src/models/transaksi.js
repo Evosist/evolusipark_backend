@@ -71,7 +71,7 @@ module.exports = (sequelize, DataTypes) => {
             tipe_denda_id: DataTypes.INTEGER,
             is_active: DataTypes.BOOLEAN,
             jenis_pembayaran_id: DataTypes.INTEGER,
-            parkir: DataTypes.STRING,
+            biaya_parkir: DataTypes.STRING,
             id_data_voucher: { type: DataTypes.INTEGER, allowNull: true },
             jumlah_denda_stnk: {
                 type: DataTypes.INTEGER,
