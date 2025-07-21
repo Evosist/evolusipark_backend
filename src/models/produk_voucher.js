@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             nama: DataTypes.STRING,
             periode: DataTypes.RANGE(DataTypes.DATEONLY),
             list_id_kendaraan: DataTypes.ARRAY(DataTypes.STRING),
-            tarif: {
+            diskon: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 validate: { min: 0 },

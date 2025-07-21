@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         {
             produk_voucher_id: DataTypes.INTEGER,
             periode: DataTypes.RANGE(DataTypes.DATEONLY),
-            tarif: {
+            diskon: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 validate: { min: 0 },
