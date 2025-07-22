@@ -1,241 +1,201 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
 const { sequelize } = require('../../models/index')
+const { Op, QueryTypes } = require('sequelize')
 
 module.exports = {
     getAllAuditTransaksiKendaraanKeluar: async (req, res) => {
-        const { start_date, end_date, search, sortBy, sortOrder, limit, page } =
-            req.query
-
-        if (!start_date || !end_date) {
-            return res
-                .status(400)
-                .json({ message: 'start_date dan end_date wajib diisi' })
-        }
-
         try {
-            const parsedLimit = limit ? parseInt(limit) : null
-            const parsedPage = page ? parseInt(page) : null
-            const offset =
-                parsedLimit && parsedPage
-                    ? (parsedPage - 1) * parsedLimit
-                    : null
+            const {
+                start_date,
+                end_date,
+                search = '',
+                sortBy = 'tanggal_keluar',
+                sortOrder = 'DESC',
+                limit = 10,
+                page = 1,
+            } = req.query
 
-            const validSortBy = sortBy || 'tanggal_keluar'
-            const validSortOrder =
-                sortOrder && ['asc', 'desc'].includes(sortOrder.toLowerCase())
-                    ? sortOrder.toLowerCase()
-                    : 'desc'
+            const pageSize = parseInt(limit) || 10
+            const currentPage = parseInt(page) || 1
+            const offset = (currentPage - 1) * pageSize
 
-            let query = `
+            const allowedSortFields = [
+                'tanggal_keluar',
+                'no_tiket',
+                'nomor_polisi',
+                'nama_member',
+            ]
+            const sortField = allowedSortFields.includes(sortBy)
+                ? sortBy
+                : 'tanggal_keluar'
+
+            const sortDirection =
+                sortOrder.toUpperCase() === 'ASC' ? 'ASC' : 'DESC'
+
+            let whereDate = ''
+            if (start_date && end_date) {
+                whereDate = ` AND t."tanggal_keluar" BETWEEN :startDate AND :endDate `
+            }
+
+            let whereSearch = ''
+            if (search) {
+                whereSearch = `
+            AND (
+              t."no_tiket" ILIKE :search
+              OR t."nomor_polisi" ILIKE :search
+              OR m."nama" ILIKE :search
+            )
+            `
+            }
+
+            const dataQuery = `
             SELECT
-                tm.tanggal_keluar::date AS "tanggal",
-                'Casual' AS "kategori",
-                tm.no_tiket_atau_tiket_manual AS "no_tiket",
-                tm.nomor_polisi AS "nopol",
-                '-' AS "nama_member",
-                tm.parkir AS "tarif_asli",
-                pv.nama AS "nama_voucher",
-                COALESCE(dv.tarif, 0) AS "potongan_voucher",
-                (CAST(tm.parkir AS INTEGER) - COALESCE(dv.tarif, 0)) AS "tarif_dibayar",
-                pay.jenis_payment AS "pembayaran"
-            FROM transaksi_manuals tm
-            LEFT JOIN data_vouchers dv ON tm.id_data_voucher = dv.id
-            LEFT JOIN produk_vouchers pv ON dv.produk_voucher_id = pv.id
-            LEFT JOIN payments pay ON tm.jenis_pembayaran_id = pay.id
-            WHERE tm.tanggal_keluar::date BETWEEN :startDate AND :endDate
-        `
+              t."tanggal_keluar" AS tanggal,
+              t."no_tiket",
+              t."nomor_polisi" AS nopol,
+              m."nama" AS nama_member,
+              t."biaya_parkir"::numeric AS tarif_asli,
+              pv."nama" AS nama_voucher,
+              dv."diskon" AS potongan_voucher,
+              (t."biaya_parkir"::numeric - COALESCE(dv."diskon",0)) AS tarif_dibayar,
+              p."jenis_payment" AS jenis_pembayaran
+            FROM public.transaksis t
+            LEFT JOIN public.data_members m ON t."id_data_member" = m."id"
+            LEFT JOIN public.data_vouchers dv ON t."id_data_voucher" = dv."id"
+            LEFT JOIN public.produk_vouchers pv ON dv."produk_voucher_id" = pv."id"
+            LEFT JOIN public.payments p ON t."jenis_pembayaran_id" = p."id"
+            WHERE t."tanggal_keluar" IS NOT NULL
+            ${whereDate}
+            ${whereSearch}
+            ORDER BY "${sortField}" ${sortDirection}
+            LIMIT :limit OFFSET :offset
+            `
+
+            const countQuery = `
+            SELECT COUNT(*) AS total
+            FROM public.transaksis t
+            LEFT JOIN public.data_members m ON t."id_data_member" = m."id"
+            LEFT JOIN public.data_vouchers dv ON t."id_data_voucher" = dv."id"
+            LEFT JOIN public.produk_vouchers pv ON dv."produk_voucher_id" = pv."id"
+            LEFT JOIN public.payments p ON t."jenis_pembayaran_id" = p."id"
+            WHERE t."tanggal_keluar" IS NOT NULL
+            ${whereDate}
+            ${whereSearch}
+            `
 
             const replacements = {
                 startDate: start_date,
                 endDate: end_date,
+                search: `%${search}%`,
+                limit: pageSize,
+                offset: offset,
             }
 
-            if (search) {
-                query += `
-                AND (
-                    tm.no_tiket_atau_tiket_manual ILIKE :search
-                    OR tm.nomor_polisi ILIKE :search
-                    OR pv.nama ILIKE :search
-                    OR pay.jenis_payment ILIKE :search
-                )
-            `
-                replacements.search = `%${search}%`
-            }
+            const [rows, countRows] = await Promise.all([
+                sequelize.query(dataQuery, {
+                    replacements,
+                    type: QueryTypes.SELECT,
+                }),
+                sequelize.query(countQuery, {
+                    replacements,
+                    type: QueryTypes.SELECT,
+                }),
+            ])
 
-            const validSortColumns = {
-                tanggal: 'tm.tanggal_keluar',
-                no_tiket: 'tm.no_tiket_atau_tiket_manual',
-                nopol: 'tm.nomor_polisi',
-                nama_voucher: 'pv.nama',
-                pembayaran: 'pay.jenis_payment',
-                tarif_asli: 'tm.parkir',
-                potongan_voucher: 'dv.tarif',
-                tarif_dibayar:
-                    '(CAST(tm.parkir AS INTEGER) - COALESCE(dv.tarif, 0))',
-            }
-
-            const orderByColumn =
-                validSortColumns[sortBy] || validSortColumns.tanggal
-            query += ` ORDER BY ${orderByColumn} ${validSortOrder}`
-
-            let countQuery = `
-            SELECT COUNT(*) AS total
-            FROM transaksi_manuals tm
-            LEFT JOIN data_vouchers dv ON tm.id_data_voucher = dv.id
-            LEFT JOIN produk_vouchers pv ON dv.produk_voucher_id = pv.id
-            LEFT JOIN payments pay ON tm.jenis_pembayaran_id = pay.id
-            WHERE tm.tanggal_keluar::date BETWEEN :startDate AND :endDate
-        `
-
-            if (search) {
-                countQuery += `
-                AND (
-                    tm.no_tiket_atau_tiket_manual ILIKE :search
-                    OR tm.nomor_polisi ILIKE :search
-                    OR pv.nama ILIKE :search
-                    OR pay.jenis_payment ILIKE :search
-                )
-            `
-            }
-
-            if (parsedLimit !== null && offset !== null) {
-                query += ` LIMIT :limit OFFSET :offset`
-                replacements.limit = parsedLimit
-                replacements.offset = offset
-            }
-
-            const [[{ total }]] = await sequelize.query(countQuery, {
-                replacements,
-            })
-
-            const [results] = await sequelize.query(query, {
-                replacements,
-            })
+            const totalData = parseInt(countRows[0]?.total || 0, 10)
+            const totalPages = Math.ceil(totalData / pageSize)
 
             return res.json({
                 success: true,
                 message:
                     'Get all audit transaksi kendaraan keluar successfully',
                 results: {
-                    data: results,
-                    totalData: parseInt(total),
-                    totalPages: parsedLimit
-                        ? Math.ceil(total / parsedLimit)
-                        : 1,
-                    currentPage: parsedPage || 1,
-                    pageSize: parsedLimit || parseInt(total),
+                    data: rows,
+                    totalData: totalData,
+                    totalPages: totalPages,
+                    currentPage: currentPage,
+                    pageSize: pageSize,
                 },
             })
-        } catch (err) {
-            return errorhandler(res, err)
+        } catch (error) {
+            return errorhandler(res, error)
         }
     },
     getAllAuditTransaksiManual: async (req, res) => {
-        const { start_date, end_date, search, sortBy, sortOrder, limit, page } =
-            req.query
-
-        if (!start_date || !end_date) {
-            return res
-                .status(400)
-                .json({ message: 'start_date dan end_date wajib diisi' })
-        }
-
         try {
-            const parsedLimit = limit ? parseInt(limit) : null
-            const parsedPage = page ? parseInt(page) : null
-            const offset =
-                parsedLimit && parsedPage
-                    ? (parsedPage - 1) * parsedLimit
-                    : null
+            const search = req.query.search || ''
+            const sortBy = req.query.sortBy || 'nama_pos'
+            const sortOrder = req.query.sortOrder === 'desc' ? 'DESC' : 'ASC'
+            const page = parseInt(req.query.page) || 1
+            const pageSize = parseInt(req.query.pageSize) || 10
 
-            const validSortBy = sortBy || 'qty_transaksi'
-            const validSortOrder =
-                sortOrder && ['asc', 'desc'].includes(sortOrder.toLowerCase())
-                    ? sortOrder.toLowerCase()
-                    : 'desc'
+            const offset = (page - 1) * pageSize
 
-            let query = `
-            SELECT
-                pos.kode AS "pos",
-                u.nama AS "nama_petugas",
-                COUNT(tm.id) AS "qty_transaksi",
-                SUM(CAST(regexp_replace(tm.parkir, '[^0-9]', '', 'g') AS INTEGER)) AS "total_nominal"
-            FROM transaksi_manuals tm
-            LEFT JOIN users u ON tm.petugas_id = u.id
-            LEFT JOIN pos ON tm.pintu_keluar_id = pos.id
-            WHERE tm.tanggal_keluar::date BETWEEN :startDate AND :endDate
-        `
-
-            const replacements = {
-                startDate: start_date,
-                endDate: end_date,
-            }
-
+            let whereSearch = ''
             if (search) {
-                query += `
-                AND (
-                    pos.kode ILIKE :search
-                    OR u.nama ILIKE :search
-                )
-            `
-                replacements.search = `%${search}%`
-            }
-
-            query += ` GROUP BY pos.kode, u.nama`
-
-            const validSortColumns = {
-                pos: 'pos.kode',
-                nama_petugas: 'u.nama',
-                qty_transaksi: 'qty_transaksi',
-                total_nominal: 'total_nominal',
-            }
-
-            const orderByColumn =
-                validSortColumns[sortBy] || validSortColumns.qty_transaksi
-            query += ` ORDER BY ${orderByColumn} ${validSortOrder}`
-
-            let countQuery = `
-            SELECT COUNT(DISTINCT (pos.kode, u.nama)) AS total
-            FROM transaksi_manuals tm
-            LEFT JOIN users u ON tm.petugas_id = u.id
-            LEFT JOIN pos ON tm.pintu_keluar_id = pos.id
-            WHERE tm.tanggal_keluar::date BETWEEN :startDate AND :endDate
-        `
-
-            if (search) {
-                countQuery += `
-                AND (
-                    pos.kode ILIKE :search
-                    OR u.nama ILIKE :search
-                )
+                whereSearch = `
+            AND (
+              p.kode ILIKE :search OR
+              u.nama ILIKE :search
+            )
             `
             }
 
-            if (parsedLimit !== null && offset !== null) {
-                query += ` LIMIT :limit OFFSET :offset`
-                replacements.limit = parsedLimit
-                replacements.offset = offset
-            }
+            const baseQuery = `
+            FROM transaksis t
+            JOIN pos p ON t.pintu_keluar_id = p.id
+            JOIN users u ON t.petugas_id = u.id
+            LEFT JOIN data_vouchers v ON t.id_data_voucher = v.id
+            WHERE t.is_manual = true
+            ${whereSearch}
+            GROUP BY p.kode, u.nama
+            `
 
-            const [[{ total }]] = await sequelize.query(countQuery, {
-                replacements,
+            const countQuery = `
+            SELECT COUNT(*) as total_count FROM (
+              SELECT 1 ${baseQuery}
+            ) AS subquery
+            `
+
+            const countResult = await sequelize.query(countQuery, {
+                replacements: { search: `%${search}%` },
+                type: QueryTypes.SELECT,
             })
 
-            const [results] = await sequelize.query(query, {
-                replacements,
+            const totalData = parseInt(countResult[0].total_count, 10)
+            const totalPages = Math.ceil(totalData / pageSize)
+
+            const dataQuery = `
+            SELECT 
+              p.kode AS nama_pos,
+              u.nama AS nama_petugas,
+              COUNT(t.id) AS qty_transaksi,
+              COALESCE(SUM(CAST(t.biaya_parkir AS numeric)),0) AS total_biaya_parkir,
+              COALESCE(SUM(COALESCE(v.diskon,0)),0) AS total_diskon,
+              COALESCE(SUM(CAST(t.biaya_parkir AS numeric)) - SUM(COALESCE(v.diskon,0)),0) AS total_biaya_akhir
+            ${baseQuery}
+            ORDER BY ${sortBy} ${sortOrder}
+            LIMIT :limit OFFSET :offset
+            `
+
+            const data = await sequelize.query(dataQuery, {
+                replacements: {
+                    search: `%${search}%`,
+                    limit: pageSize,
+                    offset: offset,
+                },
+                type: QueryTypes.SELECT,
             })
 
-            return res.json({
+            res.json({
                 success: true,
                 message: 'Get all audit transaksi manual successfully',
                 results: {
-                    data: results,
-                    totalData: parseInt(total),
-                    totalPages: parsedLimit
-                        ? Math.ceil(total / parsedLimit)
-                        : 1,
-                    currentPage: parsedPage || 1,
-                    pageSize: parsedLimit || parseInt(total),
+                    data: data,
+                    totalData: totalData,
+                    totalPages: totalPages,
+                    currentPage: page,
+                    pageSize: pageSize,
                 },
             })
         } catch (err) {
@@ -243,115 +203,97 @@ module.exports = {
         }
     },
     getAllAuditTransaksiPenggunaanVoucher: async (req, res) => {
-        const { start_date, end_date, search, sortBy, sortOrder, limit, page } =
-            req.query
-
-        if (!start_date || !end_date) {
-            return res
-                .status(400)
-                .json({ message: 'start_date dan end_date wajib diisi' })
-        }
-
         try {
-            const parsedLimit = limit ? parseInt(limit) : null
-            const parsedPage = page ? parseInt(page) : null
-            const offset =
-                parsedLimit && parsedPage
-                    ? (parsedPage - 1) * parsedLimit
-                    : null
+            const {
+                start_date,
+                end_date,
+                search,
+                sortBy = 'nama_voucher',
+                sortOrder = 'ASC',
+                limit = 10,
+                page = 1,
+            } = req.query
 
-            const validSortBy = sortBy || 'qty_voucher_digunakan'
-            const validSortOrder =
-                sortOrder && ['asc', 'desc'].includes(sortOrder.toLowerCase())
-                    ? sortOrder.toLowerCase()
-                    : 'desc'
+            const whereClauses = []
+            const replacements = {}
 
-            let query = `
-            SELECT
-                pv.nama AS "nama_voucher",
-                CONCAT('Rp ', COALESCE(dv.tarif, 0)) AS "potongan_voucher",
-                u.nama AS "nama_petugas_pos",
-                COUNT(tm.id) AS "qty_voucher_digunakan"
-            FROM transaksi_manuals tm
-            INNER JOIN data_vouchers dv ON tm.id_data_voucher = dv.id
-            INNER JOIN produk_vouchers pv ON dv.produk_voucher_id = pv.id
-            INNER JOIN users u ON tm.petugas_id = u.id
-            WHERE tm.tanggal_keluar::date BETWEEN :startDate AND :endDate
-        `
-
-            const replacements = {
-                startDate: start_date,
-                endDate: end_date,
+            if (start_date) {
+                whereClauses.push(`t."createdAt" >= :start_date`)
+                replacements.start_date = start_date
+            }
+            if (end_date) {
+                whereClauses.push(`t."createdAt" <= :end_date`)
+                replacements.end_date = end_date
             }
 
             if (search) {
-                query += `
-                AND (
-                    pv.nama ILIKE :search
-                    OR u.nama ILIKE :search
+                whereClauses.push(
+                    `(pv.nama ILIKE :search OR u.nama ILIKE :search)`
                 )
-            `
                 replacements.search = `%${search}%`
             }
 
-            query += ` GROUP BY pv.nama, dv.tarif, u.nama`
+            const whereSQL =
+                whereClauses.length > 0
+                    ? `WHERE ${whereClauses.join(' AND ')}`
+                    : ''
 
-            const validSortColumns = {
-                nama_voucher: 'pv.nama',
-                potongan_voucher: 'dv.tarif',
-                nama_petugas_pos: 'u.nama',
-                qty_voucher_digunakan: 'qty_voucher_digunakan',
-            }
+            const allowedSort = [
+                'nama_voucher',
+                'potongan_voucher',
+                'nama_petugas_pos',
+                'quantity_voucher_digunakan',
+            ]
+            const sortColumn = allowedSort.includes(sortBy)
+                ? sortBy
+                : 'nama_voucher'
+            const order = sortOrder.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
 
-            const orderByColumn =
-                validSortColumns[sortBy] ||
-                validSortColumns.qty_voucher_digunakan
-            query += ` ORDER BY ${orderByColumn} ${validSortOrder}`
+            const pageSize = parseInt(limit, 10)
+            const currentPage = parseInt(page, 10)
+            const offset = (currentPage - 1) * pageSize
 
-            let countQuery = `
-            SELECT COUNT(DISTINCT (pv.nama, dv.tarif, u.nama)) AS total
-            FROM transaksi_manuals tm
-            INNER JOIN data_vouchers dv ON tm.id_data_voucher = dv.id
-            INNER JOIN produk_vouchers pv ON dv.produk_voucher_id = pv.id
-            INNER JOIN users u ON tm.petugas_id = u.id
-            WHERE tm.tanggal_keluar::date BETWEEN :startDate AND :endDate
-        `
-
-            if (search) {
-                countQuery += `
-                AND (
-                    pv.nama ILIKE :search
-                    OR u.nama ILIKE :search
-                )
+            const baseQuery = `
+            SELECT
+              pv.nama AS nama_voucher,
+              pv.diskon AS potongan_voucher,
+              u.nama AS nama_petugas_pos,
+              COUNT(t.id) AS quantity_voucher_digunakan
+            FROM transaksis t
+            JOIN data_vouchers dv ON t.id_data_voucher = dv.id
+            JOIN produk_vouchers pv ON dv.produk_voucher_id = pv.id
+            JOIN users u ON t.petugas_id = u.id
+            ${whereSQL}
+            GROUP BY pv.nama, pv.diskon, u.nama
             `
-            }
 
-            if (parsedLimit !== null && offset !== null) {
-                query += ` LIMIT :limit OFFSET :offset`
-                replacements.limit = parsedLimit
-                replacements.offset = offset
-            }
+            const totalDataResult = await sequelize.query(
+                `SELECT COUNT(*) as count FROM (${baseQuery}) AS sub`,
+                { replacements, type: QueryTypes.SELECT }
+            )
+            const totalData = parseInt(totalDataResult[0].count, 10)
+            const totalPages = Math.ceil(totalData / pageSize)
 
-            const [[{ total }]] = await sequelize.query(countQuery, {
-                replacements,
+            const finalQuery = `
+            ${baseQuery}
+            ORDER BY "${sortColumn}" ${order}
+            LIMIT :limit OFFSET :offset
+            `
+
+            const data = await sequelize.query(finalQuery, {
+                replacements: { ...replacements, limit: pageSize, offset },
+                type: QueryTypes.SELECT,
             })
 
-            const [results] = await sequelize.query(query, {
-                replacements,
-            })
-
-            return res.json({
+            res.json({
                 success: true,
-                message:
-                    'Get all audit transaksi penggunaan voucher successfully',
+                message: 'Get all audit penggunaan voucher successfully',
                 results: {
-                    data: results,
-                    totalData: parseInt(total),
-                    totalPages: parsedLimit
-                        ? Math.ceil(total / parsedLimit)
-                        : 1,
-                    currentPage: parsedPage || 1,
-                    pageSize: parsedLimit || parseInt(total),
+                    data,
+                    totalData,
+                    totalPages,
+                    currentPage,
+                    pageSize,
                 },
             })
         } catch (err) {
