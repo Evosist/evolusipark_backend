@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
             pintu_masuk_id: DataTypes.INTEGER,
             tanggal_pembatalan: DataTypes.DATE,
             alasan_pembatalan: DataTypes.STRING,
+            penjelasan_pembatalan: DataTypes.STRING,
             user_id: DataTypes.INTEGER,
         },
         {
