@@ -11,6 +11,7 @@ const {
     payment,
     data_voucher,
     data_member,
+    laporan_transaksi_batal,
 } = require('../../models/index')
 const dayjs = require('dayjs')
 const relativeTime = require('dayjs/plugin/relativeTime')
@@ -385,22 +386,50 @@ module.exports = {
             return errorhandler(res, err)
         }
     },
-    updateTransaksi: async (req, res) => {
+    cancelTransaksi: async (req, res) => {
         try {
-            const data = await transaksi.update(
-                { ...req.body, is_active: false },
-                {
-                    where: {
-                        no_tiket_atau_tiket_manual:
-                            req.query.no_tiket_atau_tiket_manual,
-                    },
-                }
-            )
+            const { no_tiket_atau_nomor_polisi } = req.query
+            const { alasan_pembatalan, penjelasan_pembatalan, user_id } =
+                req.body
 
-            return res.json({
-                success: true,
-                message: 'Update transaksi tunai successfully',
-                results: data,
+            if (!no_tiket_atau_nomor_polisi) {
+                return res.status(400).json({
+                    message:
+                        'Harus menyertakan no_tiket_atau_nomor_polisi di query',
+                })
+            }
+
+            const transaksi = await transaksi.findOne({
+                where: {
+                    is_active: true,
+                    [Op.or]: [
+                        { no_tiket: no_tiket_atau_nomor_polisi },
+                        { nomor_polisi: no_tiket_atau_nomor_polisi },
+                    ],
+                },
+            })
+
+            if (!transaksi) {
+                return res.status(404).json({
+                    message: 'Transaksi tidak ditemukan atau sudah tidak aktif',
+                })
+            }
+
+            await transaksi.update({ is_active: false })
+
+            const laporan = await laporan_transaksi_batal.create({
+                no_tiket: transaksi.no_tiket,
+                tanggal_masuk: transaksi.tanggal_masuk,
+                pintu_masuk_id: transaksi.pintu_masuk_id,
+                tanggal_pembatalan: new Date(),
+                alasan_pembatalan,
+                penjelasan_pembatalan,
+                user_id,
+            })
+
+            return res.status(200).json({
+                message: 'Transaksi berhasil dibatalkan',
+                data: laporan,
             })
         } catch (err) {
             return errorhandler(res, err)

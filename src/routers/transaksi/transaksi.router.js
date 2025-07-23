@@ -4,7 +4,7 @@ const transaksiController = require('../../controllers/transaksi/transaksi.contr
 transaksiRouter.get('/', transaksiController.getAll)
 transaksiRouter.get('/:id', transaksiController.findOneById)
 transaksiRouter.post('/', transaksiController.create)
-transaksiRouter.patch('/cancel-transaksi', transaksiController.updateTransaksi)
+transaksiRouter.patch('/cancel-transaksi', transaksiController.cancelTransaksi)
 transaksiRouter.patch('/:id', transaksiController.update)
 transaksiRouter.delete('/:id', transaksiController.delete)
 
