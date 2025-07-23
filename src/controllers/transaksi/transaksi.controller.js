@@ -15,6 +15,8 @@ const {
 } = require('../../models/index')
 const dayjs = require('dayjs')
 const relativeTime = require('dayjs/plugin/relativeTime')
+const { literal } = require('sequelize')
+const Op = require('sequelize').Op
 
 dayjs.extend(relativeTime)
 
@@ -399,7 +401,7 @@ module.exports = {
                 })
             }
 
-            const transaksi = await transaksi.findOne({
+            const transaksiData = await transaksi.findOne({
                 where: {
                     is_active: true,
                     [Op.or]: [
@@ -409,18 +411,23 @@ module.exports = {
                 },
             })
 
-            if (!transaksi) {
+            if (!transaksiData) {
                 return res.status(404).json({
                     message: 'Transaksi tidak ditemukan atau sudah tidak aktif',
                 })
             }
 
-            await transaksi.update({ is_active: false })
+            await transaksi.update(
+                { is_active: false },
+                {
+                    where: { id: transaksiData.id },
+                }
+            )
 
             const laporan = await laporan_transaksi_batal.create({
-                no_tiket: transaksi.no_tiket,
-                tanggal_masuk: transaksi.tanggal_masuk,
-                pintu_masuk_id: transaksi.pintu_masuk_id,
+                no_tiket: transaksiData.no_tiket,
+                tanggal_masuk: transaksiData.tanggal_masuk,
+                pintu_masuk_id: transaksiData.pintu_masuk_id,
                 tanggal_pembatalan: new Date(),
                 alasan_pembatalan,
                 penjelasan_pembatalan,
