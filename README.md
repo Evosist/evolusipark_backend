@@ -28,7 +28,7 @@ DB_PORT\
 NODE_ENV\
 APP_SECRET
 
-Install fw15-backend with npm
+Install evolusipark_backend with npm
 
 ```bash
   git clone https://github.com/Evosist/evolusipark_backend
