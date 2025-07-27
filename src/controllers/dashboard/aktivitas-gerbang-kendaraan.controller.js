@@ -38,6 +38,8 @@ module.exports = {
             const offset = page && limit ? (page - 1) * limit : null
             const sortBy = req.query.sortBy || 'id'
             const sortOrder = req.query.sortOrder || 'asc'
+            const startDate = req.query.start_date
+            const endDate = req.query.end_date
 
             const options = {
                 where: {},
@@ -56,24 +58,50 @@ module.exports = {
                ],
             }
 
-            if (search) {
-                options.where = {
-                    [Op.or]: [
-                        { tiket: { [Op.iLike]: `%${search}%` } },
-                        { plat_nomor: { [Op.iLike]: `%${search}%` } },
-                        {
-                            '$kendaraan.nama_kendaraan$': {
-                                [Op.iLike]: `%${search}%`,
-                            },
-                        },
-                        { waktu: { [Op.iLike]: `%${search}%` } },
-                        { lokasi_gerbang: { [Op.iLike]: `%${search}%` } },
-                        { buka_atau_tutup: { [Op.iLike]: `%${search}%` } },
-                        { petugas: { [Op.iLike]: `%${search}%` } },
-                        { status_palang: { [Op.iLike]: `%${search}%` } },
-                    ],
-                }
+
+
+            if (startDate && endDate) {
+              options.where.createdAt = {
+                [Op.between]: [
+                  new Date(startDate),
+                  new Date(new Date(endDate).setHours(23, 59, 59, 999)),
+                ],
+              }
             }
+
+
+            // if (search) {
+            //     options.where = {
+            //         [Op.or]: [
+            //             { tiket: { [Op.iLike]: `%${search}%` } },
+            //             { plat_nomor: { [Op.iLike]: `%${search}%` } },
+            //             {
+            //                 '$kendaraan.nama_kendaraan$': {
+            //                     [Op.iLike]: `%${search}%`,
+            //                 },
+            //             },
+            //             { waktu: { [Op.iLike]: `%${search}%` } },
+            //             { lokasi_gerbang: { [Op.iLike]: `%${search}%` } },
+            //             { buka_atau_tutup: { [Op.iLike]: `%${search}%` } },
+            //             { petugas: { [Op.iLike]: `%${search}%` } },
+            //             { status_palang: { [Op.iLike]: `%${search}%` } },
+            //         ],
+            //     }
+            // }
+
+            if (search) {
+              options.where[Op.or] = [
+                { tiket: { [Op.iLike]: `%${search}%` } },
+                { plat_nomor: { [Op.iLike]: `%${search}%` } },
+                { waktu: { [Op.iLike]: `%${search}%` } },
+                { lokasi_gerbang: { [Op.iLike]: `%${search}%` } },
+                { buka_atau_tutup: { [Op.iLike]: `%${search}%` } },
+                { status_palang: { [Op.iLike]: `%${search}%` } },
+                { '$petugas.nama$': { [Op.iLike]: `%${search}%` } },
+                { '$data_member.nama$': { [Op.iLike]: `%${search}%` } },
+              ]
+            }
+
 
             if (limit !== null && offset !== null) {
                 options.limit = limit
