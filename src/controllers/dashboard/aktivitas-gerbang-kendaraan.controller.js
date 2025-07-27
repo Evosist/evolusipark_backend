@@ -40,14 +40,20 @@ module.exports = {
             const sortOrder = req.query.sortOrder || 'asc'
 
             const options = {
-                where:
-                  {
-                      model: require('../../models').data_member,
-                      as: 'data_member',
-                      attributes: ['id', 'nama'], // atau atribut lain yang diperlukan
-                  },
-                },
+                where: {},
                 order: [[sortBy, sortOrder]],
+                include: [
+                   {
+                       model: user,
+                       as: 'petugas',
+                       attributes: ['id', 'nama'],
+                   },
+                   {
+                       model: require('../../models').data_member,
+                       as: 'data_member',
+                       attributes: ['id', 'nama'], // atau atribut lain yang diperlukan
+                   },
+               ],
             }
 
             if (search) {
