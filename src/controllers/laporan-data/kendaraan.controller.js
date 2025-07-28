@@ -73,6 +73,7 @@ module.exports = {
               agk.buka_atau_tutup,
               NOW() - agk."createdAt" AS durasi,
               dm.id AS id_member
+              dm.nama AS nama_member,
             FROM aktivitas_gerbang_kendaraans agk
             LEFT JOIN data_nomor_polisis dnp ON agk.kendaraan_id = dnp.kendaraan_id
             LEFT JOIN data_members dm ON dnp.data_member_id = dm.id
@@ -188,6 +189,7 @@ module.exports = {
               keluar.buka_atau_tutup AS buka_atau_tutup,
               keluar."createdAt" - masuk."createdAt" AS durasi,
               dm.id AS id_member
+              dm.nama AS nama_member,
             FROM aktivitas_gerbang_kendaraans masuk
             JOIN aktivitas_gerbang_kendaraans keluar
               ON masuk.tiket = keluar.tiket
