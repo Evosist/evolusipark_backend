@@ -91,7 +91,9 @@ module.exports = {
                 'user_id', dm.user_id,
                 'createdAt', dm."createdAt",
                 'updatedAt', dm."updatedAt",
-                'nama_perusahaan', p.nama
+                'nama_perusahaan', p.nama,
+                'nama_produk', pm.nama,
+                'nama_produk', pm.nama
               ) AS data_member
 
             FROM aktivitas_gerbang_kendaraans agk
@@ -99,6 +101,7 @@ module.exports = {
             LEFT JOIN data_members dm ON dnp.data_member_id = dm.id
             LEFT JOIN kendaraans dk ON agk.kendaraan_id = dk.id
             LEFT JOIN perusahaans p ON dm.perusahaan_id = p.id
+            LEFT JOIN produk_members pm ON dm.produk_id = pm.id
             ${whereSql}
             ORDER BY agk."${sortBy}" ${sortOrder}
             LIMIT :limit OFFSET :offset
@@ -242,6 +245,7 @@ module.exports = {
             LEFT JOIN kendaraans dk
               ON masuk.kendaraan_id = dk.id
             LEFT JOIN perusahaans p ON dm.perusahaan_id = p.id
+            LEFT JOIN produk_members pm ON dm.produk_id = pm.id
             ${whereSql}
             ORDER BY "${sortBy}" ${sortOrder}
             LIMIT :limit OFFSET :offset
