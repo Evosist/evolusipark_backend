@@ -74,7 +74,26 @@ module.exports = {
               NOW() - agk."createdAt" AS durasi,
               dm.id AS id_member,
               dm.nama AS nama_member,
-              row_to_json(dm.*) || jsonb_build_object('nama_perusahaan', p.nama) AS data_member
+              jsonb_build_object(
+                'id', dm.id,
+                'nama', dm.nama,
+                'no_hp', dm.no_hp,
+                'perusahaan_id', dm.perusahaan_id,
+                'akses_tiket', dm.akses_tiket,
+                'akses_kartu', dm.akses_kartu,
+                'no_kartu', dm.no_kartu,
+                'tgl_input', dm.tgl_input,
+                'produk_id', dm.produk_id,
+                'tarif', dm.tarif,
+                'biaya_member', dm.biaya_member,
+                'biaya_kartu', dm.biaya_kartu,
+                'periode', dm.periode,
+                'user_id', dm.user_id,
+                'createdAt', dm."createdAt",
+                'updatedAt', dm."updatedAt",
+                'nama_perusahaan', p.nama
+              ) AS data_member
+
             FROM aktivitas_gerbang_kendaraans agk
             LEFT JOIN data_nomor_polisis dnp ON agk.kendaraan_id = dnp.kendaraan_id
             LEFT JOIN data_members dm ON dnp.data_member_id = dm.id
@@ -192,7 +211,25 @@ module.exports = {
               keluar."createdAt" - masuk."createdAt" AS durasi,
               dm.id AS id_member,
               dm.nama AS nama_member,
-              row_to_json(dm.*) || jsonb_build_object('nama_perusahaan', p.nama) AS data_member
+              jsonb_build_object(
+                'id', dm.id,
+                'nama', dm.nama,
+                'no_hp', dm.no_hp,
+                'perusahaan_id', dm.perusahaan_id,
+                'akses_tiket', dm.akses_tiket,
+                'akses_kartu', dm.akses_kartu,
+                'no_kartu', dm.no_kartu,
+                'tgl_input', dm.tgl_input,
+                'produk_id', dm.produk_id,
+                'tarif', dm.tarif,
+                'biaya_member', dm.biaya_member,
+                'biaya_kartu', dm.biaya_kartu,
+                'periode', dm.periode,
+                'user_id', dm.user_id,
+                'createdAt', dm."createdAt",
+                'updatedAt', dm."updatedAt",
+                'nama_perusahaan', p.nama
+              ) AS data_member
             FROM aktivitas_gerbang_kendaraans masuk
             JOIN aktivitas_gerbang_kendaraans keluar
               ON masuk.tiket = keluar.tiket
