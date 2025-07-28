@@ -55,6 +55,11 @@ module.exports = {
                        as: 'data_member',
                        attributes: ['id', 'nama'], // atau atribut lain yang diperlukan
                    },
+                  {
+                    model: require('../../models').kendaraan,
+                    as: 'kendaraan',
+                    attributes: ['id', 'nama_kendaraan'], // ubah sesuai kolom yang Anda punya
+                  },
                ],
             }
 
