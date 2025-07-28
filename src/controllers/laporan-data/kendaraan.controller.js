@@ -74,11 +74,12 @@ module.exports = {
               NOW() - agk."createdAt" AS durasi,
               dm.id AS id_member,
               dm.nama AS nama_member,
-              row_to_json(dm) AS data_member
+              row_to_json(dm.*) || jsonb_build_object('nama_perusahaan', p.nama) AS data_member
             FROM aktivitas_gerbang_kendaraans agk
             LEFT JOIN data_nomor_polisis dnp ON agk.kendaraan_id = dnp.kendaraan_id
             LEFT JOIN data_members dm ON dnp.data_member_id = dm.id
             LEFT JOIN kendaraans dk ON agk.kendaraan_id = dk.id
+            LEFT JOIN perusahaans p ON dm.perusahaan_id = p.id
             ${whereSql}
             ORDER BY agk."${sortBy}" ${sortOrder}
             LIMIT :limit OFFSET :offset
@@ -191,7 +192,7 @@ module.exports = {
               keluar."createdAt" - masuk."createdAt" AS durasi,
               dm.id AS id_member,
               dm.nama AS nama_member,
-              row_to_json(dm) AS data_member
+              row_to_json(dm.*) || jsonb_build_object('nama_perusahaan', p.nama) AS data_member
             FROM aktivitas_gerbang_kendaraans masuk
             JOIN aktivitas_gerbang_kendaraans keluar
               ON masuk.tiket = keluar.tiket
@@ -203,6 +204,7 @@ module.exports = {
               ON dnp.data_member_id = dm.id
             LEFT JOIN kendaraans dk
               ON masuk.kendaraan_id = dk.id
+            LEFT JOIN perusahaans p ON dm.perusahaan_id = p.id
             ${whereSql}
             ORDER BY "${sortBy}" ${sortOrder}
             LIMIT :limit OFFSET :offset
