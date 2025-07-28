@@ -76,7 +76,7 @@ module.exports = {
             FROM aktivitas_gerbang_kendaraans agk
             LEFT JOIN data_nomor_polisis dnp ON agk.kendaraan_id = dnp.kendaraan_id
             LEFT JOIN data_members dm ON dnp.data_member_id = dm.id
-            LEFT JOIN data_kendaraans dk ON agk.kendaraan_id = dk.id
+            LEFT JOIN kendaraans dk ON agk.kendaraan_id = dk.id
             ${whereSql}
             ORDER BY agk."${sortBy}" ${sortOrder}
             LIMIT :limit OFFSET :offset
@@ -197,7 +197,7 @@ module.exports = {
               ON masuk.kendaraan_id = dnp.kendaraan_id
             LEFT JOIN data_members dm
               ON dnp.data_member_id = dm.id
-            LEFT JOIN data_kendaraans dk
+            LEFT JOIN kendaraans dk
               ON masuk.kendaraan_id = dk.id
             ${whereSql}
             ORDER BY "${sortBy}" ${sortOrder}
