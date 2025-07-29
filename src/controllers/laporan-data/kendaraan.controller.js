@@ -252,6 +252,9 @@ module.exports = {
               keluar.lokasi_gerbang AS lokasi_gerbang,
               keluar.buka_atau_tutup AS buka_atau_tutup,
               keluar."createdAt" - masuk."createdAt" AS durasi,
+              t.biaya_parkir,
+              t.jenis_pembayaran_id,
+              t.id_data_member,
               dm.id AS id_member,
               dm.nama AS nama_member,
               jsonb_build_object(
@@ -287,6 +290,8 @@ module.exports = {
               ON masuk.kendaraan_id = dk.id
             LEFT JOIN perusahaans p ON dm.perusahaan_id = p.id
             LEFT JOIN produk_members pm ON dm.produk_id = pm.id
+            LEFT JOIN transaksi t
+              ON t.no_tiket = masuk.tiket
             ${whereSql}
             ORDER BY "${sortBy}" ${sortOrder}
             LIMIT :limit OFFSET :offset
