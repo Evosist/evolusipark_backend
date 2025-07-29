@@ -252,6 +252,7 @@ module.exports = {
               dk.nama_kendaraan,
               keluar.lokasi_gerbang AS lokasi_gerbang,
               keluar.buka_atau_tutup AS buka_atau_tutup,
+              keluar.petugas AS nama_petugas,
               keluar."createdAt" - masuk."createdAt" AS durasi,
               t.biaya_parkir,
               t.jenis_pembayaran_id,
