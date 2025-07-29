@@ -290,7 +290,7 @@ module.exports = {
               ON masuk.kendaraan_id = dk.id
             LEFT JOIN perusahaans p ON dm.perusahaan_id = p.id
             LEFT JOIN produk_members pm ON dm.produk_id = pm.id
-            LEFT JOIN transaksi t
+            LEFT JOIN transaksis t
               ON t.no_tiket = masuk.tiket
             ${whereSql}
             ORDER BY "${sortBy}" ${sortOrder}
