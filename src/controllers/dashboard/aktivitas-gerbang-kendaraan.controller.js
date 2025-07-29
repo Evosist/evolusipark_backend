@@ -61,6 +61,7 @@ module.exports = {
                     attributes: ['id', 'nama_kendaraan'], // ubah sesuai kolom yang Anda punya
                   },
                ],
+                distinct: true, // menghilangkan duplikat
             }
 
 
