@@ -257,6 +257,33 @@ module.exports = {
               t.biaya_parkir,
               t.jenis_pembayaran_id,
               t.id_data_member,
+              jsonb_build_object(
+                'id', t.id,
+                'tanggal_masuk', t.tanggal_masuk,
+                'pintu_masuk_id', t.pintu_masuk_id,
+                'no_tiket', t.no_tiket,
+                'is_manual', t.is_manual,
+                'kendaraan_id', t.kendaraan_id,
+                'nomor_polisi', t.nomor_polisi,
+                'pintu_keluar_id', t.pintu_keluar_id,
+                'tanggal_keluar', t.tanggal_keluar,
+                'petugas_id', t.petugas_id,
+                'shift_id', t.shift_id,
+                'denda', t.denda,
+                'tipe_denda_id', t.tipe_denda_id,
+                'is_active', t.is_active,
+                'jenis_pembayaran_id', t.jenis_pembayaran_id,
+                'biaya_parkir', t.biaya_parkir,
+                'id_data_voucher', t.id_data_voucher,
+                'jumlah_denda_stnk', t.jumlah_denda_stnk,
+                'jumlah_denda_tiket', t.jumlah_denda_tiket,
+                'interval', t.interval,
+                'keterangan_atau_penjelasan', t.keterangan_atau_penjelasan,
+                'id_data_member', t.id_data_member,
+                'createdAt', t."createdAt",
+                'updatedAt', t."updatedAt"
+              ) AS data_transaksi
+
               dm.id AS id_member,
               dm.nama AS nama_member,
               jsonb_build_object(
