@@ -63,7 +63,7 @@ module.exports = {
 
             // query data
             const dataQuery = `
-            SELECT
+            SELECT DISTINCT ON (agk.tiket)
               agk.tiket AS nomor_tiket,
               agk."createdAt" AS tanggal_masuk,
               agk.plat_nomor AS nomor_polisi,
@@ -102,7 +102,7 @@ module.exports = {
             LEFT JOIN perusahaans p ON dm.perusahaan_id = p.id
             LEFT JOIN produk_members pm ON dm.produk_id = pm.id
             ${whereSql}
-            ORDER BY agk."${sortBy}" ${sortOrder}
+            ORDER BY  agk.tiket, agk."${sortBy}" ${sortOrder}
             LIMIT :limit OFFSET :offset
             `
 
