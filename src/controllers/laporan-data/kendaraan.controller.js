@@ -246,6 +246,7 @@ module.exports = {
             SELECT
               masuk.tiket AS nomor_tiket,
               masuk."createdAt" AS tanggal_masuk,
+              keluar."createdAt" AS tanggal_keluar,
               masuk.plat_nomor AS nomor_polisi,
               masuk.kendaraan_id,
               dk.nama_kendaraan,
