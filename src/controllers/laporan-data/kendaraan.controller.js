@@ -39,10 +39,16 @@ module.exports = {
                 conditions.push(`agk."createdAt" >= :start_date`)
                 replacements.start_date = start_date
             }
+            // if (end_date) {
+            //     conditions.push(`agk."createdAt" <= :end_date`)
+            //     replacements.end_date = end_date
+            // }
             if (end_date) {
-                conditions.push(`agk."createdAt" <= :end_date`)
+                conditions.push(`agk."createdAt" < (:end_date::date + INTERVAL '1 day')`)
                 replacements.end_date = end_date
             }
+
+
             if (search) {
                 conditions.push(
                     `(agk.tiket ILIKE :search OR agk.plat_nomor ILIKE :search)`
@@ -114,7 +120,7 @@ module.exports = {
               FROM aktivitas_gerbang_kendaraans
               WHERE tipe_gerbang = 'In'
               ${start_date ? 'AND "createdAt" >= :start_date' : ''}
-              ${end_date ? 'AND "createdAt" <= :end_date' : ''}
+              ${end_date ? 'AND "createdAt" < (:end_date::date + INTERVAL \'1 day\')' : ''}
               ${search ? 'AND (tiket ILIKE :search OR plat_nomor ILIKE :search)' : ''}
               AND tiket NOT IN (
                 SELECT tiket FROM aktivitas_gerbang_kendaraans WHERE tipe_gerbang = 'Out'
@@ -123,6 +129,24 @@ module.exports = {
             ) AS subquery
             `
 
+            //========================Settingan End Date Lama==============
+            // const countQuery = `
+            // SELECT COUNT(*) AS total FROM (
+            //   SELECT DISTINCT ON (tiket)
+            //     tiket
+            //   FROM aktivitas_gerbang_kendaraans
+            //   WHERE tipe_gerbang = 'In'
+            //   ${start_date ? 'AND "createdAt" >= :start_date' : ''}
+            //   ${end_date ? 'AND "createdAt" <= :end_date' : ''}
+            //   ${search ? 'AND (tiket ILIKE :search OR plat_nomor ILIKE :search)' : ''}
+            //   AND tiket NOT IN (
+            //     SELECT tiket FROM aktivitas_gerbang_kendaraans WHERE tipe_gerbang = 'Out'
+            //   )
+            //   ORDER BY tiket, "createdAt" DESC
+            // ) AS subquery
+            // `
+
+            //========================Tanpa Distinc========================
             // const countQuery = `
             // SELECT COUNT(*) AS total
             // FROM aktivitas_gerbang_kendaraans agk
