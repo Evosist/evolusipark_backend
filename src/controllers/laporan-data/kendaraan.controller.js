@@ -63,7 +63,7 @@ module.exports = {
 
             // query data
             const dataQuery = `
-            SELECT
+            SELECT DISTINCT ON (agk.tiket)
               agk.tiket AS nomor_tiket,
               agk."createdAt" AS tanggal_masuk,
               agk.plat_nomor AS nomor_polisi,
@@ -95,34 +95,24 @@ module.exports = {
                 'nama_produk', pm.nama
               ) AS data_member
 
-              FROM (
-                SELECT *, ROW_NUMBER() OVER (PARTITION BY tiket ORDER BY "createdAt" DESC) AS row_num
-                FROM aktivitas_gerbang_kendaraans
-                WHERE tipe_gerbang = 'In'
-              ) agk
-              LEFT JOIN data_nomor_polisis dnp ON agk.kendaraan_id = dnp.kendaraan_id
-              LEFT JOIN data_members dm ON dnp.data_member_id = dm.id
-              LEFT JOIN kendaraans dk ON agk.kendaraan_id = dk.id
-              LEFT JOIN perusahaans p ON dm.perusahaan_id = p.id
-              LEFT JOIN produk_members pm ON dm.produk_id = pm.id
-              WHERE agk.row_num = 1
-              ${whereSql ? `AND ${whereSql.replace(/^WHERE\s+/, '')}` : ''}
-              ORDER BY agk."${sortBy}" ${sortOrder}
-              LIMIT :limit OFFSET :offset
+            FROM aktivitas_gerbang_kendaraans agk
+            LEFT JOIN data_nomor_polisis dnp ON agk.kendaraan_id = dnp.kendaraan_id
+            LEFT JOIN data_members dm ON dnp.data_member_id = dm.id
+            LEFT JOIN kendaraans dk ON agk.kendaraan_id = dk.id
+            LEFT JOIN perusahaans p ON dm.perusahaan_id = p.id
+            LEFT JOIN produk_members pm ON dm.produk_id = pm.id
+            ${whereSql}
+            ORDER BY  agk.tiket, agk."${sortBy}" ${sortOrder}
+            LIMIT :limit OFFSET :offset
             `
 
             // query total
             const countQuery = `
             SELECT COUNT(*) AS total
-              FROM (
-                SELECT *, ROW_NUMBER() OVER (PARTITION BY tiket ORDER BY "createdAt" DESC) AS row_num
-                FROM aktivitas_gerbang_kendaraans
-                WHERE tipe_gerbang = 'In'
-              ) agk
-              LEFT JOIN data_nomor_polisis dnp ON agk.kendaraan_id = dnp.kendaraan_id
-              LEFT JOIN data_members dm ON dnp.data_member_id = dm.id
-              WHERE agk.row_num = 1
-              ${whereSql ? `AND ${whereSql.replace(/^WHERE\s+/, '')}` : ''}
+            FROM aktivitas_gerbang_kendaraans agk
+            LEFT JOIN data_nomor_polisis dnp ON agk.kendaraan_id = dnp.kendaraan_id
+            LEFT JOIN data_members dm ON dnp.data_member_id = dm.id
+            ${whereSql}
             `
 
             replacements.limit = limit
