@@ -63,7 +63,7 @@ module.exports = {
 
             // query data
             const dataQuery = `
-            SELECT DISTINCT ON (agk.tiket)
+            SELECT
               agk.tiket AS nomor_tiket,
               agk."createdAt" AS tanggal_masuk,
               agk.plat_nomor AS nomor_polisi,
@@ -92,6 +92,7 @@ module.exports = {
                 'createdAt', dm."createdAt",
                 'updatedAt', dm."updatedAt",
                 'nama_perusahaan', p.nama,
+                'nama_produk', pm.nama,
                 'nama_produk', pm.nama
               ) AS data_member
 
@@ -102,7 +103,7 @@ module.exports = {
             LEFT JOIN perusahaans p ON dm.perusahaan_id = p.id
             LEFT JOIN produk_members pm ON dm.produk_id = pm.id
             ${whereSql}
-            ORDER BY  agk.tiket, agk."${sortBy}" ${sortOrder}
+            ORDER BY agk."${sortBy}" ${sortOrder}
             LIMIT :limit OFFSET :offset
             `
 
@@ -230,8 +231,7 @@ module.exports = {
                 'user_id', dm.user_id,
                 'createdAt', dm."createdAt",
                 'updatedAt', dm."updatedAt",
-                'nama_perusahaan', p.nama,
-                'nama_produk', pm.nama
+                'nama_perusahaan', p.nama
               ) AS data_member
             FROM aktivitas_gerbang_kendaraans masuk
             JOIN aktivitas_gerbang_kendaraans keluar
