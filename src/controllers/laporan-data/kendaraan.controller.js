@@ -225,7 +225,8 @@ module.exports = {
                 replacements.start_date = start_date
             }
             if (end_date) {
-                conditions.push(`keluar."createdAt" <= :end_date`)
+                // conditions.push(`keluar."createdAt" <= :end_date`)
+                conditions.push(`keluar."createdAt" < (:end_date::date + INTERVAL '1 day')`)
                 replacements.end_date = end_date
             }
             if (search) {
