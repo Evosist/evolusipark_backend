@@ -108,12 +108,28 @@ module.exports = {
 
             // query total
             const countQuery = `
-            SELECT COUNT(*) AS total
-            FROM aktivitas_gerbang_kendaraans agk
-            LEFT JOIN data_nomor_polisis dnp ON agk.kendaraan_id = dnp.kendaraan_id
-            LEFT JOIN data_members dm ON dnp.data_member_id = dm.id
-            ${whereSql}
+            SELECT COUNT(*) AS total FROM (
+              SELECT DISTINCT ON (tiket)
+                tiket
+              FROM aktivitas_gerbang_kendaraans
+              WHERE tipe_gerbang = 'In'
+              ${start_date ? 'AND "createdAt" >= :start_date' : ''}
+              ${end_date ? 'AND "createdAt" <= :end_date' : ''}
+              ${search ? 'AND (tiket ILIKE :search OR plat_nomor ILIKE :search)' : ''}
+              AND tiket NOT IN (
+                SELECT tiket FROM aktivitas_gerbang_kendaraans WHERE tipe_gerbang = 'Out'
+              )
+              ORDER BY tiket, "createdAt" DESC
+            ) AS subquery
             `
+
+            // const countQuery = `
+            // SELECT COUNT(*) AS total
+            // FROM aktivitas_gerbang_kendaraans agk
+            // LEFT JOIN data_nomor_polisis dnp ON agk.kendaraan_id = dnp.kendaraan_id
+            // LEFT JOIN data_members dm ON dnp.data_member_id = dm.id
+            // ${whereSql}
+            // `
 
             replacements.limit = limit
             replacements.offset = offset
