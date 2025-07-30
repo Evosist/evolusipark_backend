@@ -252,7 +252,7 @@ module.exports = {
               dk.nama_kendaraan,
               keluar.lokasi_gerbang AS lokasi_gerbang,
               keluar.buka_atau_tutup AS buka_atau_tutup,
-              keluar.petugas AS nama_petugas,
+              u.nama AS nama_petugas,
               keluar."createdAt" - masuk."createdAt" AS durasi,
               t.biaya_parkir,
               t.jenis_pembayaran_id,
@@ -318,6 +318,7 @@ module.exports = {
               ON masuk.kendaraan_id = dk.id
             LEFT JOIN perusahaans p ON dm.perusahaan_id = p.id
             LEFT JOIN produk_members pm ON dm.produk_id = pm.id
+            LEFT JOIN users u ON t.petugas_id = u.id
             LEFT JOIN transaksis t
               ON t.no_tiket = masuk.tiket
             ${whereSql}
