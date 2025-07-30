@@ -282,8 +282,7 @@ module.exports = {
                 'id_data_member', t.id_data_member,
                 'createdAt', t."createdAt",
                 'updatedAt', t."updatedAt"
-              ) AS data_transaksi
-
+              ) AS data_transaksi,
               dm.id AS id_member,
               dm.nama AS nama_member,
               jsonb_build_object(
