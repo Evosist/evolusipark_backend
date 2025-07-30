@@ -85,12 +85,12 @@ module.exports = {
                 offset,
             }
 
-            const [rows] = await sequelize.query(dataQuery, {
+            const rows = await sequelize.query(dataQuery, {
                 replacements: replacementsWithPage,
                 type: sequelize.QueryTypes.SELECT,
             })
 
-            const [countRows] = await sequelize.query(countQuery, {
+            const countRows = await sequelize.query(countQuery, {
                 replacements,
                 type: sequelize.QueryTypes.SELECT,
             })

@@ -38,30 +38,87 @@ module.exports = {
             const offset = page && limit ? (page - 1) * limit : null
             const sortBy = req.query.sortBy || 'id'
             const sortOrder = req.query.sortOrder || 'asc'
+            const startDate = req.query.start_date
+            const endDate = req.query.end_date
 
             const options = {
                 where: {},
                 order: [[sortBy, sortOrder]],
+                include: [
+                   {
+                       model: user,
+                       as: 'petugas',
+                       attributes: ['id', 'nama'],
+                   },
+                   {
+                       model: require('../../models').data_member,
+                       as: 'data_member',
+                       attributes: ['id', 'nama'], // atau atribut lain yang diperlukan
+                   },
+                  {
+                    model: require('../../models').kendaraan,
+                    as: 'kendaraan',
+                    attributes: ['id', 'nama_kendaraan'], // ubah sesuai kolom yang Anda punya
+                  },
+               ],
+                distinct: true, // menghilangkan duplikat
+            }
+
+
+
+            // Awal: Siapkan filter awal
+            options.where = {}
+
+            if (startDate && endDate) {
+              options.where.createdAt = {
+                [Op.between]: [
+                  new Date(startDate),
+                  new Date(new Date(endDate).setHours(23, 59, 59, 999)),
+                ],
+              }
             }
 
             if (search) {
-                options.where = {
-                    [Op.or]: [
-                        { tiket: { [Op.iLike]: `%${search}%` } },
-                        { plat_nomor: { [Op.iLike]: `%${search}%` } },
-                        {
-                            '$kendaraan.nama_kendaraan$': {
-                                [Op.iLike]: `%${search}%`,
-                            },
-                        },
-                        { waktu: { [Op.iLike]: `%${search}%` } },
-                        { lokasi_gerbang: { [Op.iLike]: `%${search}%` } },
-                        { buka_atau_tutup: { [Op.iLike]: `%${search}%` } },
-                        { petugas: { [Op.iLike]: `%${search}%` } },
-                        { status_palang: { [Op.iLike]: `%${search}%` } },
-                    ],
-                }
+              options.where[Op.and] = [
+                ...(options.where[Op.and] || []), // biar nggak overwrite
+                {
+                  [Op.or]: [
+                    { tiket: { [Op.iLike]: `%${search}%` } },
+                    { plat_nomor: { [Op.iLike]: `%${search}%` } },
+                    { waktu: { [Op.iLike]: `%${search}%` } },
+                    { lokasi_gerbang: { [Op.iLike]: `%${search}%` } },
+                    { buka_atau_tutup: { [Op.iLike]: `%${search}%` } },
+                    { status_palang: { [Op.iLike]: `%${search}%` } },
+                    { '$petugas.nama$': { [Op.iLike]: `%${search}%` } },
+                    { '$data_member.nama$': { [Op.iLike]: `%${search}%` } },
+                  ],
+                },
+              ]
             }
+
+
+
+            // if (search) {
+            //     options.where = {
+            //         [Op.or]: [
+            //             { tiket: { [Op.iLike]: `%${search}%` } },
+            //             { plat_nomor: { [Op.iLike]: `%${search}%` } },
+            //             {
+            //                 '$kendaraan.nama_kendaraan$': {
+            //                     [Op.iLike]: `%${search}%`,
+            //                 },
+            //             },
+            //             { waktu: { [Op.iLike]: `%${search}%` } },
+            //             { lokasi_gerbang: { [Op.iLike]: `%${search}%` } },
+            //             { buka_atau_tutup: { [Op.iLike]: `%${search}%` } },
+            //             { petugas: { [Op.iLike]: `%${search}%` } },
+            //             { status_palang: { [Op.iLike]: `%${search}%` } },
+            //         ],
+            //     }
+            // }
+
+
+
 
             if (limit !== null && offset !== null) {
                 options.limit = limit
@@ -131,8 +188,10 @@ module.exports = {
                 buka_atau_tutup: item.buka_atau_tutup,
                 petugas: item.petugas,
                 status_palang: item.status_palang,
-                created: dayjs(item.createdAt).format('DD-MM-YYYY'),
-                updated: dayjs(item.updatedAt).format('DD-MM-YYYY'),
+                // created: dayjs(item.createdAt).format('DD-MM-YYYY'),
+                created: dayjs(item.createdAt).tz('Asia/Jakarta').format('DD-MM-YYYY'),
+                // updated: dayjs(item.updatedAt).format('DD-MM-YYYY'),
+                updated: dayjs(item.updatedAt).tz('Asia/Jakarta').format('DD-MM-YYYY'),
             }))
 
             const template = fs.readFileSync(
