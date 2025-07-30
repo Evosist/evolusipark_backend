@@ -318,9 +318,8 @@ module.exports = {
               ON masuk.kendaraan_id = dk.id
             LEFT JOIN perusahaans p ON dm.perusahaan_id = p.id
             LEFT JOIN produk_members pm ON dm.produk_id = pm.id
+            LEFT JOIN transaksis t ON t.no_tiket = masuk.tiket
             LEFT JOIN users u ON t.petugas_id = u.id
-            LEFT JOIN transaksis t
-              ON t.no_tiket = masuk.tiket
             ${whereSql}
             ORDER BY "${sortBy}" ${sortOrder}
             LIMIT :limit OFFSET :offset
