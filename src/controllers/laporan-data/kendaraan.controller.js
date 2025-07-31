@@ -335,23 +335,49 @@ module.exports = {
 
             // query total
             const countQuery = `
-            SELECT COUNT(*) AS total
-            FROM (
-              SELECT masuk.tiket
-              FROM aktivitas_gerbang_kendaraans masuk
-              JOIN aktivitas_gerbang_kendaraans keluar
-                ON masuk.tiket = keluar.tiket
-               AND masuk.tipe_gerbang = 'In'
-               AND keluar.tipe_gerbang = 'Out'
-              LEFT JOIN data_nomor_polisis dnp
-                ON masuk.kendaraan_id = dnp.kendaraan_id
-              LEFT JOIN data_members dm
-                ON dnp.data_member_id = dm.id
-              ${whereSql}
-              GROUP BY masuk.tiket, masuk."createdAt", masuk.plat_nomor, masuk.kendaraan_id,
-                       keluar.lokasi_gerbang, keluar.buka_atau_tutup, keluar."createdAt", dm.id
-            ) AS subquery
+              SELECT COUNT(*) AS total
+              FROM (
+                SELECT masuk.tiket
+                FROM (
+                  SELECT DISTINCT ON (tiket) *
+                  FROM aktivitas_gerbang_kendaraans
+                  WHERE tipe_gerbang = 'In'
+                  ORDER BY tiket, "createdAt" DESC
+                ) masuk
+                JOIN (
+                  SELECT DISTINCT ON (tiket) *
+                  FROM aktivitas_gerbang_kendaraans
+                  WHERE tipe_gerbang = 'Out'
+                  ORDER BY tiket, "createdAt" DESC
+                ) keluar
+                  ON masuk.tiket = keluar.tiket
+                 AND keluar."createdAt" > masuk."createdAt"
+                LEFT JOIN data_nomor_polisis dnp
+                  ON masuk.kendaraan_id = dnp.kendaraan_id
+                LEFT JOIN data_members dm
+                  ON dnp.data_member_id = dm.id
+                ${whereSql}
+              ) AS subquery
             `
+
+            // const countQuery = `
+            // SELECT COUNT(*) AS total
+            // FROM (
+            //   SELECT masuk.tiket
+            //   FROM aktivitas_gerbang_kendaraans masuk
+            //   JOIN aktivitas_gerbang_kendaraans keluar
+            //     ON masuk.tiket = keluar.tiket
+            //    AND masuk.tipe_gerbang = 'In'
+            //    AND keluar.tipe_gerbang = 'Out'
+            //   LEFT JOIN data_nomor_polisis dnp
+            //     ON masuk.kendaraan_id = dnp.kendaraan_id
+            //   LEFT JOIN data_members dm
+            //     ON dnp.data_member_id = dm.id
+            //   ${whereSql}
+            //   GROUP BY masuk.tiket, masuk."createdAt", masuk.plat_nomor, masuk.kendaraan_id,
+            //            keluar.lokasi_gerbang, keluar.buka_atau_tutup, keluar."createdAt", dm.id
+            // ) AS subquery
+            // `
 
             replacements.limit = limit
             replacements.offset = offset
