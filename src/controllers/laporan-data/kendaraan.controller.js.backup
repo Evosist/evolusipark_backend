@@ -305,19 +305,11 @@ module.exports = {
                 'nama_perusahaan', p.nama,
                 'nama_produk', pm.nama
               ) AS data_member
-              FROM (
-                SELECT DISTINCT ON (tiket) *
-                FROM aktivitas_gerbang_kendaraans
-                WHERE tipe_gerbang = 'In'
-                ORDER BY tiket, "createdAt" DESC
-              ) masuk
-              JOIN (
-                SELECT DISTINCT ON (tiket) *
-                FROM aktivitas_gerbang_kendaraans
-                WHERE tipe_gerbang = 'Out'
-                ORDER BY tiket, "createdAt" DESC
-              ) keluar
+            FROM aktivitas_gerbang_kendaraans masuk
+            JOIN aktivitas_gerbang_kendaraans keluar
               ON masuk.tiket = keluar.tiket
+             AND masuk.tipe_gerbang = 'In'
+             AND keluar.tipe_gerbang = 'Out'
             LEFT JOIN data_nomor_polisis dnp
               ON masuk.kendaraan_id = dnp.kendaraan_id
             LEFT JOIN data_members dm
