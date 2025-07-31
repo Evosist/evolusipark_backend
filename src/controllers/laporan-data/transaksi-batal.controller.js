@@ -9,7 +9,6 @@ module.exports = {
                        t.no_tiket_atau_tiket_manual as no_tiket_atau_id_transaksi,
                        t.nomor_polisi as nopol,
                        m.nama as nama_member,
-                       
               `)
 
             return res.json({

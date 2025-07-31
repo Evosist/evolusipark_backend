@@ -166,7 +166,7 @@ module.exports = {
             const totalPages = Math.ceil(totalData / pageSize)
 
             const dataQuery = `
-            SELECT 
+            SELECT
               p.kode AS nama_pos,
               u.nama AS nama_petugas,
               COUNT(t.id) AS qty_transaksi,
@@ -300,117 +300,109 @@ module.exports = {
             return errorhandler(res, err)
         }
     },
+
     getAllAuditPembatalanTransaksi: async (req, res) => {
-        const { start_date, end_date, search, sortBy, sortOrder, limit, page } =
-            req.query
+    const { start_date, end_date, search, sortBy, sortOrder, limit, page } = req.query
 
-        if (!start_date || !end_date) {
-            return res
-                .status(400)
-                .json({ message: 'start_date dan end_date wajib diisi' })
-        }
+    if (!start_date || !end_date) {
+        return res
+            .status(400)
+            .json({ message: 'start_date dan end_date wajib diisi' })
+    }
 
-        try {
-            const parsedLimit = limit ? parseInt(limit) : null
-            const parsedPage = page ? parseInt(page) : null
-            const offset =
-                parsedLimit && parsedPage
-                    ? (parsedPage - 1) * parsedLimit
-                    : null
+    try {
+        const parsedLimit = limit ? parseInt(limit) : null
+        const parsedPage = page ? parseInt(page) : null
+        const offset = parsedLimit && parsedPage ? (parsedPage - 1) * parsedLimit : null
 
-            const validSortBy = sortBy || 'qty_transaksi_dibatalkan'
-            const validSortOrder =
-                sortOrder && ['asc', 'desc'].includes(sortOrder.toLowerCase())
-                    ? sortOrder.toLowerCase()
-                    : 'desc'
+        const validSortBy = sortBy || 'qty_transaksi_dibatalkan'
+        const validSortOrder = sortOrder && ['asc', 'desc'].includes(sortOrder.toLowerCase())
+            ? sortOrder.toLowerCase()
+            : 'desc'
 
-            let query = `
-            SELECT
-                pos.kode AS "pos",
-                u.nama AS "nama_petugas",
-                COUNT(ltb.id) AS "qty_transaksi_dibatalkan",
-                SUM(CAST(regexp_replace(ltb.total_pembayaran, '[^0-9]', '', 'g') AS INTEGER)) AS "total_nominal_pembatalan"
-            FROM laporan_transaksi_batals ltb
-            LEFT JOIN users u ON ltb.petugas_id = u.id
-            LEFT JOIN pos ON ltb.gerbang_keluar_id = pos.id
-            WHERE ltb."createdAt"::date BETWEEN :startDate AND :endDate
+        let query = `
+        SELECT
+            pos.kode AS "pos",
+            u.nama AS "nama_petugas",
+            COUNT(t.id) AS "qty_transaksi_dibatalkan",
+            SUM(CAST(regexp_replace(t.biaya_parkir, '[^0-9]', '', 'g') AS INTEGER)) AS "total_nominal_pembatalan"
+        FROM transaksis t
+        LEFT JOIN users u ON t.petugas_id = u.id
+        LEFT JOIN pos ON t.pintu_keluar_id = pos.id
+        WHERE t.is_active = false
+          AND t."createdAt"::date BETWEEN :startDate AND :endDate
         `
 
-            const replacements = {
-                startDate: start_date,
-                endDate: end_date,
-            }
-
-            if (search) {
-                query += `
-                AND (
-                    pos.kode ILIKE :search
-                    OR u.nama ILIKE :search
-                )
-            `
-                replacements.search = `%${search}%`
-            }
-
-            query += ` GROUP BY pos.kode, u.nama`
-
-            const validSortColumns = {
-                pos: 'pos.kode',
-                nama_petugas: 'u.nama',
-                qty_transaksi_dibatalkan: 'qty_transaksi_dibatalkan',
-                total_nominal_pembatalan: 'total_nominal_pembatalan',
-            }
-
-            const orderByColumn =
-                validSortColumns[sortBy] ||
-                validSortColumns.qty_transaksi_dibatalkan
-            query += ` ORDER BY ${orderByColumn} ${validSortOrder}`
-
-            let countQuery = `
-            SELECT COUNT(DISTINCT (pos.kode, u.nama)) AS total
-            FROM laporan_transaksi_batals ltb
-            LEFT JOIN users u ON ltb.petugas_id = u.id
-            LEFT JOIN pos ON ltb.gerbang_keluar_id = pos.id
-            WHERE ltb."createdAt"::date BETWEEN :startDate AND :endDate
-        `
-
-            if (search) {
-                countQuery += `
-                AND (
-                    pos.kode ILIKE :search
-                    OR u.nama ILIKE :search
-                )
-            `
-            }
-
-            if (parsedLimit !== null && offset !== null) {
-                query += ` LIMIT :limit OFFSET :offset`
-                replacements.limit = parsedLimit
-                replacements.offset = offset
-            }
-
-            const [[{ total }]] = await sequelize.query(countQuery, {
-                replacements,
-            })
-
-            const [results] = await sequelize.query(query, {
-                replacements,
-            })
-
-            return res.json({
-                success: true,
-                message: 'Get all audit pembatalan transaksi successfully',
-                results: {
-                    data: results,
-                    totalData: parseInt(total),
-                    totalPages: parsedLimit
-                        ? Math.ceil(total / parsedLimit)
-                        : 1,
-                    currentPage: parsedPage || 1,
-                    pageSize: parsedLimit || parseInt(total),
-                },
-            })
-        } catch (err) {
-            return errorhandler(res, err)
+        const replacements = {
+            startDate: start_date,
+            endDate: end_date,
         }
-    },
+
+        if (search) {
+            query += `
+            AND (
+                pos.kode ILIKE :search
+                OR u.nama ILIKE :search
+            )`
+            replacements.search = `%${search}%`
+        }
+
+        query += ` GROUP BY pos.kode, u.nama`
+
+        const validSortColumns = {
+            pos: 'pos.kode',
+            nama_petugas: 'u.nama',
+            qty_transaksi_dibatalkan: 'qty_transaksi_dibatalkan',
+            total_nominal_pembatalan: 'total_nominal_pembatalan',
+        }
+
+        const orderByColumn = validSortColumns[validSortBy] || validSortColumns.qty_transaksi_dibatalkan
+        query += ` ORDER BY ${orderByColumn} ${validSortOrder}`
+
+        // Count query (jumlah kombinasi unik pos + petugas)
+        let countQuery = `
+        SELECT COUNT(DISTINCT (pos.kode, u.nama)) AS total
+        FROM transaksis t
+        LEFT JOIN users u ON t.petugas_id = u.id
+        LEFT JOIN pos ON t.pintu_keluar_id = pos.id
+        WHERE t.is_active = false
+          AND t."createdAt"::date BETWEEN :startDate AND :endDate
+        `
+        if (search) {
+            countQuery += `
+            AND (
+                pos.kode ILIKE :search
+                OR u.nama ILIKE :search
+            )`
+        }
+
+        if (parsedLimit !== null && offset !== null) {
+            query += ` LIMIT :limit OFFSET :offset`
+            replacements.limit = parsedLimit
+            replacements.offset = offset
+        }
+
+        const [[{ total }]] = await sequelize.query(countQuery, {
+            replacements,
+        })
+
+        const [results] = await sequelize.query(query, {
+            replacements,
+        })
+
+        return res.json({
+            success: true,
+            message: 'Get all audit pembatalan transaksi successfully',
+            results: {
+                data: results,
+                totalData: parseInt(total),
+                totalPages: parsedLimit ? Math.ceil(total / parsedLimit) : 1,
+                currentPage: parsedPage || 1,
+                pageSize: parsedLimit || parseInt(total),
+            },
+        })
+    } catch (err) {
+        return errorhandler(res, err)
+    }
+  },
 }
