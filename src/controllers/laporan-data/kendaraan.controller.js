@@ -241,100 +241,114 @@ module.exports = {
                 ? `WHERE ${conditions.join(' AND ')}`
                 : ''
 
-            // query data
-            const dataQuery = `
-            SELECT
-              masuk.tiket AS nomor_tiket,
-              masuk."createdAt" AS tanggal_masuk,
-              keluar."createdAt" AS tanggal_keluar,
-              masuk.plat_nomor AS nomor_polisi,
-              masuk.kendaraan_id,
-              dk.nama_kendaraan,
-              masuk.lokasi_gerbang AS lokasi_gerbang_masuk,
-              keluar.lokasi_gerbang AS lokasi_gerbang,
-              keluar.buka_atau_tutup AS buka_atau_tutup,
-              u.nama AS nama_petugas,
-              keluar."createdAt" - masuk."createdAt" AS durasi,
-              t.biaya_parkir,
-              t.jenis_pembayaran_id,
-              pay.jenis_payment AS nama_jenis_pembayaran,
-              t.id_data_member,
-              jsonb_build_object(
-                'id', t.id,
-                'tanggal_masuk', t.tanggal_masuk,
-                'pintu_masuk_id', t.pintu_masuk_id,
-                'no_tiket', t.no_tiket,
-                'is_manual', t.is_manual,
-                'kendaraan_id', t.kendaraan_id,
-                'nomor_polisi', t.nomor_polisi,
-                'pintu_keluar_id', t.pintu_keluar_id,
-                'tanggal_keluar', t.tanggal_keluar,
-                'petugas_id', t.petugas_id,
-                'shift_id', t.shift_id,
-                'denda', t.denda,
-                'tipe_denda_id', t.tipe_denda_id,
-                'is_active', t.is_active,
-                'jenis_pembayaran_id', t.jenis_pembayaran_id,
-                'biaya_parkir', t.biaya_parkir,
-                'id_data_voucher', t.id_data_voucher,
-                'jumlah_denda_stnk', t.jumlah_denda_stnk,
-                'jumlah_denda_tiket', t.jumlah_denda_tiket,
-                'interval', t.interval,
-                'keterangan_atau_penjelasan', t.keterangan_atau_penjelasan,
-                'id_data_member', t.id_data_member,
-                'createdAt', t."createdAt",
-                'updatedAt', t."updatedAt"
-              ) AS data_transaksi,
-              dm.id AS id_member,
-              dm.nama AS nama_member,
-              jsonb_build_object(
-                'id', dm.id,
-                'nama', dm.nama,
-                'no_hp', dm.no_hp,
-                'perusahaan_id', dm.perusahaan_id,
-                'akses_tiket', dm.akses_tiket,
-                'akses_kartu', dm.akses_kartu,
-                'no_kartu', dm.no_kartu,
-                'tgl_input', dm.tgl_input,
-                'produk_id', dm.produk_id,
-                'tarif', dm.tarif,
-                'biaya_member', dm.biaya_member,
-                'biaya_kartu', dm.biaya_kartu,
-                'periode', dm.periode,
-                'user_id', dm.user_id,
-                'createdAt', dm."createdAt",
-                'updatedAt', dm."updatedAt",
-                'nama_perusahaan', p.nama,
-                'nama_produk', pm.nama
-              ) AS data_member
-              FROM (
-                SELECT DISTINCT ON (tiket) *
-                FROM aktivitas_gerbang_kendaraans
-                WHERE tipe_gerbang = 'In'
-                ORDER BY tiket, "createdAt" DESC
-              ) masuk
-              JOIN (
-                SELECT DISTINCT ON (tiket) *
-                FROM aktivitas_gerbang_kendaraans
-                WHERE tipe_gerbang = 'Out'
-                ORDER BY tiket, "createdAt" DESC
-              ) keluar
-              ON masuk.tiket = keluar.tiket
-            LEFT JOIN transaksis t ON t.no_tiket = masuk.tiket
-            LEFT JOIN data_members dm
-              ON t.id_data_member = dm.id
-            LEFT JOIN data_nomor_polisis dnp
-              ON masuk.kendaraan_id = dnp.kendaraan_id
-            LEFT JOIN kendaraans dk
-              ON masuk.kendaraan_id = dk.id
-            LEFT JOIN perusahaans p ON dm.perusahaan_id = p.id
-            LEFT JOIN produk_members pm ON dm.produk_id = pm.id
-            LEFT JOIN users u ON t.petugas_id = u.id
-            LEFT JOIN payments pay ON t.jenis_pembayaran_id = pay.id
-            ${whereSql}
-            ORDER BY "${sortBy}" ${sortOrder}
-            LIMIT :limit OFFSET :offset
-            `
+                const dataQuery = `
+  SELECT
+    masuk.tiket AS nomor_tiket,
+    masuk."createdAt" AS tanggal_masuk,
+    keluar."createdAt" AS tanggal_keluar,
+    masuk.plat_nomor AS nomor_polisi,
+    masuk.kendaraan_id,
+    dk.nama_kendaraan,
+    masuk.lokasi_gerbang AS lokasi_gerbang_masuk,
+    keluar.lokasi_gerbang AS lokasi_gerbang,
+    keluar.buka_atau_tutup AS buka_atau_tutup,
+    u.nama AS nama_petugas,
+    keluar."createdAt" - masuk."createdAt" AS durasi,
+    t.biaya_parkir,
+    t.jumlah_denda_stnk,
+    t.jumlah_denda_tiket,
+    t.jenis_pembayaran_id,
+    pay.jenis_payment AS nama_jenis_pembayaran,
+    t.id_data_member,
+    jsonb_build_object(
+      'id', t.id,
+      'tanggal_masuk', t.tanggal_masuk,
+      'pintu_masuk_id', t.pintu_masuk_id,
+      'no_tiket', t.no_tiket,
+      'is_manual', t.is_manual,
+      'kendaraan_id', t.kendaraan_id,
+      'nomor_polisi', t.nomor_polisi,
+      'pintu_keluar_id', t.pintu_keluar_id,
+      'tanggal_keluar', t.tanggal_keluar,
+      'petugas_id', t.petugas_id,
+      'shift_id', t.shift_id,
+      'denda', t.denda,
+      'tipe_denda_id', t.tipe_denda_id,
+      'is_active', t.is_active,
+      'jenis_pembayaran_id', t.jenis_pembayaran_id,
+      'biaya_parkir', t.biaya_parkir,
+      'id_data_voucher', t.id_data_voucher,
+      'jumlah_denda_stnk', t.jumlah_denda_stnk,
+      'jumlah_denda_tiket', t.jumlah_denda_tiket,
+      'interval', t.interval,
+      'keterangan_atau_penjelasan', t.keterangan_atau_penjelasan,
+      'id_data_member', t.id_data_member,
+      'createdAt', t."createdAt",
+      'updatedAt', t."updatedAt"
+    ) AS data_transaksi,
+    dm.id AS id_member,
+    dm.nama AS nama_member,
+    jsonb_build_object(
+      'id', dm.id,
+      'nama', dm.nama,
+      'no_hp', dm.no_hp,
+      'perusahaan_id', dm.perusahaan_id,
+      'akses_tiket', dm.akses_tiket,
+      'akses_kartu', dm.akses_kartu,
+      'no_kartu', dm.no_kartu,
+      'tgl_input', dm.tgl_input,
+      'produk_id', dm.produk_id,
+      'tarif', dm.tarif,
+      'biaya_member', dm.biaya_member,
+      'biaya_kartu', dm.biaya_kartu,
+      'periode', dm.periode,
+      'user_id', dm.user_id,
+      'createdAt', dm."createdAt",
+      'updatedAt', dm."updatedAt",
+      'nama_perusahaan', p.nama,
+      'nama_produk', pm.nama
+    ) AS data_member
+
+  FROM (
+    SELECT DISTINCT ON (tiket) *
+    FROM aktivitas_gerbang_kendaraans
+    WHERE tipe_gerbang = 'In'
+    ORDER BY tiket, "createdAt" DESC
+  ) masuk
+  JOIN (
+    SELECT DISTINCT ON (tiket) *
+    FROM aktivitas_gerbang_kendaraans
+    WHERE tipe_gerbang = 'Out'
+    ORDER BY tiket, "createdAt" DESC
+  ) keluar ON masuk.tiket = keluar.tiket
+
+  LEFT JOIN (
+    SELECT DISTINCT ON (no_tiket) *
+    FROM transaksis
+    WHERE is_active = true
+    ORDER BY
+      no_tiket,
+      CASE
+        WHEN (biaya_parkir IS NOT NULL AND biaya_parkir::numeric > 0)
+          OR (jumlah_denda_stnk IS NOT NULL AND jumlah_denda_stnk::numeric > 0)
+          OR (jumlah_denda_tiket IS NOT NULL AND jumlah_denda_tiket::numeric > 0)
+        THEN 0
+        ELSE 1
+      END,
+      "createdAt" DESC
+  ) t ON t.no_tiket = masuk.tiket
+
+  LEFT JOIN data_nomor_polisis dnp ON masuk.kendaraan_id = dnp.kendaraan_id
+  LEFT JOIN data_members dm ON t.id_data_member = dm.id
+  LEFT JOIN kendaraans dk ON masuk.kendaraan_id = dk.id
+  LEFT JOIN perusahaans p ON dm.perusahaan_id = p.id
+  LEFT JOIN produk_members pm ON dm.produk_id = pm.id
+  LEFT JOIN users u ON t.petugas_id = u.id
+  LEFT JOIN payments pay ON t.jenis_pembayaran_id = pay.id
+  ${whereSql}
+  ORDER BY "${sortBy}" ${sortOrder}
+  LIMIT :limit OFFSET :offset
+  `
 
             // query total
             const countQuery = `
