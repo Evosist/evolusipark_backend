@@ -1,5 +1,5 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { sequelize } = require('../../models/index')
+const { pos, user, laporan_transaksi_batal } = require('../../models/index')
 
 module.exports = {
     getAllPembatalanTransaksi: async (req, res) => {
