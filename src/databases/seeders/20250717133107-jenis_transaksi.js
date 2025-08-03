@@ -14,25 +14,19 @@ module.exports = {
             'payments',
             [
                 {
-                    jenis_payment: 'Cash',
+                    jenis_payment: 'Tunai',
                     status: false,
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
                 {
-                    jenis_payment: 'Prepaid',
+                    jenis_payment: 'Bank',
                     status: false,
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
                 {
-                    jenis_payment: 'Transfer Bank',
-                    status: false,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                },
-                {
-                    jenis_payment: 'E-Wallet',
+                    jenis_payment: 'QRIS',
                     status: false,
                     createdAt: new Date(),
                     updatedAt: new Date(),
