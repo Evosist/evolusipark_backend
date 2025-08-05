@@ -246,18 +246,58 @@ module.exports = {
             return errorhandler(res, err)
         }
     },
+    // create: async (req, res) => {
+    //     try {
+    //         const data = await payment.create(req.body)
+    //         return res.json({
+    //             success: true,
+    //             message: 'Create payment successfully',
+    //             results: data,
+    //         })
+    //     } catch (err) {
+    //         return errorhandler(res, err)
+    //     }
+    // },
     create: async (req, res) => {
         try {
-            const data = await payment.create(req.body)
+            const { jenis_payment } = req.body;
+
+            // Tolak jika tidak ada jenis_payment
+            if (!jenis_payment || jenis_payment.trim() === '') {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Jenis pembayaran tidak boleh kosong.',
+                });
+            }
+
+            // Cek apakah sudah ada jenis_payment dengan nama serupa (abaikan case)
+            const existing = await payment.findOne({
+                where: {
+                    jenis_payment: {
+                        [Op.iLike]: jenis_payment, // abaikan huruf besar kecil
+                    },
+                },
+            });
+
+            if (existing) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Jenis pembayaran '${jenis_payment}' sudah tersedia.`,
+                });
+            }
+
+            // Simpan data baru
+            const data = await payment.create(req.body);
             return res.json({
                 success: true,
                 message: 'Create payment successfully',
                 results: data,
-            })
+            });
         } catch (err) {
-            return errorhandler(res, err)
+            return errorhandler(res, err);
         }
     },
+
     findOneById: async (req, res) => {
         try {
             const data = await payment.findAll({
