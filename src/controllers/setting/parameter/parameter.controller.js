@@ -10,6 +10,8 @@ const { tipe_manless } = require('../../../models/index')
 const parameterDefaultsManless = require('./parameterDefaultsManless')
 const { nama_printer } = require('../../../models/index')
 const parameterDefaultsPrinter = require('./parameterDefaultsPrinter')
+const { nama_interface } = require('../../../models/index')
+const parameterDefaultsInterface = require('./parameterDefaultsInterface')
 
 function generateTableRows(data) {
     return data
@@ -118,6 +120,14 @@ module.exports = {
               nama_printer: item.nama_printer,
             })),
             { ignoreDuplicates: true }
+          )
+
+          // Seeder nama_interface
+          await nama_interface.bulkCreate(
+           parameterDefaultsInterface.map(item => ({
+             nama_interface: item.nama_interface,
+           })),
+           { ignoreDuplicates: true }
           )
         }
 
