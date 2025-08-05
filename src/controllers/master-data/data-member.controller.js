@@ -9,6 +9,7 @@ const {
     riwayat_transaksi_ganti_nopol,
     laporan_riwayat_transaksi_member,
     user,
+    pos,
 } = require('../../models/index')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
