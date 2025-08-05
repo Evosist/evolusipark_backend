@@ -10,6 +10,7 @@ const {
     laporan_riwayat_transaksi_member,
     user,
     pos,
+    kendaraan,
 } = require('../../models/index')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
