@@ -24,45 +24,119 @@ function generateTableRows(data) {
 }
 
 module.exports = {
+    // getAll: async (req, res) => {
+    //     try {
+    //         const search = req.query.search || ''
+    //         const limit = req.query.limit ? parseInt(req.query.limit) : 10
+    //         const page = req.query.page ? parseInt(req.query.page) : 1
+    //         const offset = limit && page ? (page - 1) * limit : 0
+    //         const sortBy = req.query.sortBy || 'id'
+    //         const sortOrder =
+    //             req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
+    //
+    //         const allowedSortColumns = [
+    //             'id',
+    //             'jenis_payment',
+    //             'payment_status',
+    //             'createdAt',
+    //             'updatedAt',
+    //         ]
+    //         const validSortBy = allowedSortColumns.includes(sortBy)
+    //             ? sortBy
+    //             : 'id'
+    //
+    //         const options = {
+    //             where: {},
+    //             order: [[validSortBy, sortOrder]],
+    //         }
+    //
+    //         if (search) {
+    //             options.where[Op.or] = [
+    //                 { jenis_payment: { [Op.iLike]: `%${search}%` } },
+    //                 { payment_status: { [Op.iLike]: `%${search}%` } },
+    //             ]
+    //         }
+    //
+    //         if (limit) {
+    //             options.limit = limit
+    //             options.offset = offset
+    //         }
+    //
+    //         const { count, rows } = await payment.findAndCountAll(options)
+    //
+    //         return res.json({
+    //             success: true,
+    //             message: 'Get all payment successfully',
+    //             results: {
+    //                 data: rows,
+    //                 totalData: count,
+    //                 totalPages: limit ? Math.ceil(count / limit) : 1,
+    //                 currentPage: page,
+    //                 pageSize: limit || count,
+    //             },
+    //         })
+    //     } catch (err) {
+    //         return errorhandler(res, err)
+    //     }
+    // },
+    //
     getAll: async (req, res) => {
         try {
-            const search = req.query.search || ''
-            const limit = req.query.limit ? parseInt(req.query.limit) : 10
-            const page = req.query.page ? parseInt(req.query.page) : 1
-            const offset = limit && page ? (page - 1) * limit : 0
-            const sortBy = req.query.sortBy || 'id'
-            const sortOrder =
-                req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
+            // === Cek dan insert data default kalau belum ada ===
+            const defaultPayments = [
+                { jenis_payment: 'Tunai', status: false },
+                { jenis_payment: 'Bank', status: false },
+                { jenis_payment: 'QRIS', status: false },
+                { jenis_payment: 'Member', status: false },
+            ];
 
-            const allowedSortColumns = [
-                'id',
-                'jenis_payment',
-                'payment_status',
-                'createdAt',
-                'updatedAt',
-            ]
-            const validSortBy = allowedSortColumns.includes(sortBy)
-                ? sortBy
-                : 'id'
+            for (const paymentItem of defaultPayments) {
+                const found = await payment.findOne({
+                    where: {
+                        jenis_payment: {
+                            [Op.iLike]: paymentItem.jenis_payment, // case-insensitive
+                        },
+                    },
+                });
+
+                if (!found) {
+                    await payment.create({
+                        ...paymentItem,
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                    });
+                }
+            }
+
+            // === Lanjutkan ke proses normal ===
+            const search = req.query.search || '';
+            const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+            const page = req.query.page ? parseInt(req.query.page) : 1;
+            const offset = limit && page ? (page - 1) * limit : 0;
+            const sortBy = req.query.sortBy || 'id';
+            const sortOrder = req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+
+            const allowedSortColumns = ['id', 'jenis_payment', 'payment_status', 'createdAt', 'updatedAt'];
+            const validSortBy = allowedSortColumns.includes(sortBy) ? sortBy : 'id';
 
             const options = {
                 where: {},
                 order: [[validSortBy, sortOrder]],
-            }
+            };
 
             if (search) {
                 options.where[Op.or] = [
                     { jenis_payment: { [Op.iLike]: `%${search}%` } },
-                    { payment_status: { [Op.iLike]: `%${search}%` } },
-                ]
+                    { payment_status: { [Op.iLike]: `%${search}%` } }, // optional: jika kolom ini ada
+                ];
             }
 
             if (limit) {
-                options.limit = limit
-                options.offset = offset
+                options.limit = limit;
+                options.offset = offset;
             }
 
-            const { count, rows } = await payment.findAndCountAll(options)
+            const { count, rows } = await payment.findAndCountAll(options);
 
             return res.json({
                 success: true,
@@ -74,11 +148,12 @@ module.exports = {
                     currentPage: page,
                     pageSize: limit || count,
                 },
-            })
+            });
         } catch (err) {
-            return errorhandler(res, err)
+            return errorhandler(res, err);
         }
     },
+
     generatePdf: async (req, res) => {
         try {
             const startDate = new Date(req.query.start_date)
