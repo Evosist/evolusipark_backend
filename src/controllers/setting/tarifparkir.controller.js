@@ -3,6 +3,7 @@ const {
     tarif_parkir,
     kendaraan,
     tipe_kendaraan,
+    tarif_denda, sequelize
 } = require('../../models/index')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
@@ -344,15 +345,36 @@ module.exports = {
         }
     },
     create: async (req, res) => {
+      const t = await sequelize.transaction()
         try {
-            const data = await tarif_parkir.create(req.body)
-            return res.json({
-                success: true,
-                message: 'Create tarif parkir successfully',
-                results: data,
-            })
+          const dataTarif = await tarif_parkir.create(req.body, { transaction: t })
+
+          // Buat tarif denda otomatis setelah tarif parkir berhasil dibuat
+          await tarif_denda.create({
+              kendaraan_id: req.body.kendaraan_id,
+              denda_tiket: 0,
+              denda_stnk: 0,
+              denda_member: false,
+              status: false,
+          }, { transaction: t })
+
+          await t.commit()
+
+          return res.json({
+              success: true,
+              message: 'Create tarif parkir & denda successfully',
+              results: dataTarif,
+          })
+            // const data = await tarif_parkir.create(req.body)
+            // return res.json({
+            //     success: true,
+            //     message: 'Create tarif parkir successfully',
+            //     results: data,
+            // })
         } catch (err) {
+            await t.rollback()
             return errorhandler(res, err)
+            // return errorhandler(res, err)
         }
     },
     findOneById: async (req, res) => {
