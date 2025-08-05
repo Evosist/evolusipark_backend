@@ -8,7 +8,8 @@ const dayjs = require('dayjs')
 const defaultParameters = require('./parameterDefaults')
 const { tipe_manless } = require('../../../models/index')
 const parameterDefaultsManless = require('./parameterDefaultsManless')
-
+const { nama_printer } = require('../../../models/index')
+const parameterDefaultsPrinter = require('./parameterDefaultsPrinter')
 
 function generateTableRows(data) {
     return data
@@ -85,78 +86,85 @@ module.exports = {
     //     }
     // },
     getAll: async (req, res) => {
-  try {
-    // ✅ Cek dan insert default data untuk `parameter`
-    let parameterSeeded = false
+      try {
+        // ✅ Cek dan insert default data untuk `parameter`
+        let parameterSeeded = false
 
-    for (const item of defaultParameters) {
-      const exist = await parameter.findOne({ where: { nama: item.nama } })
-      if (!exist) {
-        await parameter.create({
-          nama: item.nama,
-          nilai: item.nilai,
-          keterangan: item.keterangan,
-        })
-        parameterSeeded = true
-      }
-    }
-
-    if (parameterSeeded) {
-      // Hanya dijalankan jika ada parameter yang baru disisipkan
-      await tipe_manless.bulkCreate(
-        parameterDefaultsManless.map(item => ({
-          tipe_manless: item.nama,
-          nilai: item.nilai,
-          keterangan: item.keterangan,
-        })),
-        { ignoreDuplicates: true }
-      )
-    }
-
-
-    // 🔍 Search, Pagination, Sorting
-    const search = req.query.search || ''
-    const limit = req.query.limit ? parseInt(req.query.limit) : 10
-    const page = req.query.page ? parseInt(req.query.page) : 1
-    const offset = (page - 1) * limit
-    const sortBy = req.query.sortBy || 'id'
-    const sortOrder = req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
-
-    const allowedSortColumns = ['id', 'nama', 'nilai', 'keterangan', 'createdAt', 'updatedAt']
-    const validSortBy = allowedSortColumns.includes(sortBy) ? sortBy : 'id'
-
-    const whereCondition = search
-      ? {
-          [Op.or]: [
-            { nama: { [Op.iLike]: `%${search}%` } },
-            { nilai: { [Op.iLike]: `%${search}%` } },
-            { keterangan: { [Op.iLike]: `%${search}%` } },
-          ],
+        for (const item of defaultParameters) {
+          const exist = await parameter.findOne({ where: { nama: item.nama } })
+          if (!exist) {
+            await parameter.create({
+              nama: item.nama,
+              nilai: item.nilai,
+              keterangan: item.keterangan,
+            })
+            parameterSeeded = true
+          }
         }
-      : {}
 
-    const { count, rows } = await parameter.findAndCountAll({
-      where: whereCondition,
-      order: [[validSortBy, sortOrder]],
-      limit,
-      offset,
-    })
+        if (parameterSeeded) {
+          // Hanya dijalankan jika ada parameter yang baru disisipkan
+          await tipe_manless.bulkCreate(
+            parameterDefaultsManless.map(item => ({
+              tipe_manless: item.nama,
+              nilai: item.nilai,
+              keterangan: item.keterangan,
+            })),
+            { ignoreDuplicates: true }
+          )
 
-    return res.json({
-      success: true,
-      message: 'Get all parameter successfully',
-      results: {
-        data: rows,
-        totalData: count,
-        totalPages: Math.ceil(count / limit),
-        currentPage: page,
-        pageSize: limit,
-      },
-    })
-  } catch (err) {
-    return errorhandler(res, err)
-  }
-},
+          await nama_printer.bulkCreate(
+            parameterDefaultsPrinter.map(item => ({
+              nama_printer: item.nama_printer,
+            })),
+            { ignoreDuplicates: true }
+          )
+        }
+
+
+        // 🔍 Search, Pagination, Sorting
+        const search = req.query.search || ''
+        const limit = req.query.limit ? parseInt(req.query.limit) : 10
+        const page = req.query.page ? parseInt(req.query.page) : 1
+        const offset = (page - 1) * limit
+        const sortBy = req.query.sortBy || 'id'
+        const sortOrder = req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
+
+        const allowedSortColumns = ['id', 'nama', 'nilai', 'keterangan', 'createdAt', 'updatedAt']
+        const validSortBy = allowedSortColumns.includes(sortBy) ? sortBy : 'id'
+
+        const whereCondition = search
+          ? {
+              [Op.or]: [
+                { nama: { [Op.iLike]: `%${search}%` } },
+                { nilai: { [Op.iLike]: `%${search}%` } },
+                { keterangan: { [Op.iLike]: `%${search}%` } },
+              ],
+            }
+          : {}
+
+        const { count, rows } = await parameter.findAndCountAll({
+          where: whereCondition,
+          order: [[validSortBy, sortOrder]],
+          limit,
+          offset,
+        })
+
+        return res.json({
+          success: true,
+          message: 'Get all parameter successfully',
+          results: {
+            data: rows,
+            totalData: count,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+            pageSize: limit,
+          },
+        })
+      } catch (err) {
+        return errorhandler(res, err)
+      }
+    },
 
     generatePdf: async (req, res) => {
         try {
