@@ -6,6 +6,9 @@ const ExcelJS = require('exceljs')
 const Op = require('sequelize').Op
 const dayjs = require('dayjs')
 const defaultParameters = require('./parameterDefaults')
+const { tipe_manless } = require('../../../models/index')
+const parameterDefaultsManless = require('./parameterDefaultsManless')
+
 
 function generateTableRows(data) {
     return data
@@ -82,54 +85,79 @@ module.exports = {
     //     }
     // },
     getAll: async (req, res) => {
-      try {
-        // ⬇️ Cek dan insert default parameters
-        for (const item of defaultParameters) {
-          const exist = await parameter.findOne({ where: { nama: item.nama } });
-          if (!exist) {
-            await parameter.create({
-              nama: item.nama,
-              nilai: item.nilai,
-              keterangan: item.keterangan,
-            });
-          }
-        }
+  try {
+    // ✅ Cek dan insert default data untuk `parameter`
+    let parameterSeeded = false
 
-        // ⬇️ Lanjut proses ambil data
-        const search = req.query.search || '';
-        const limit = req.query.limit ? parseInt(req.query.limit) : 10;
-        const page = req.query.page ? parseInt(req.query.page) : 1;
-        const offset = (page - 1) * limit;
-        const { count, rows } = await parameter.findAndCountAll({
-          where: search
-            ? {
-                [Op.or]: [
-                  { nama: { [Op.iLike]: `%${search}%` } },
-                  { nilai: { [Op.iLike]: `%${search}%` } },
-                  { keterangan: { [Op.iLike]: `%${search}%` } },
-                ],
-              }
-            : {},
-          limit,
-          offset,
-          order: [['id', 'ASC']],
-        });
-
-        return res.json({
-          success: true,
-          message: 'Get all parameter successfully',
-          results: {
-            data: rows,
-            totalData: count,
-            totalPages: Math.ceil(count / limit),
-            currentPage: page,
-            pageSize: limit,
-          },
-        });
-      } catch (err) {
-        return errorhandler(res, err);
+    for (const item of defaultParameters) {
+      const exist = await parameter.findOne({ where: { nama: item.nama } })
+      if (!exist) {
+        await parameter.create({
+          nama: item.nama,
+          nilai: item.nilai,
+          keterangan: item.keterangan,
+        })
+        parameterSeeded = true
       }
-    },
+    }
+
+    if (parameterSeeded) {
+      // Hanya dijalankan jika ada parameter yang baru disisipkan
+      await tipe_manless.bulkCreate(
+        parameterDefaultsManless.map(item => ({
+          tipe_manless: item.nama,
+          nilai: item.nilai,
+          keterangan: item.keterangan,
+        })),
+        { ignoreDuplicates: true }
+      )
+    }
+
+
+    // 🔍 Search, Pagination, Sorting
+    const search = req.query.search || ''
+    const limit = req.query.limit ? parseInt(req.query.limit) : 10
+    const page = req.query.page ? parseInt(req.query.page) : 1
+    const offset = (page - 1) * limit
+    const sortBy = req.query.sortBy || 'id'
+    const sortOrder = req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
+
+    const allowedSortColumns = ['id', 'nama', 'nilai', 'keterangan', 'createdAt', 'updatedAt']
+    const validSortBy = allowedSortColumns.includes(sortBy) ? sortBy : 'id'
+
+    const whereCondition = search
+      ? {
+          [Op.or]: [
+            { nama: { [Op.iLike]: `%${search}%` } },
+            { nilai: { [Op.iLike]: `%${search}%` } },
+            { keterangan: { [Op.iLike]: `%${search}%` } },
+          ],
+        }
+      : {}
+
+    const { count, rows } = await parameter.findAndCountAll({
+      where: whereCondition,
+      order: [[validSortBy, sortOrder]],
+      limit,
+      offset,
+    })
+
+    return res.json({
+      success: true,
+      message: 'Get all parameter successfully',
+      results: {
+        data: rows,
+        totalData: count,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page,
+        pageSize: limit,
+      },
+    })
+  } catch (err) {
+    return errorhandler(res, err)
+  }
+},
+
     generatePdf: async (req, res) => {
         try {
             const startDate = new Date(req.query.start_date)
