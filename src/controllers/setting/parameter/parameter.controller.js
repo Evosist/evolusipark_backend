@@ -5,6 +5,7 @@ const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
 const Op = require('sequelize').Op
 const dayjs = require('dayjs')
+const defaultParameters = require('./parameterDefaults')
 
 function generateTableRows(data) {
     return data
@@ -24,61 +25,110 @@ function generateTableRows(data) {
 }
 
 module.exports = {
+    // getAll: async (req, res) => {
+    //     try {
+    //         const search = req.query.search || ''
+    //         const limit = req.query.limit ? parseInt(req.query.limit) : 10
+    //         const page = req.query.page ? parseInt(req.query.page) : 1
+    //         const offset = limit && page ? (page - 1) * limit : 0
+    //         const sortBy = req.query.sortBy || 'id'
+    //         const sortOrder =
+    //             req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
+    //
+    //         const allowedSortColumns = [
+    //             'id',
+    //             'nama',
+    //             'value',
+    //             'createdAt',
+    //             'updatedAt',
+    //         ]
+    //         const validSortBy = allowedSortColumns.includes(sortBy)
+    //             ? sortBy
+    //             : 'id'
+    //
+    //         const options = {
+    //             where: {},
+    //             order: [[validSortBy, sortOrder]],
+    //         }
+    //
+    //         if (search) {
+    //             options.where[Op.or] = [
+    //                 { nama: { [Op.iLike]: `%${search}%` } },
+    //                 { nilai: { [Op.iLike]: `%${search}%` } },
+    //                 { keterangan: { [Op.iLike]: `%${search}%` } },
+    //             ]
+    //         }
+    //
+    //         if (limit) {
+    //             options.limit = limit
+    //             options.offset = offset
+    //         }
+    //
+    //         const { count, rows } = await parameter.findAndCountAll(options)
+    //
+    //         return res.json({
+    //             success: true,
+    //             message: 'Get all parameter successfully',
+    //             results: {
+    //                 data: rows,
+    //                 totalData: count,
+    //                 totalPages: limit ? Math.ceil(count / limit) : 1,
+    //                 currentPage: page,
+    //                 pageSize: limit || count,
+    //             },
+    //         })
+    //     } catch (err) {
+    //         return errorhandler(res, err)
+    //     }
+    // },
     getAll: async (req, res) => {
-        try {
-            const search = req.query.search || ''
-            const limit = req.query.limit ? parseInt(req.query.limit) : 10
-            const page = req.query.page ? parseInt(req.query.page) : 1
-            const offset = limit && page ? (page - 1) * limit : 0
-            const sortBy = req.query.sortBy || 'id'
-            const sortOrder =
-                req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
-
-            const allowedSortColumns = [
-                'id',
-                'nama',
-                'value',
-                'createdAt',
-                'updatedAt',
-            ]
-            const validSortBy = allowedSortColumns.includes(sortBy)
-                ? sortBy
-                : 'id'
-
-            const options = {
-                where: {},
-                order: [[validSortBy, sortOrder]],
-            }
-
-            if (search) {
-                options.where[Op.or] = [
-                    { nama: { [Op.iLike]: `%${search}%` } },
-                    { nilai: { [Op.iLike]: `%${search}%` } },
-                    { keterangan: { [Op.iLike]: `%${search}%` } },
-                ]
-            }
-
-            if (limit) {
-                options.limit = limit
-                options.offset = offset
-            }
-
-            const { count, rows } = await parameter.findAndCountAll(options)
-
-            return res.json({
-                success: true,
-                message: 'Get all parameter successfully',
-                results: {
-                    data: rows,
-                    totalData: count,
-                    totalPages: limit ? Math.ceil(count / limit) : 1,
-                    currentPage: page,
-                    pageSize: limit || count,
-                },
-            })
-        } catch (err) {
-            return errorhandler(res, err)
+      try {
+        // ⬇️ Cek dan insert default parameters
+        for (const item of defaultParameters) {
+          const exist = await parameter.findOne({ where: { nama: item.nama } });
+          if (!exist) {
+            await parameter.create({
+              nama: item.nama,
+              nilai: item.nilai,
+              keterangan: item.keterangan,
+            });
+          }
         }
+
+        // ⬇️ Lanjut proses ambil data
+        const search = req.query.search || '';
+        const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+        const page = req.query.page ? parseInt(req.query.page) : 1;
+        const offset = (page - 1) * limit;
+        const { count, rows } = await parameter.findAndCountAll({
+          where: search
+            ? {
+                [Op.or]: [
+                  { nama: { [Op.iLike]: `%${search}%` } },
+                  { nilai: { [Op.iLike]: `%${search}%` } },
+                  { keterangan: { [Op.iLike]: `%${search}%` } },
+                ],
+              }
+            : {},
+          limit,
+          offset,
+          order: [['id', 'ASC']],
+        });
+
+        return res.json({
+          success: true,
+          message: 'Get all parameter successfully',
+          results: {
+            data: rows,
+            totalData: count,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+            pageSize: limit,
+          },
+        });
+      } catch (err) {
+        return errorhandler(res, err);
+      }
     },
     generatePdf: async (req, res) => {
         try {
