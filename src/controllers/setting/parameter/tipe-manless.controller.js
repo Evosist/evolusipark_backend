@@ -1,5 +1,5 @@
 const errorhandler = require('../../../helpers/errorhandler.helper')
-const { tipe_manless } = require('../../../models/index')
+const { tipe_manless, tenant } = require('../../../models/index')
 
 module.exports = {
     getAll: async (req, res) => {
@@ -25,6 +25,13 @@ module.exports = {
             const options = {
                 where: {},
                 order: [[validSortBy, sortOrder]],
+                include: [
+                    {
+                        model: tenant,
+                        as: 'tenant',
+                        attributes: ['id', 'nama_tenant'],
+                    },
+                ],
             }
 
             if (search) {

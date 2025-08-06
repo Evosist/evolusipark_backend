@@ -12,6 +12,7 @@ const {
     data_voucher,
     data_member,
     laporan_transaksi_batal,
+    tenant,
 } = require('../../models/index')
 const dayjs = require('dayjs')
 const relativeTime = require('dayjs/plugin/relativeTime')
@@ -102,6 +103,11 @@ module.exports = {
                     {
                         model: data_member,
                         as: 'data_member',
+                    },
+                    {
+                        model: tenant,
+                        as: 'tenant',
+                        attributes: ['id', 'nama_tenant'],
                     },
                 ],
                 order: [[validSortBy, sortOrder]],

@@ -1,5 +1,5 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { payment } = require('../../models/index')
+const { payment, tenant } = require('../../models/index')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
@@ -88,7 +88,7 @@ module.exports = {
                 { jenis_payment: 'Bank', status: false },
                 { jenis_payment: 'QRIS', status: false },
                 { jenis_payment: 'Member', status: false },
-            ];
+            ]
 
             for (const paymentItem of defaultPayments) {
                 const found = await payment.findOne({
@@ -97,46 +97,62 @@ module.exports = {
                             [Op.iLike]: paymentItem.jenis_payment, // case-insensitive
                         },
                     },
-                });
+                })
 
                 if (!found) {
                     await payment.create({
                         ...paymentItem,
                         createdAt: new Date(),
                         updatedAt: new Date(),
-                    });
+                    })
                 }
             }
 
             // === Lanjutkan ke proses normal ===
-            const search = req.query.search || '';
-            const limit = req.query.limit ? parseInt(req.query.limit) : 10;
-            const page = req.query.page ? parseInt(req.query.page) : 1;
-            const offset = limit && page ? (page - 1) * limit : 0;
-            const sortBy = req.query.sortBy || 'id';
-            const sortOrder = req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+            const search = req.query.search || ''
+            const limit = req.query.limit ? parseInt(req.query.limit) : 10
+            const page = req.query.page ? parseInt(req.query.page) : 1
+            const offset = limit && page ? (page - 1) * limit : 0
+            const sortBy = req.query.sortBy || 'id'
+            const sortOrder =
+                req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
 
-            const allowedSortColumns = ['id', 'jenis_payment', 'payment_status', 'createdAt', 'updatedAt'];
-            const validSortBy = allowedSortColumns.includes(sortBy) ? sortBy : 'id';
+            const allowedSortColumns = [
+                'id',
+                'jenis_payment',
+                'payment_status',
+                'createdAt',
+                'updatedAt',
+            ]
+            const validSortBy = allowedSortColumns.includes(sortBy)
+                ? sortBy
+                : 'id'
 
             const options = {
                 where: {},
                 order: [[validSortBy, sortOrder]],
-            };
+                include: [
+                    {
+                        model: tenant,
+                        as: 'tenant',
+                        attributes: ['id', 'nama_tenant'],
+                    },
+                ],
+            }
 
             if (search) {
                 options.where[Op.or] = [
                     { jenis_payment: { [Op.iLike]: `%${search}%` } },
                     { payment_status: { [Op.iLike]: `%${search}%` } }, // optional: jika kolom ini ada
-                ];
+                ]
             }
 
             if (limit) {
-                options.limit = limit;
-                options.offset = offset;
+                options.limit = limit
+                options.offset = offset
             }
 
-            const { count, rows } = await payment.findAndCountAll(options);
+            const { count, rows } = await payment.findAndCountAll(options)
 
             return res.json({
                 success: true,
@@ -148,9 +164,9 @@ module.exports = {
                     currentPage: page,
                     pageSize: limit || count,
                 },
-            });
+            })
         } catch (err) {
-            return errorhandler(res, err);
+            return errorhandler(res, err)
         }
     },
 
@@ -335,14 +351,14 @@ module.exports = {
     // },
     create: async (req, res) => {
         try {
-            const { jenis_payment } = req.body;
+            const { jenis_payment } = req.body
 
             // Tolak jika tidak ada jenis_payment
             if (!jenis_payment || jenis_payment.trim() === '') {
                 return res.status(400).json({
                     success: false,
                     message: 'Jenis pembayaran tidak boleh kosong.',
-                });
+                })
             }
 
             // Cek apakah sudah ada jenis_payment dengan nama serupa (abaikan case)
@@ -352,24 +368,24 @@ module.exports = {
                         [Op.iLike]: jenis_payment, // abaikan huruf besar kecil
                     },
                 },
-            });
+            })
 
             if (existing) {
                 return res.status(400).json({
                     success: false,
                     message: `Jenis pembayaran '${jenis_payment}' sudah tersedia.`,
-                });
+                })
             }
 
             // Simpan data baru
-            const data = await payment.create(req.body);
+            const data = await payment.create(req.body)
             return res.json({
                 success: true,
                 message: 'Create payment successfully',
                 results: data,
-            });
+            })
         } catch (err) {
-            return errorhandler(res, err);
+            return errorhandler(res, err)
         }
     },
 

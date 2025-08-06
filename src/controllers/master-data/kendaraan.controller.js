@@ -4,6 +4,7 @@ const {
     user,
     tipe_kendaraan,
     tarif_parkir,
+    tenant,
 } = require('../../models/index')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
@@ -63,6 +64,11 @@ module.exports = {
                         model: tipe_kendaraan,
                         as: 'tipe_kendaraan',
                         attributes: ['id', 'tipe_kendaraan'],
+                    },
+                    {
+                        model: tenant,
+                        as: 'tenant',
+                        attributes: ['id', 'nama_tenant'],
                     },
                 ],
                 order: [[validSortBy, sortOrder]],

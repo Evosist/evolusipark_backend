@@ -82,6 +82,11 @@ module.exports = {
                             'produk_id',
                         ],
                     },
+                    {
+                        model: tenant,
+                        as: 'tenant',
+                        attributes: ['id', 'nama_tenant'],
+                    },
                 ],
                 order: [[validSortBy, sortOrder]],
             }

@@ -1,6 +1,6 @@
 const dayjs = require('dayjs')
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { perusahaan, user } = require('../../models/index')
+const { perusahaan, user, tenant } = require('../../models/index')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
@@ -56,6 +56,11 @@ module.exports = {
                         model: user,
                         as: 'user',
                         attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: tenant,
+                        as: 'tenant',
+                        attributes: ['id', 'nama_tenant'],
                     },
                 ],
                 order: [[validSortBy, sortOrder]],

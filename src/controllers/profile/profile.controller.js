@@ -1,5 +1,10 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { user, level_pengguna, perusahaan } = require('../../models/index')
+const {
+    user,
+    level_pengguna,
+    perusahaan,
+    tenant,
+} = require('../../models/index')
 const argon = require('argon2')
 const dayjs = require('dayjs')
 const fs = require('fs')
@@ -67,6 +72,11 @@ module.exports = {
                         model: perusahaan,
                         as: 'asal_perusahaan',
                         attributes: ['id', 'nama', 'jenis_perusahaan'],
+                    },
+                    {
+                        model: tenant,
+                        as: 'tenant',
+                        attributes: ['id', 'nama_tenant'],
                     },
                 ],
                 order: [[validSortBy, sortOrder]],
