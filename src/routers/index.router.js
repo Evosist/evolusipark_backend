@@ -7,6 +7,7 @@ router.use('/laporan-data', require('../routers/laporan-data/index.router'))
 router.use('/setting', require('../routers/setting/setting.router'))
 router.use('/transaksi', require('./transaksi/index.router'))
 router.use('/profile', require('../routers/profile/profile.router'))
+router.use('/tenant', require('../routers/tenant/tenant.router'))
 
 router.get('/', (req, res) => {
     return res.json({
