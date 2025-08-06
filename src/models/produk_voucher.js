@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'user_id',
                 as: 'user',
             })
+
+            produk_voucher.belongsTo(models.tenant, {
+                foreignKey: 'tenant_id',
+                as: 'tenant',
+            })
         }
     }
     produk_voucher.init(

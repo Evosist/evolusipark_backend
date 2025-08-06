@@ -53,6 +53,11 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'id_data_member',
                 as: 'data_member',
             })
+
+            transaksi.belongsTo(models.tenant, {
+                foreignKey: 'tenant_id',
+                as: 'tenant',
+            })
         }
     }
     transaksi.init(
