@@ -28,6 +28,11 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'tipe_kendaraan_id',
                 as: 'tipe_kendaraan',
             })
+
+            kendaraan.belongsTo(models.tenant, {
+                foreignKey: 'tenant_id',
+                as: 'tenant',
+            })
         }
     }
     kendaraan.init(

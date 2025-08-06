@@ -18,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'data_member_id',
                 as: 'data_member',
             })
+
+            data_nomor_polisi.belongsTo(models.tenant, {
+                foreignKey: 'tenant_id',
+                as: 'tenant',
+            })
         }
     }
     data_nomor_polisi.init(

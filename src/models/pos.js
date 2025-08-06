@@ -25,6 +25,11 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'nama_interface_id',
                 as: 'interface',
             })
+
+            pos.belongsTo(models.tenant, {
+                foreignKey: 'tenant_id',
+                as: 'tenant',
+            })
         }
     }
     pos.init(

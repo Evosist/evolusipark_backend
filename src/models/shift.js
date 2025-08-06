@@ -10,6 +10,11 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             // define association here
             shift.belongsTo(models.user, { foreignKey: 'user_id', as: 'user' })
+
+            shift.belongsTo(models.tenant, {
+                foreignKey: 'tenant_id',
+                as: 'tenant',
+            })
         }
     }
     shift.init(
