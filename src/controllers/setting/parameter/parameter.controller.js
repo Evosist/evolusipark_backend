@@ -12,6 +12,8 @@ const { nama_printer } = require('../../../models/index')
 const parameterDefaultsPrinter = require('./parameterDefaultsPrinter')
 const { nama_interface } = require('../../../models/index')
 const parameterDefaultsInterface = require('./parameterDefaultsInterface')
+const { tipe_kendaraan } = require('../../../models/index')
+const parameterDefaultsTipeKendaraan = require('./parameterDefaultsTipeKendaraan')
 
 function generateTableRows(data) {
     return data
@@ -126,6 +128,13 @@ module.exports = {
           await nama_interface.bulkCreate(
            parameterDefaultsInterface.map(item => ({
              nama_interface: item.nama_interface,
+           })),
+           { ignoreDuplicates: true }
+          )
+
+          await tipe_kendaraan.bulkCreate(
+           parameterDefaultsTipeKendaraan.map(item => ({
+             tipe_kendaraan: item.tipe_kendaraan
            })),
            { ignoreDuplicates: true }
           )
