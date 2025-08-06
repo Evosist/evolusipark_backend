@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     tarif_denda.init(
         {
+            tenant_id: DataTypes.INTEGER,
             kendaraan_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,

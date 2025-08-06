@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     global_setting.init(
         {
+            tenant_id: DataTypes.INTEGER,
             nama_operator: DataTypes.STRING,
             email_operator: DataTypes.STRING,
             no_telp_operator: DataTypes.STRING,

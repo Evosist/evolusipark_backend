@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     riwayat_transaksi_kartu_member.init(
         {
+            tenant_id: DataTypes.INTEGER,
             tgl_transaksi: DataTypes.DATE,
             no_kartu: DataTypes.STRING,
             tarif: {

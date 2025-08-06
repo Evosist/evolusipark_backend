@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     payment.init(
         {
+            tenant_id: DataTypes.INTEGER,
             jenis_payment: DataTypes.STRING,
             status: DataTypes.BOOLEAN,
         },

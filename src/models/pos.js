@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     pos.init(
         {
+            tenant_id: DataTypes.INTEGER,
             kode: DataTypes.STRING,
             keterangan: DataTypes.STRING,
             tipe_pos: DataTypes.ENUM('In', 'Out'),

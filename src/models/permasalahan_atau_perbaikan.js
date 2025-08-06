@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     permasalahan_atau_perbaikan.init(
         {
+            tenant_id: DataTypes.INTEGER,
             judul_permasalahan: DataTypes.STRING,
             tanggal_permasalahan: DataTypes.STRING,
             kategori_permasalahan: DataTypes.ENUM(

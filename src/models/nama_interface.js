@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     nama_interface.init(
         {
+            tenant_id: DataTypes.INTEGER,
             nama_interface: DataTypes.STRING,
         },
         {

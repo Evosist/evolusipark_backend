@@ -32,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     kendaraan.init(
         {
+            tenant_id: DataTypes.INTEGER,
             nama_kendaraan: DataTypes.STRING,
             tipe_kendaraan_id: DataTypes.INTEGER,
             status: DataTypes.BOOLEAN,

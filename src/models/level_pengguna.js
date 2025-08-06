@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     level_pengguna.init(
         {
+            tenant_id: DataTypes.INTEGER,
             nama: { type: DataTypes.STRING, unique: true },
             hak_akses: DataTypes.JSONB,
             perusahaan_id: DataTypes.INTEGER,

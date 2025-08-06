@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     data_nomor_polisi.init(
         {
+            tenant_id: DataTypes.INTEGER,
             data_member_id: DataTypes.INTEGER,
             kendaraan_id: DataTypes.INTEGER,
             nomor_polisi: { type: DataTypes.STRING, unique: true },

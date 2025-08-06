@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     tipe_manless.init(
         {
+            tenant_id: DataTypes.INTEGER,
             tipe_manless: DataTypes.STRING,
         },
         {

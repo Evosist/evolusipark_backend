@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     tipe_kendaraan.init(
         {
+            tenant_id: DataTypes.INTEGER,
             tipe_kendaraan: DataTypes.STRING,
         },
         {
