@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     parameter.init(
         {
+            tenant_id: DataTypes.INTEGER,
             nama: DataTypes.STRING,
             nilai: DataTypes.STRING,
             keterangan: DataTypes.STRING,

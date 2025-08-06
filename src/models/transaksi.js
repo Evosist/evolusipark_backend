@@ -57,6 +57,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     transaksi.init(
         {
+            tenant_id: DataTypes.INTEGER,
             tanggal_masuk: DataTypes.DATE,
             pintu_masuk_id: DataTypes.INTEGER,
             no_tiket: DataTypes.STRING,

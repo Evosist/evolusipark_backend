@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     tipe_denda.init(
         {
+            tenant_id: DataTypes.INTEGER,
             tipe_denda: DataTypes.STRING,
         },
         {

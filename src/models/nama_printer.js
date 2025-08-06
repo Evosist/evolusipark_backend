@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     nama_printer.init(
         {
+            tenant_id: DataTypes.INTEGER,
             nama_printer: DataTypes.STRING,
         },
         {

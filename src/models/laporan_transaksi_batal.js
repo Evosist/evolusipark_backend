@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     laporan_transaksi_batal.init(
         {
+            tenant_id: DataTypes.INTEGER,
             no_tiket: DataTypes.STRING,
             tanggal_masuk: DataTypes.DATE,
             pintu_masuk_id: DataTypes.INTEGER,

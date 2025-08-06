@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     shift.init(
         {
+            tenant_id: DataTypes.INTEGER,
             nama_shift: DataTypes.STRING,
             awal_shift: DataTypes.TIME,
             akhir_shift: DataTypes.TIME,

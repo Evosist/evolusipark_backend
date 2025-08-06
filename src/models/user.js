@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     user.init(
         {
+            tenant_id: DataTypes.INTEGER,
             nama: { type: DataTypes.STRING, unique: true },
             jenis_kelamin: DataTypes.ENUM('Laki-laki', 'Perempuan'),
             no_hp: DataTypes.STRING,

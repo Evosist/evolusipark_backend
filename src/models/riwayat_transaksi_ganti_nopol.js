@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     riwayat_transaksi_ganti_nopol.init(
         {
+            tenant_id: DataTypes.INTEGER,
             tgl_transaksi: DataTypes.DATE,
             nomor_polisi_lama: DataTypes.STRING,
             nomor_polisi_baru: DataTypes.STRING,

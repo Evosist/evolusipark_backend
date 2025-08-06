@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     tarif_parkir.init(
         {
+            tenant_id: DataTypes.INTEGER,
             kendaraan_id: DataTypes.INTEGER,
             grace_period: {
                 type: DataTypes.INTEGER,

@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     produk_voucher.init(
         {
+            tenant_id: DataTypes.INTEGER,
             nama: DataTypes.STRING,
             periode: DataTypes.RANGE(DataTypes.DATEONLY),
             list_id_kendaraan: DataTypes.ARRAY(DataTypes.STRING),

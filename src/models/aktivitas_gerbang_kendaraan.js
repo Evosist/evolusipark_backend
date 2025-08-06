@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     aktivitas_gerbang_kendaraan.init(
         {
+            tenant_id: DataTypes.INTEGER,
             tiket: DataTypes.STRING,
             plat_nomor: DataTypes.STRING,
             kendaraan_id: DataTypes.INTEGER,

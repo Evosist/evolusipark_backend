@@ -32,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     data_member.init(
         {
+            tenant_id: DataTypes.INTEGER,
             nama: DataTypes.STRING,
             no_hp: DataTypes.STRING,
             perusahaan_id: DataTypes.INTEGER,
