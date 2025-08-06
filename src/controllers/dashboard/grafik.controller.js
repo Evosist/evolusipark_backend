@@ -7,7 +7,7 @@ module.exports = {
         try {
             const rawQuery = `
                 WITH gerbang_event AS (
-                  SELECT 
+                  SELECT
                     plat_nomor,
                     tipe_gerbang,
                     DATE("createdAt") AS tanggal,
@@ -28,7 +28,7 @@ module.exports = {
                   GROUP BY plat_nomor
                 ),
                 combined AS (
-                  SELECT 
+                  SELECT
                     m.plat_nomor,
                     m.masuk_time,
                     k.keluar_time
@@ -42,12 +42,12 @@ module.exports = {
                     INTERVAL '1 day'
                   )) AS tanggal
                 )
-                SELECT 
+                SELECT
                   d.tanggal,
                   COUNT(c.plat_nomor) AS nilai
                 FROM date_series d
-                LEFT JOIN combined c 
-                  ON DATE(c.masuk_time) <= d.tanggal 
+                LEFT JOIN combined c
+                  ON DATE(c.masuk_time) <= d.tanggal
                      AND (c.keluar_time IS NULL OR DATE(c.keluar_time) > d.tanggal)
                 GROUP BY d.tanggal
                 ORDER BY d.tanggal ASC;
@@ -76,6 +76,80 @@ module.exports = {
             return errorhandler(res, error)
         }
     },
+    getOvernightYangSudahKeluar: async (req, res) => {
+    try {
+      const rawQuery = `
+        WITH gerbang_event AS (
+          SELECT
+            plat_nomor,
+            tipe_gerbang,
+            "createdAt"
+          FROM aktivitas_gerbang_kendaraans
+          WHERE status_palang = 'Sukses'
+        ),
+        masuk AS (
+          SELECT plat_nomor, MIN("createdAt") AS masuk_time
+          FROM gerbang_event
+          WHERE tipe_gerbang = 'In'
+          GROUP BY plat_nomor
+        ),
+        keluar AS (
+          SELECT plat_nomor, MAX("createdAt") AS keluar_time
+          FROM gerbang_event
+          WHERE tipe_gerbang = 'Out'
+          GROUP BY plat_nomor
+        ),
+        combined AS (
+          SELECT
+            m.plat_nomor,
+            m.masuk_time,
+            k.keluar_time,
+            DATE(k.keluar_time) AS tanggal_keluar,
+            DATE_PART('day', k.keluar_time - m.masuk_time) AS durasi_hari
+          FROM masuk m
+          JOIN keluar k ON m.plat_nomor = k.plat_nomor
+        ),
+        date_series AS (
+          SELECT generate_series(
+            CURRENT_DATE - INTERVAL '29 days',
+            CURRENT_DATE,
+            INTERVAL '1 day'
+          )::date AS tanggal
+        )
+        SELECT
+          ds.tanggal,
+          COUNT(c.plat_nomor) AS nilai
+        FROM date_series ds
+        LEFT JOIN combined c
+          ON DATE(c.keluar_time) = ds.tanggal
+          AND c.durasi_hari >= 1
+        GROUP BY ds.tanggal
+        ORDER BY ds.tanggal ASC;
+      `;
+
+      const data = await sequelize.query(rawQuery, {
+        type: QueryTypes.SELECT,
+      });
+
+      const formattedData = data.map((item, index) => ({
+        id: index + 1,
+        tanggal: item.tanggal,
+        nilai: parseInt(item.nilai) || 0,
+      }));
+
+      return res.status(200).json({
+        success: true,
+        message: 'Get all overnight data successfully',
+        results: {
+          data: formattedData,
+          totalData: formattedData.length,
+        },
+      });
+    } catch (error) {
+      return errorhandler(res, error);
+    }
+  },
+
     getKendaraanChartData: async (req, res) => {
         try {
             const rawQuery = `
@@ -98,7 +172,7 @@ module.exports = {
                 AND agk.tipe_gerbang = 'In'
                 GROUP BY tanggal, tk.tipe_kendaraan
             )
-            SELECT 
+            SELECT
                 ds.tanggal,
                 kh.tipe_kendaraan,
                 COALESCE(kh.jumlah, 0) AS jumlah
