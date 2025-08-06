@@ -28,12 +28,12 @@ module.exports = {
         },
       }
 
-      const results = {}
+      const data = []
 
       for (const key in periods) {
-        const { start, end } = periods[key]
+        const { start, end, label } = periods[key]
 
-        const [data] = await sequelize.query(
+        const [result] = await sequelize.query(
           `
           SELECT
             COALESCE(SUM(CAST(biaya_parkir AS INTEGER)), 0) AS total_pendapatan,
@@ -48,17 +48,20 @@ module.exports = {
           }
         )
 
-        results[key] = {
-          label: periods[key].label,
-          total_pendapatan: parseInt(data.total_pendapatan),
-          jumlah_kendaraan: parseInt(data.jumlah_kendaraan),
-        }
+        data.push({
+          periode: key,
+          label,
+          total_pendapatan: parseInt(result.total_pendapatan),
+          jumlah_kendaraan: parseInt(result.jumlah_kendaraan),
+        })
       }
 
       return res.json({
         success: true,
         message: 'Get resume pendapatan dashboard successfully',
-        results,
+        results: {
+          data,
+        },
       })
     } catch (err) {
       return errorhandler(res, err)
