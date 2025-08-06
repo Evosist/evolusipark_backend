@@ -1,4 +1,4 @@
-const errorhandler = require('../../../helpers/errorhandler.helper')
+const errorhandler = require('../../helpers/errorhandler.helper')
 const { tenant } = require('../../../models/index')
 
 module.exports = {
