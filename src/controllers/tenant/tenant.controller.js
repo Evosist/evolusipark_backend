@@ -1,5 +1,5 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { tenant } = require('../../../models/index')
+const { tenant } = require('../../models/index')
 
 module.exports = {
     getAll: async (req, res) => {
