@@ -1,5 +1,5 @@
 const tenantRouter = require('express').Router()
-const tenantController = require('../../controllers/profile/profile.controller')
+const tenantController = require('../../controllers/tenant/tenant.controller')
 
 tenantRouter.get('/', tenantController.getAll)
 tenantRouter.get('/:id', tenantController.findOneById)
