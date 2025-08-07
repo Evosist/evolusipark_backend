@@ -18,7 +18,7 @@ module.exports = {
             [
                 {
                     tenant_id: 1,
-                    nama: 'Tunai',
+                    nama: 'Super Administrator',
                     jenis_kelamin: 'Laki-laki',
                     no_hp: '0834534534534',
                     alamat_lengkap: 'Jakarta',
