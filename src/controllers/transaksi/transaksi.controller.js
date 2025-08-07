@@ -116,7 +116,22 @@ module.exports = {
                 } else if (searchLower === 'false' || searchLower === '0') {
                     statusFilter = false
                 }
+/*              //=================================================================
+                // Berhasil Untuk Pencarian Nomor Tiket dan Nomor Polisi
+                //=================================================================
+                options.where[Op.or] = [
 
+                      { no_tiket: { [Op.iLike]: `%${search}%` } },
+                     { nomor_polisi: { [Op.iLike]: `%${search}%` } },
+                    //Kolom Tidak Ditemukan
+                    // {
+                    //     no_tiket_atau_tiket_manual: {
+                    //         [Op.iLike]: `%${search}%`,
+                    //     },
+                    // },
+                  ,
+                ]
+  */
                 options.where[Op.or] = [
                     literal(
                         `CAST("tanggal_masuk" AS TEXT) ILIKE '%${search}%'`
@@ -126,11 +141,14 @@ module.exports = {
                             [Op.iLike]: `%${search}%`,
                         },
                     },
-                    {
-                        no_tiket_atau_tiket_manual: {
-                            [Op.iLike]: `%${search}%`,
-                        },
-                    },
+                    //=======================================================================
+                    //Kolom Tidak Ditemukan
+                    //=======================================================================
+                    // {
+                    //     no_tiket_atau_tiket_manual: {
+                    //         [Op.iLike]: `%${search}%`,
+                    //     },
+                    // },
                     {
                         '$kendaraan.nama_kendaraan$': {
                             [Op.iLike]: `%${search}%`,
