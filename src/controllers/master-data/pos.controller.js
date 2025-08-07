@@ -6,6 +6,7 @@ const {
     tipe_manless,
     nama_printer,
     nama_interface,
+    tenant,
 } = require('../../models/index')
 const puppeteer = require('puppeteer')
 const fs = require('fs')
@@ -80,6 +81,11 @@ module.exports = {
                         model: user,
                         as: 'user',
                         attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: tenant,
+                        as: 'tenant',
+                        attributes: ['id', 'nama_tenant'],
                     },
                 ],
                 order: [[validSortBy, sortOrder]],

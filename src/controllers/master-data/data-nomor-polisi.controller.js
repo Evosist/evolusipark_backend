@@ -3,6 +3,7 @@ const {
     data_nomor_polisi,
     kendaraan,
     data_member,
+    tenant,
 } = require('../../models/index')
 
 module.exports = {
@@ -26,6 +27,11 @@ module.exports = {
                         model: data_member,
                         as: 'data_member',
                         attributes: ['id', 'nama', 'no_kartu'],
+                    },
+                    {
+                        model: tenant,
+                        as: 'tenant',
+                        attributes: ['id', 'nama_tenant'],
                     },
                 ],
                 order: [[sortBy, sortOrder]],

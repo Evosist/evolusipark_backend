@@ -1,5 +1,9 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { permasalahan_atau_perbaikan, pos } = require('../../models/index')
+const {
+    permasalahan_atau_perbaikan,
+    pos,
+    tenant,
+} = require('../../models/index')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
@@ -67,6 +71,11 @@ module.exports = {
                         model: pos,
                         as: 'pos',
                         attributes: ['id', 'keterangan'],
+                    },
+                    {
+                        model: tenant,
+                        as: 'tenant',
+                        attributes: ['id', 'nama_tenant'],
                     },
                 ],
                 order: [[validSortBy, sortOrder]],

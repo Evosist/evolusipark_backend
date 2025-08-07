@@ -3,7 +3,9 @@ const {
     tarif_parkir,
     kendaraan,
     tipe_kendaraan,
-    tarif_denda, sequelize
+    tarif_denda,
+    sequelize,
+    tenant,
 } = require('../../models/index')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
@@ -85,6 +87,11 @@ module.exports = {
                                 attributes: ['id', 'tipe_kendaraan'],
                             },
                         ],
+                    },
+                    {
+                        model: tenant,
+                        as: 'tenant',
+                        attributes: ['id', 'nama_tenant'],
                     },
                 ],
                 order: [[validSortBy, sortOrder]],
@@ -345,26 +352,31 @@ module.exports = {
         }
     },
     create: async (req, res) => {
-      const t = await sequelize.transaction()
+        const t = await sequelize.transaction()
         try {
-          const dataTarif = await tarif_parkir.create(req.body, { transaction: t })
+            const dataTarif = await tarif_parkir.create(req.body, {
+                transaction: t,
+            })
 
-          // Buat tarif denda otomatis setelah tarif parkir berhasil dibuat
-          await tarif_denda.create({
-              kendaraan_id: req.body.kendaraan_id,
-              denda_tiket: 0,
-              denda_stnk: 0,
-              denda_member: false,
-              status: false,
-          }, { transaction: t })
+            // Buat tarif denda otomatis setelah tarif parkir berhasil dibuat
+            await tarif_denda.create(
+                {
+                    kendaraan_id: req.body.kendaraan_id,
+                    denda_tiket: 0,
+                    denda_stnk: 0,
+                    denda_member: false,
+                    status: false,
+                },
+                { transaction: t }
+            )
 
-          await t.commit()
+            await t.commit()
 
-          return res.json({
-              success: true,
-              message: 'Create tarif parkir & denda successfully',
-              results: dataTarif,
-          })
+            return res.json({
+                success: true,
+                message: 'Create tarif parkir & denda successfully',
+                results: dataTarif,
+            })
             // const data = await tarif_parkir.create(req.body)
             // return res.json({
             //     success: true,

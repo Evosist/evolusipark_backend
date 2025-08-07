@@ -1,5 +1,5 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { global_setting } = require('../../models/index')
+const { global_setting, tenant } = require('../../models/index')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
@@ -65,6 +65,13 @@ module.exports = {
             const options = {
                 where: {},
                 order: [[validSortBy, sortOrder]],
+                include: [
+                    {
+                        model: tenant,
+                        as: 'tenant',
+                        attributes: ['id', 'nama_tenant'],
+                    },
+                ],
             }
 
             if (search) {

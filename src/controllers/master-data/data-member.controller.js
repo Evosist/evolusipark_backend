@@ -11,6 +11,7 @@ const {
     user,
     pos,
     kendaraan,
+    tenant,
 } = require('../../models/index')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
@@ -74,6 +75,11 @@ module.exports = {
                         model: user,
                         as: 'user',
                         attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: tenant,
+                        as: 'tenant',
+                        attributes: ['id', 'nama_tenant'],
                     },
                 ],
                 order: [[sortBy, sortOrder]],

@@ -4,6 +4,7 @@ const {
     data_voucher,
     kendaraan,
     produk_voucher,
+    tenant,
 } = require('../../models/index')
 
 module.exports = {
@@ -25,6 +26,11 @@ module.exports = {
                     {
                         model: produk_voucher,
                         as: 'produk_voucher',
+                    },
+                    {
+                        model: tenant,
+                        as: 'tenant',
+                        attributes: ['id', 'nama_tenant'],
                     },
                 ],
                 order: [[sortBy, sortOrder]],

@@ -53,6 +53,11 @@ module.exports = {
                 where: {},
                 include: [
                     {
+                        model: tenant,
+                        as: 'tenant',
+                        attributes: ['id', 'nama_tenant'],
+                    },
+                    {
                         model: user,
                         as: 'user',
                         attributes: ['id', 'nama'],

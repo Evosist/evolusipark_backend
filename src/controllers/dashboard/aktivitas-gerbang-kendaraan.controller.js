@@ -1,5 +1,9 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { aktivitas_gerbang_kendaraan, user } = require('../../models/index')
+const {
+    aktivitas_gerbang_kendaraan,
+    user,
+    tenant,
+} = require('../../models/index')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
@@ -45,58 +49,63 @@ module.exports = {
                 where: {},
                 order: [[sortBy, sortOrder]],
                 include: [
-                   {
-                       model: user,
-                       as: 'petugas',
-                       attributes: ['id', 'nama'],
-                   },
-                   {
-                       model: require('../../models').data_member,
-                       as: 'data_member',
-                       attributes: ['id', 'nama'], // atau atribut lain yang diperlukan
-                   },
-                  {
-                    model: require('../../models').kendaraan,
-                    as: 'kendaraan',
-                    attributes: ['id', 'nama_kendaraan'], // ubah sesuai kolom yang Anda punya
-                  },
-               ],
+                    {
+                        model: user,
+                        as: 'petugas',
+                        attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: user,
+                        as: 'petugas',
+                        attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: require('../../models').data_member,
+                        as: 'data_member',
+                        attributes: ['id', 'nama'], // atau atribut lain yang diperlukan
+                    },
+                    {
+                        model: require('../../models').kendaraan,
+                        as: 'kendaraan',
+                        attributes: ['id', 'nama_kendaraan'], // ubah sesuai kolom yang Anda punya
+                    },
+                ],
                 distinct: true, // menghilangkan duplikat
             }
-
-
 
             // Awal: Siapkan filter awal
             options.where = {}
 
             if (startDate && endDate) {
-              options.where.createdAt = {
-                [Op.between]: [
-                  new Date(startDate),
-                  new Date(new Date(endDate).setHours(23, 59, 59, 999)),
-                ],
-              }
+                options.where.createdAt = {
+                    [Op.between]: [
+                        new Date(startDate),
+                        new Date(new Date(endDate).setHours(23, 59, 59, 999)),
+                    ],
+                }
             }
 
             if (search) {
-              options.where[Op.and] = [
-                ...(options.where[Op.and] || []), // biar nggak overwrite
-                {
-                  [Op.or]: [
-                    { tiket: { [Op.iLike]: `%${search}%` } },
-                    { plat_nomor: { [Op.iLike]: `%${search}%` } },
-                    { waktu: { [Op.iLike]: `%${search}%` } },
-                    { lokasi_gerbang: { [Op.iLike]: `%${search}%` } },
-                    { buka_atau_tutup: { [Op.iLike]: `%${search}%` } },
-                    { status_palang: { [Op.iLike]: `%${search}%` } },
-                    { '$petugas.nama$': { [Op.iLike]: `%${search}%` } },
-                    { '$data_member.nama$': { [Op.iLike]: `%${search}%` } },
-                  ],
-                },
-              ]
+                options.where[Op.and] = [
+                    ...(options.where[Op.and] || []), // biar nggak overwrite
+                    {
+                        [Op.or]: [
+                            { tiket: { [Op.iLike]: `%${search}%` } },
+                            { plat_nomor: { [Op.iLike]: `%${search}%` } },
+                            { waktu: { [Op.iLike]: `%${search}%` } },
+                            { lokasi_gerbang: { [Op.iLike]: `%${search}%` } },
+                            { buka_atau_tutup: { [Op.iLike]: `%${search}%` } },
+                            { status_palang: { [Op.iLike]: `%${search}%` } },
+                            { '$petugas.nama$': { [Op.iLike]: `%${search}%` } },
+                            {
+                                '$data_member.nama$': {
+                                    [Op.iLike]: `%${search}%`,
+                                },
+                            },
+                        ],
+                    },
+                ]
             }
-
-
 
             // if (search) {
             //     options.where = {
@@ -116,9 +125,6 @@ module.exports = {
             //         ],
             //     }
             // }
-
-
-
 
             if (limit !== null && offset !== null) {
                 options.limit = limit
@@ -189,9 +195,13 @@ module.exports = {
                 petugas: item.petugas,
                 status_palang: item.status_palang,
                 // created: dayjs(item.createdAt).format('DD-MM-YYYY'),
-                created: dayjs(item.createdAt).tz('Asia/Jakarta').format('DD-MM-YYYY'),
+                created: dayjs(item.createdAt)
+                    .tz('Asia/Jakarta')
+                    .format('DD-MM-YYYY'),
                 // updated: dayjs(item.updatedAt).format('DD-MM-YYYY'),
-                updated: dayjs(item.updatedAt).tz('Asia/Jakarta').format('DD-MM-YYYY'),
+                updated: dayjs(item.updatedAt)
+                    .tz('Asia/Jakarta')
+                    .format('DD-MM-YYYY'),
             }))
 
             const template = fs.readFileSync(
