@@ -60,6 +60,11 @@ module.exports = {
                         attributes: ['id', 'nama'],
                     },
                     {
+                        model: tenant,
+                        as: 'tenant',
+                        attributes: ['id', 'nama_tenant'],
+                    },
+                    {
                         model: require('../../models').data_member,
                         as: 'data_member',
                         attributes: ['id', 'nama'], // atau atribut lain yang diperlukan
