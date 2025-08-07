@@ -12,7 +12,7 @@ app.use(
 const PORT = process.env.PORT || 4000
 
 const cors = require('cors')
-const checkAndInsertSuperAdmin = require('./src/configs/check-super-admin')
+// const checkAndInsertSuperAdmin = require('./src/configs/check-super-admin')
 
 app.use(
     cors({
