@@ -80,7 +80,7 @@ module.exports = {
         try {
             const data = await level_pengguna.create({
                 ...req.body,
-                hak_akses: JSON.parse(req.body.hak_akses),
+                // hak_akses: JSON.parse(req.body.hak_akses),
             })
             return res.json({
                 success: true,
