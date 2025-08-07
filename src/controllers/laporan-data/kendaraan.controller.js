@@ -52,7 +52,7 @@ module.exports = {
             //     replacements.end_date = end_date
             // }
             if (end_date) {
-                if (isValidDDMMYYYY(end_date)) {
+                if (!isValidDDMMYYYY(end_date)) {
                     return errorhandler(res, 'Invalid end date format', 400)
                 }
                 end_date = convertDDMMYYYYtoMMDDYYYY(end_date)
