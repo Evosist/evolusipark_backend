@@ -1,6 +1,6 @@
 const { literal } = require('sequelize')
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { produk_voucher, user } = require('../../models/index')
+const { produk_voucher, user, tenant } = require('../../models/index')
 
 module.exports = {
     getAll: async (req, res) => {
