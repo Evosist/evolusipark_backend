@@ -4,6 +4,7 @@ const {
     user,
     data_member,
     kendaraan,
+    tenant,
 } = require('../../models/index')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
