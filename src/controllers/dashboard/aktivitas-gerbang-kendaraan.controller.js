@@ -9,6 +9,8 @@ const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
 const dayjs = require('dayjs')
 const Op = require('sequelize').Op
+const { isValidDDMMYYYY } = require('../../helpers/dateformat.helper')
+const { convertDDMMYYYYtoMMDDYYYY } = require('../../helpers/dateformat.helper')
 
 // Utility to fill the HTML template
 function generateTableRows(data) {
@@ -82,11 +84,25 @@ module.exports = {
             options.where = {}
 
             if (startDate && endDate) {
+                if (!isValidDDMMYYYY(startDate) || !isValidDDMMYYYY(endDate)) {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Format tanggal harus DD-MM-YYYY',
+                    })
+                }
+
+                const start = new Date(convertDDMMYYYYtoMMDDYYYY(startDate))
+                const end = new Date(
+                    new Date(convertDDMMYYYYtoMMDDYYYY(endDate)).setHours(
+                        23,
+                        59,
+                        59,
+                        999
+                    )
+                )
+
                 options.where.createdAt = {
-                    [Op.between]: [
-                        new Date(startDate),
-                        new Date(new Date(endDate).setHours(23, 59, 59, 999)),
-                    ],
+                    [Op.between]: [start, end],
                 }
             }
 
