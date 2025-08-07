@@ -1,3 +1,7 @@
+const {
+    isValidDDMMYYYY,
+    convertDDMMYYYYtoMMDDYYYY,
+} = require('../../helpers/dateformat.helper')
 const errorhandler = require('../../helpers/errorhandler.helper')
 const { sequelize } = require('../../models/index')
 const { QueryTypes } = require('sequelize')
@@ -36,6 +40,10 @@ module.exports = {
             const replacements = {}
 
             if (start_date) {
+                if (!isValidDDMMYYYY(start_date)) {
+                    return errorhandler(res, 'Invalid start date format', 400)
+                }
+                start_date = convertDDMMYYYYtoMMDDYYYY(start_date)
                 conditions.push(`agk."createdAt" >= :start_date`)
                 replacements.start_date = start_date
             }
@@ -44,10 +52,15 @@ module.exports = {
             //     replacements.end_date = end_date
             // }
             if (end_date) {
-                conditions.push(`agk."createdAt" < (:end_date::date + INTERVAL '1 day')`)
+                if (isValidDDMMYYYY(end_date)) {
+                    return errorhandler(res, 'Invalid end date format', 400)
+                }
+                end_date = convertDDMMYYYYtoMMDDYYYY(end_date)
+                conditions.push(
+                    `agk."createdAt" < (:end_date::date + INTERVAL '1 day')`
+                )
                 replacements.end_date = end_date
             }
-
 
             if (search) {
                 conditions.push(
@@ -120,8 +133,16 @@ module.exports = {
               FROM aktivitas_gerbang_kendaraans
               WHERE tipe_gerbang = 'In'
               ${start_date ? 'AND "createdAt" >= :start_date' : ''}
-              ${end_date ? 'AND "createdAt" < (:end_date::date + INTERVAL \'1 day\')' : ''}
-              ${search ? 'AND (tiket ILIKE :search OR plat_nomor ILIKE :search)' : ''}
+              ${
+                  end_date
+                      ? 'AND "createdAt" < (:end_date::date + INTERVAL \'1 day\')'
+                      : ''
+              }
+              ${
+                  search
+                      ? 'AND (tiket ILIKE :search OR plat_nomor ILIKE :search)'
+                      : ''
+              }
               AND tiket NOT IN (
                 SELECT tiket FROM aktivitas_gerbang_kendaraans WHERE tipe_gerbang = 'Out'
               )
@@ -226,7 +247,9 @@ module.exports = {
             }
             if (end_date) {
                 // conditions.push(`keluar."createdAt" <= :end_date`)
-                conditions.push(`keluar."createdAt" < (:end_date::date + INTERVAL '1 day')`)
+                conditions.push(
+                    `keluar."createdAt" < (:end_date::date + INTERVAL '1 day')`
+                )
                 replacements.end_date = end_date
             }
             if (search) {
@@ -241,7 +264,7 @@ module.exports = {
                 ? `WHERE ${conditions.join(' AND ')}`
                 : ''
 
-                const dataQuery = `
+            const dataQuery = `
   SELECT
     masuk.tiket AS nomor_tiket,
     masuk."createdAt" AS tanggal_masuk,
