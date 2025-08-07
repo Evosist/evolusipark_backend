@@ -283,11 +283,6 @@ module.exports = {
             const options = {
                 include: [
                     {
-                        model: user,
-                        as: 'user',
-                        attributes: ['id', 'nama'],
-                    },
-                    {
                         model: pos,
                         as: 'gerbang_masuk',
                         attributes: ['id', 'kode', 'keterangan'],
@@ -299,7 +294,7 @@ module.exports = {
                     },
                     {
                         model: kendaraan,
-                        as: 'jenis_kendaraan',
+                        as: 'kendaraan',
                         attributes: ['id', 'nama_kendaraan'],
                     },
                 ],
