@@ -2,6 +2,11 @@ const errorhandler = require('../../helpers/errorhandler.helper')
 const { sequelize } = require('../../models/index')
 const { Op, QueryTypes } = require('sequelize')
 
+const {
+    convertDDMMYYYYtoMMDDYYYY,
+    convertMMDDYYYYtoYYYYMMDD,
+} = require('../../helpers/dateformat.helper')
+
 module.exports = {
     getAllAuditTransaksiKendaraanKeluar: async (req, res) => {
         try {
@@ -41,6 +46,15 @@ module.exports = {
 
                 convertedStartDate = convertMMDDYYYYtoYYYYMMDD(mmddStart)
                 convertedEndDate = convertMMDDYYYYtoYYYYMMDD(mmddEnd)
+            }
+
+            let whereDate = ''
+            if (convertedStartDate && convertedEndDate) {
+                whereDate = `AND t."tanggal_keluar" BETWEEN :startDate AND :endDate`
+            } else if (convertedStartDate) {
+                whereDate = `AND t."tanggal_keluar" >= :startDate`
+            } else if (convertedEndDate) {
+                whereDate = `AND t."tanggal_keluar" <= :endDate`
             }
 
             let whereSearch = ''
