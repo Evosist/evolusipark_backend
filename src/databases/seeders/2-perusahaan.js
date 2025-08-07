@@ -14,7 +14,7 @@ module.exports = {
          */
 
         await queryInterface.bulkInsert(
-            'perusahaan',
+            'perusahaans',
             [
                 {
                     tenant_id: 1,

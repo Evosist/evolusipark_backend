@@ -14,7 +14,7 @@ module.exports = {
          */
 
         await queryInterface.bulkInsert(
-            'tenant',
+            'tenants',
             [
                 {
                     nama_tenant: 'Evosist',
