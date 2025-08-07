@@ -17,187 +17,272 @@ module.exports = {
             'level_penggunas',
             [
                 {
-                    id: 1,
-                    tenant_id: 1,
-                    nama: 'Super Administrator',
-                    hak_akses: JSON.stringify([
+                    nama_menu: 'Dashboard',
+                    nama_sub_menu: null,
+                    aksi: {
+                        read: true,
+                        create: null,
+                        delete: null,
+                        update: null,
+                    },
+                },
+                {
+                    nama_menu: 'Master Data',
+                    nama_sub_menu: [
                         {
-                            nama_menu: 'Dashboard',
-                            nama_sub_menu: null,
+                            nama: 'Perusahaan',
                             aksi: {
-                                create: true,
                                 read: true,
-                                update: true,
+                                create: true,
                                 delete: true,
+                                update: true,
+                                aktif_nonaktif: true,
                             },
                         },
                         {
-                            nama_menu: 'Master',
-                            nama_sub_menu: [
-                                {
-                                    nama: 'User',
-                                    aksi: {
-                                        create: true,
-                                        read: true,
-                                        update: true,
-                                        delete: true,
-                                    },
-                                },
-                                {
-                                    nama: 'Level Akses',
-                                    aksi: {
-                                        create: true,
-                                        read: true,
-                                        update: true,
-                                        delete: true,
-                                        konfigurasi_menu: true,
-                                    },
-                                },
-                                {
-                                    nama: 'Produk Member',
-                                    aksi: {
-                                        create: true,
-                                        read: true,
-                                        update: true,
-                                        delete: true,
-                                    },
-                                },
-                                {
-                                    nama: 'Produk Voucher',
-                                    aksi: {
-                                        create: true,
-                                        read: true,
-                                        update: true,
-                                        delete: true,
-                                    },
-                                },
-                                {
-                                    nama: 'Data Member',
-                                    aksi: {
-                                        create: true,
-                                        read: true,
-                                        update: true,
-                                        delete: true,
-                                        perpanjang: true,
-                                        ganti_kartu: true,
-                                        ganti_nopol: true,
-                                    },
-                                },
-                                {
-                                    nama: 'Data Voucher',
-                                    aksi: {
-                                        create: true,
-                                        read: true,
-                                        update: true,
-                                        delete: true,
-                                    },
-                                },
-                                {
-                                    nama: 'POS',
-                                    aksi: {
-                                        create: true,
-                                        read: true,
-                                        update: true,
-                                        delete: true,
-                                    },
-                                },
-                                {
-                                    nama: 'Kendaraan',
-                                    aksi: {
-                                        create: true,
-                                        read: true,
-                                        update: true,
-                                        delete: true,
-                                    },
-                                },
-                                {
-                                    nama: 'Shift',
-                                    aksi: {
-                                        create: true,
-                                        update: true,
-                                        delete: true,
-                                    },
-                                },
-                                {
-                                    nama: 'Perusahaan',
-                                    aksi: {
-                                        create: true,
-                                        read: true,
-                                        update: true,
-                                        delete: true,
-                                    },
-                                },
-                            ],
+                            nama: 'Level Pengguna',
+                            aksi: {
+                                read: true,
+                                create: true,
+                                delete: true,
+                                update: true,
+                                pengaturan: true,
+                            },
                         },
                         {
-                            nama_menu: 'Setting',
-                            nama_sub_menu: [
-                                {
-                                    nama: 'Tarif Parkir',
-                                    aksi: {
-                                        create: true,
-                                        read: true,
-                                        update: true,
-                                        delete: true,
-                                    },
-                                },
-                                {
-                                    nama: 'Tarif Denda',
-                                    aksi: {
-                                        create: true,
-                                        read: true,
-                                        update: true,
-                                        delete: true,
-                                    },
-                                },
-                                {
-                                    nama: 'Parameter',
-                                    aksi: { read: true, update: true },
-                                },
-                                {
-                                    nama: 'Global',
-                                    aksi: { read: true, update: true },
-                                },
-                                {
-                                    nama: 'Payment',
-                                    aksi: { read: true, update: true },
-                                },
-                            ],
+                            nama: 'Data Pengguna',
+                            aksi: {
+                                read: true,
+                                create: true,
+                                delete: true,
+                                update: true,
+                                aktif_nonaktif: true,
+                            },
                         },
                         {
-                            nama_menu: 'Transaksi',
-                            nama_sub_menu: [
-                                { nama: 'Manual mix', aksi: null },
-                                { nama: 'Pembatalan Transaksi', aksi: null },
-                                {
-                                    nama: 'Permasalahan atau Perbaikan',
-                                    aksi: {
-                                        create_permasalahan: true,
-                                        create_perbaikan: true,
-                                        read: true,
-                                        update: true,
-                                        delete: true,
-                                    },
-                                },
-                            ],
+                            nama: 'Pos (In/Out)',
+                            aksi: {
+                                read: true,
+                                create: true,
+                                delete: true,
+                                update: true,
+                            },
                         },
                         {
-                            nama_menu: 'Report',
-                            nama_sub_menu: [
-                                { nama: 'Kendaraan', aksi: null },
-                                { nama: 'Overnight', aksi: null },
-                                { nama: 'Pendapatan Parkir', aksi: null },
-                                { nama: 'Pendapatan Gabungan', aksi: null },
-                                { nama: 'Pendapatan Member', aksi: null },
-                                { nama: 'Pendapatan Voucher', aksi: null },
-                                { nama: 'Pembatalan Transaksi', aksi: null },
-                                { nama: 'Audit Transaksi', aksi: null },
-                                { nama: 'Settlement Cashless', aksi: null },
-                            ],
+                            nama: 'Data Kendaraan',
+                            aksi: {
+                                read: true,
+                                create: true,
+                                delete: true,
+                                update: true,
+                                aktif_nonaktif: true,
+                            },
                         },
-                    ]),
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
+                        {
+                            nama: 'Produk Member',
+                            aksi: {
+                                read: true,
+                                create: true,
+                                delete: true,
+                                update: true,
+                                aktif_nonaktif: true,
+                            },
+                        },
+                        {
+                            nama: 'Data Member',
+                            aksi: {
+                                read: true,
+                                create: true,
+                                delete: true,
+                                update: true,
+                                perpanjang: true,
+                                ganti_kartu: true,
+                                ganti_nomor_polisi: true,
+                                riwayat_transaksi: true,
+                            },
+                        },
+                        {
+                            nama: 'Produk Voucher',
+                            aksi: {
+                                read: true,
+                                create: true,
+                                delete: true,
+                                update: true,
+                                aktif_nonaktif: true,
+                            },
+                        },
+                        {
+                            nama: 'Data Voucher',
+                            aksi: {
+                                read: true,
+                                create: true,
+                                delete: true,
+                                update: true,
+                            },
+                        },
+                        {
+                            nama: 'Shift',
+                            aksi: {
+                                read: true,
+                                create: true,
+                                delete: true,
+                                update: true,
+                                aktif_nonaktif: true,
+                            },
+                        },
+                        {
+                            nama: 'Tenant',
+                            aksi: {
+                                read: true,
+                                create: true,
+                                delete: true,
+                                update: true,
+                                aktif_nonaktif: true,
+                            },
+                        },
+                    ],
+                },
+                {
+                    nama_menu: 'Laporan Data',
+                    nama_sub_menu: [
+                        {
+                            nama: 'Kendaraan',
+                            aksi: {
+                                read: true,
+                                create: null,
+                                delete: null,
+                                update: null,
+                            },
+                        },
+                        {
+                            nama: 'Pendapatan Parkir',
+                            aksi: {
+                                read: true,
+                                create: null,
+                                delete: null,
+                                update: null,
+                            },
+                        },
+                        {
+                            nama: 'Transaksi Batal',
+                            aksi: {
+                                read: true,
+                                create: null,
+                                delete: null,
+                                update: null,
+                                batalkan_transaksi: true,
+                            },
+                        },
+                        {
+                            nama: 'Audit Transaksi',
+                            aksi: {
+                                read: true,
+                                create: null,
+                                delete: null,
+                                update: null,
+                            },
+                        },
+                        {
+                            nama: 'Settlement Cashless',
+                            aksi: {
+                                read: true,
+                                create: null,
+                                delete: null,
+                                update: null,
+                                unggah_file: true,
+                            },
+                        },
+                    ],
+                },
+                {
+                    nama_menu: 'Transaksi',
+                    nama_sub_menu: [
+                        {
+                            nama: 'Tambah Transaksi',
+                            aksi: {
+                                read: null,
+                                create: true,
+                                delete: null,
+                                update: null,
+                            },
+                        },
+                        {
+                            nama: 'Riwayat Transaksi',
+                            aksi: {
+                                read: true,
+                                create: null,
+                                delete: null,
+                                update: null,
+                            },
+                        },
+                    ],
+                },
+                {
+                    nama_menu: 'Pengaturan',
+                    nama_sub_menu: [
+                        {
+                            nama: 'Tarif Parkir',
+                            aksi: {
+                                read: true,
+                                create: null,
+                                delete: null,
+                                update: true,
+                            },
+                        },
+                        {
+                            nama: 'Tarif Denda',
+                            aksi: {
+                                read: true,
+                                create: null,
+                                delete: null,
+                                update: true,
+                                aktif_nonaktif: true,
+                            },
+                        },
+                        {
+                            nama: 'Pembayaran',
+                            aksi: {
+                                read: true,
+                                create: null,
+                                delete: null,
+                                update: null,
+                                aktif_nonaktif: true,
+                            },
+                        },
+                        {
+                            nama: 'Parameter',
+                            aksi: {
+                                read: true,
+                                create: null,
+                                delete: null,
+                                update: true,
+                            },
+                        },
+                        {
+                            nama: 'Global',
+                            aksi: {
+                                read: true,
+                                create: null,
+                                delete: null,
+                                update: true,
+                            },
+                        },
+                    ],
+                },
+                {
+                    nama_menu: 'Bantuan',
+                    nama_sub_menu: [
+                        {
+                            nama: 'Tiket',
+                            aksi: {
+                                read: true,
+                                create: true,
+                                delete: true,
+                                update: true,
+                                proses_data_perbaikan: true,
+                            },
+                        },
+                    ],
                 },
             ],
             {}
