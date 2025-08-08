@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
+            tenant.hasOne(models.user, {
+                foreignKey: 'tenant_id',
+                as: 'user',
+            })
         }
     }
     tenant.init(
