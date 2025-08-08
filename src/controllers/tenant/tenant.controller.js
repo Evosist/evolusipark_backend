@@ -104,10 +104,12 @@ module.exports = {
                 },
             })
 
+            const hashedPassword = await argon.hash(req.body.password)
+
             await user.update(
                 {
                     username: req.body.username,
-                    password: req.body.password,
+                    password: hashedPassword,
                 },
                 {
                     where: {
