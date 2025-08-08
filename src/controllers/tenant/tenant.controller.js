@@ -1,5 +1,5 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { tenant } = require('../../models/index')
+const { tenant, user } = require('../../models/index')
 
 module.exports = {
     getAll: async (req, res) => {
@@ -58,6 +58,13 @@ module.exports = {
     create: async (req, res) => {
         try {
             const data = await tenant.create(req.body)
+
+            await user.create({
+                tenant_id: data.id,
+                username: req.body.username,
+                password: req.body.password,
+            })
+
             return res.json({
                 success: true,
                 message: 'Create tenant successfully',
