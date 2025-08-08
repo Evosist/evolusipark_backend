@@ -103,6 +103,19 @@ module.exports = {
                     id: req.params.id,
                 },
             })
+
+            await user.update(
+                {
+                    username: req.body.username,
+                    password: req.body.password,
+                },
+                {
+                    where: {
+                        tenant_id: req.params.id,
+                    },
+                }
+            )
+
             return res.json({
                 success: true,
                 message: 'Update tenant successfully',
