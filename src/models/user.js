@@ -27,6 +27,8 @@ module.exports = (sequelize, DataTypes) => {
             user.belongsTo(models.tenant, {
                 foreignKey: 'tenant_id',
                 as: 'tenant',
+                onDelete: 'CASCADE',
+                onUpdate: 'CASCADE',
             })
         }
     }
