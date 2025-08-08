@@ -1,5 +1,7 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
 const { tenant, user } = require('../../models/index')
+const Op = require('sequelize').Op
+const argon = require('argon2')
 
 module.exports = {
     getAll: async (req, res) => {
@@ -59,11 +61,13 @@ module.exports = {
         try {
             const data = await tenant.create(req.body)
 
+            const hashedPassword = await argon.hash(req.body.password)
+
             await user.create({
                 tenant_id: data.id,
                 nama: data.nama_tenant,
                 username: req.body.username,
-                password: req.body.password,
+                password: hashedPassword,
             })
 
             return res.json({
