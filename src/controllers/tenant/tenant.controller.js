@@ -61,6 +61,7 @@ module.exports = {
 
             await user.create({
                 tenant_id: data.id,
+                nama: data.nama_tenant,
                 username: req.body.username,
                 password: req.body.password,
             })
