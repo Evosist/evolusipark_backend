@@ -69,6 +69,7 @@ module.exports = {
                 username: req.body.username,
                 password: hashedPassword,
                 level_pengguna_id: 2,
+                status: true,
             })
 
             return res.json({
