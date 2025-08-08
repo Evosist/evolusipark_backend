@@ -114,6 +114,20 @@ module.exports = {
     },
     delete: async (req, res) => {
         try {
+            const userData = await user.findOne({
+                where: {
+                    tenant_id: req.params.id,
+                },
+            })
+
+            if (userData) {
+                await user.destroy({
+                    where: {
+                        tenant_id: req.params.id,
+                    },
+                })
+            }
+
             const data = await tenant.destroy({
                 where: {
                     id: req.params.id,
