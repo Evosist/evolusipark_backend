@@ -68,6 +68,7 @@ module.exports = {
                 nama: data.nama_tenant,
                 username: req.body.username,
                 password: hashedPassword,
+                level_pengguna_id: 2,
             })
 
             return res.json({
