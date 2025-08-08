@@ -8,7 +8,7 @@ const { sequelize } = require('../../models/index')
 module.exports = {
     pendapatanDariCasual: async (req, res) => {
         try {
-            const {
+            let {
                 start_date,
                 end_date,
                 search,
@@ -45,7 +45,7 @@ module.exports = {
 
             if (start_date) {
                 if (!isValidDDMMYYYY(start_date))
-                    return errorhandler(res, 400, 'Format tanggal tidak valid')
+                    return errorhandler(res, 'Invalid start_date format')
 
                 start_date = convertDDMMYYYYtoMMDDYYYY(start_date)
 
@@ -54,7 +54,7 @@ module.exports = {
             }
             if (end_date) {
                 if (!isValidDDMMYYYY(end_date)) {
-                    return errorhandler(res, 400, 'Format tanggal tidak valid')
+                    return errorhandler(res, 'Invalid end_date format')
                 }
 
                 end_date = convertDDMMYYYYtoMMDDYYYY(end_date)
@@ -130,7 +130,7 @@ module.exports = {
     },
     pendapatanDariMember: async (req, res) => {
         try {
-            const {
+            let {
                 start_date,
                 end_date,
                 search,
