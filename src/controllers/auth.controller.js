@@ -19,7 +19,10 @@ module.exports = {
             if (!verify) {
                 throw Error('auth_wrong_password')
             }
-            const token = jwt.sign({ id: users.id }, process.env.APP_SECRET)
+            const token = jwt.sign(
+                { id: users.id, tenant_id: users.tenant_id },
+                process.env.APP_SECRET
+            )
             return res.json({
                 success: true,
                 message: 'Login successfully',
@@ -49,7 +52,10 @@ module.exports = {
 
             const users = await user.create(data)
 
-            const token = jwt.sign({ id: users.id }, process.env.APP_SECRET)
+            const token = jwt.sign(
+                { id: users.id, tenant_id: users.tenant_id },
+                process.env.APP_SECRET
+            )
             return res.json({
                 success: true,
                 message: 'Register successfully',

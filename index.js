@@ -4,11 +4,16 @@ require('dotenv').config({
 
 const express = require('express')
 const app = express()
+const tenantMiddleware = require('./src/middleware/tenant.middleware')
+const addTenantBeforeCreateHook = require('./src/hooks/tenant.hook')
+const { sequelize } = require('./src/models/index')
 
 app.use(express.json({ limit: '10mb', extended: true }))
 app.use(
     express.urlencoded({ limit: '10mb', extended: true, parameterLimit: 50000 })
 )
+
+addTenantBeforeCreateHook(sequelize)
 const PORT = process.env.PORT || 4000
 
 const cors = require('cors')
