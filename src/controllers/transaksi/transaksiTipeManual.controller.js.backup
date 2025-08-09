@@ -8,21 +8,9 @@ module.exports = {
       const limit = parseInt(req.query.limit) || 10
       const page = parseInt(req.query.page) || 1
       const offset = (page - 1) * limit
-      const search = req.query.search || ''
-
-      // Filter dasar
-      const whereCondition = { is_manual: true }
-
-      // Jika ada pencarian
-      if (search) {
-        whereCondition[Op.or] = [
-          { no_tiket: { [Op.iLike]: `%${search}%` } },
-          { nomor_polisi: { [Op.iLike]: `%${search}%` } },
-        ]
-      }
 
       const { count, rows } = await transaksi.findAndCountAll({
-        where: whereCondition,
+        where: { is_manual: true },
         include: [
           {
             model: pos,
