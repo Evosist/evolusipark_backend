@@ -1,10 +1,14 @@
+const {
+    isValidDDMMYYYY,
+    convertDDMMYYYYtoMMDDYYYY,
+} = require('../../helpers/dateformat.helper')
 const errorhandler = require('../../helpers/errorhandler.helper')
 const { sequelize } = require('../../models/index')
 
 module.exports = {
     pendapatanDariCasual: async (req, res) => {
         try {
-            const {
+            let {
                 start_date,
                 end_date,
                 search,
@@ -40,10 +44,21 @@ module.exports = {
             const replacements = {}
 
             if (start_date) {
+                if (!isValidDDMMYYYY(start_date))
+                    return errorhandler(res, 'Invalid start_date format')
+
+                start_date = convertDDMMYYYYtoMMDDYYYY(start_date)
+
                 whereClause += ` AND t.tanggal_keluar::date >= :start_date`
                 replacements.start_date = start_date
             }
             if (end_date) {
+                if (!isValidDDMMYYYY(end_date)) {
+                    return errorhandler(res, 'Invalid end_date format')
+                }
+
+                end_date = convertDDMMYYYYtoMMDDYYYY(end_date)
+
                 whereClause += ` AND t.tanggal_keluar::date <= :end_date`
                 replacements.end_date = end_date
             }
@@ -115,7 +130,7 @@ module.exports = {
     },
     pendapatanDariMember: async (req, res) => {
         try {
-            const {
+            let {
                 start_date,
                 end_date,
                 search,
@@ -152,10 +167,26 @@ module.exports = {
             const replacements = {}
 
             if (start_date) {
+                if (!isValidDDMMYYYY(start_date)) {
+                    return errorhandler(
+                        res,
+                        400,
+                        'Format start_date tidak valid'
+                    )
+                }
+
+                start_date = convertDDMMYYYYtoMMDDYYYY(start_date)
+
                 whereClause += ` AND t.tanggal_keluar::date >= :start_date`
                 replacements.start_date = start_date
             }
             if (end_date) {
+                if (!isValidDDMMYYYY(end_date)) {
+                    return errorhandler(res, 400, 'Format end_date tidak valid')
+                }
+
+                end_date = convertDDMMYYYYtoMMDDYYYY(end_date)
+
                 whereClause += ` AND t.tanggal_keluar::date <= :end_date`
                 replacements.end_date = end_date
             }

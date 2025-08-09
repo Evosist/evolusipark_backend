@@ -1,10 +1,14 @@
+const { convertMMDDYYYYtoYYYYMMDD } = require('../../helpers/dateformat.helper')
 const errorhandler = require('../../helpers/errorhandler.helper')
+const { Op } = require('sequelize')
 const { pos, user, laporan_transaksi_batal } = require('../../models/index')
 
 module.exports = {
     getAllPembatalanTransaksi: async (req, res) => {
         try {
             const search = req.query.search || ''
+            const start_date = req.query.start_date
+            const end_date = req.query.end_date
             const limit = req.query.limit ? parseInt(req.query.limit) : 10
             const page = req.query.page ? parseInt(req.query.page) : 1
             const offset = limit && page ? (page - 1) * limit : 0
@@ -45,16 +49,26 @@ module.exports = {
                 order: [[validSortBy, sortOrder]],
             }
 
-            if (search) {
-                const searchLower = search.toLowerCase()
-                let statusFilter = null
-
-                if (searchLower === 'true' || searchLower === '1') {
-                    statusFilter = true
-                } else if (searchLower === 'false' || searchLower === '0') {
-                    statusFilter = false
+            const mmddyyyyRegex = /^\d{2}-\d{2}-\d{4}$/
+            if (start_date && end_date) {
+                if (
+                    !mmddyyyyRegex.test(start_date) ||
+                    !mmddyyyyRegex.test(end_date)
+                ) {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Format tanggal harus mm-dd-yyyy',
+                    })
                 }
+                const startSQL = convertMMDDYYYYtoYYYYMMDD(start_date)
+                const endSQL = convertMMDDYYYYtoYYYYMMDD(end_date)
 
+                options.where.createdAt = {
+                    [Op.between]: [startSQL, endSQL],
+                }
+            }
+
+            if (search) {
                 options.where[Op.or] = [
                     literal(
                         `CAST("tanggal_masuk" AS TEXT) ILIKE '%${search}%'`
@@ -64,21 +78,9 @@ module.exports = {
                             [Op.iLike]: `%${search}%`,
                         },
                     },
-                    {
-                        no_tiket: {
-                            [Op.iLike]: `%${search}%`,
-                        },
-                    },
-                    {
-                        alasan_pembatalan: {
-                            [Op.iLike]: `%${search}%`,
-                        },
-                    },
-                    {
-                        penjelasan_pembatalan: {
-                            [Op.iLike]: `%${search}%`,
-                        },
-                    },
+                    { no_tiket: { [Op.iLike]: `%${search}%` } },
+                    { alasan_pembatalan: { [Op.iLike]: `%${search}%` } },
+                    { penjelasan_pembatalan: { [Op.iLike]: `%${search}%` } },
                 ]
             }
 

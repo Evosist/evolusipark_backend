@@ -1,5 +1,7 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { tenant } = require('../../models/index')
+const { tenant, user } = require('../../models/index')
+const Op = require('sequelize').Op
+const argon = require('argon2')
 
 module.exports = {
     getAll: async (req, res) => {
@@ -58,6 +60,18 @@ module.exports = {
     create: async (req, res) => {
         try {
             const data = await tenant.create(req.body)
+
+            const hashedPassword = await argon.hash(req.body.password)
+
+            await user.create({
+                tenant_id: data.id,
+                nama: data.nama_tenant,
+                username: req.body.username,
+                password: hashedPassword,
+                level_pengguna_id: 2,
+                status: true,
+            })
+
             return res.json({
                 success: true,
                 message: 'Create tenant successfully',
@@ -90,6 +104,21 @@ module.exports = {
                     id: req.params.id,
                 },
             })
+
+            const hashedPassword = await argon.hash(req.body.password)
+
+            await user.update(
+                {
+                    username: req.body.username,
+                    password: hashedPassword,
+                },
+                {
+                    where: {
+                        tenant_id: req.params.id,
+                    },
+                }
+            )
+
             return res.json({
                 success: true,
                 message: 'Update tenant successfully',
@@ -101,6 +130,20 @@ module.exports = {
     },
     delete: async (req, res) => {
         try {
+            const userData = await user.findOne({
+                where: {
+                    tenant_id: req.params.id,
+                },
+            })
+
+            if (userData) {
+                await user.destroy({
+                    where: {
+                        tenant_id: req.params.id,
+                    },
+                })
+            }
+
             const data = await tenant.destroy({
                 where: {
                     id: req.params.id,

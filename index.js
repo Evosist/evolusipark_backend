@@ -12,6 +12,7 @@ app.use(
 const PORT = process.env.PORT || 4000
 
 const cors = require('cors')
+// const checkAndInsertSuperAdmin = require('./src/configs/check-super-admin')
 
 app.use(
     cors({
@@ -29,6 +30,12 @@ app.get('/', (req, res) => {
 
 app.use('/', require('./src/routers/index.router'))
 
+// checkAndInsertSuperAdmin().then(() => {
+//     app.listen(PORT, () => {
+//         console.log(`🚀 Server running on port ${PORT}`)
+//     })
+// })
+
 app.listen(PORT, () => {
-    console.log(`App is listening on port ${PORT}`)
+    console.log(`🚀 Server running on port ${PORT}`)
 })
