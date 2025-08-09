@@ -1,12 +1,29 @@
 const router = require('express').Router()
+const authMiddleware = require('../../src/middleware/auth.middleware')
 
-router.use('/dashboard', require('./dashboard/index.router'))
+router.use('/dashboard', authMiddleware, require('./dashboard/index.router'))
 router.use('/auth', require('./auth.router'))
-router.use('/master-data', require('../routers/master-data/master-data.router'))
-router.use('/laporan-data', require('../routers/laporan-data/index.router'))
-router.use('/setting', require('../routers/setting/setting.router'))
-router.use('/transaksi', require('./transaksi/index.router'))
-router.use('/profile', require('../routers/profile/profile.router'))
+router.use(
+    '/master-data',
+    authMiddleware,
+    require('../routers/master-data/master-data.router')
+)
+router.use(
+    '/laporan-data',
+    authMiddleware,
+    require('../routers/laporan-data/index.router')
+)
+router.use(
+    '/setting',
+    authMiddleware,
+    require('../routers/setting/setting.router')
+)
+router.use('/transaksi', authMiddleware, require('./transaksi/index.router'))
+router.use(
+    '/profile',
+    authMiddleware,
+    require('../routers/profile/profile.router')
+)
 router.use('/tenant', require('../routers/tenant/tenant.router'))
 
 router.get('/', (req, res) => {
