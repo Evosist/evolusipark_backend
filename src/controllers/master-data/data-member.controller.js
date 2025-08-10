@@ -346,6 +346,25 @@ module.exports = {
                 order: [['tgl_transaksi', 'DESC']],
                 limit,
                 offset,
+                include: [
+                    {
+                        model: data_member,
+                        as: 'data_member',
+                        attributes: ['id', 'nama'],
+                        include: [
+                            {
+                                model: user,
+                                as: 'user',
+                                attributes: ['nama'], // ini nama user dari member
+                            },
+                        ],
+                    },
+                    {
+                        model: produk_member,
+                        as: 'produk_member',
+                        attributes: ['nama'], // nama produk
+                    },
+                ],
             })
 
             // Hitung total pages

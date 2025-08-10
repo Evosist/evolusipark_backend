@@ -15,7 +15,7 @@ dataMemberRouter.get(
     dataMemberController.getRiwayatTransaksiMember
 )
 
-
+// dataMemberRouter.patch('/ganti-nopol-v2/:id', dataMemberController.gantiNopolV2)
 dataMemberRouter.get('/transaksi-riwayat-member-v3/:id', dataMemberController.getTransaksiRiwayatMemberV3)
 dataMemberRouter.post('/transaksi-riwayat-member-v3', dataMemberController.createTransaksiRiwayatMemberV3)
 

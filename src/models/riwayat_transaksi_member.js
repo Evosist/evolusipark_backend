@@ -37,6 +37,17 @@ module.exports = (sequelize, DataTypes) => {
             timestamps: false,
         }
     )
+    // 🔹 Definisikan relasi di sini
+    RiwayatTransaksiMember.associate = function (models) {
+        RiwayatTransaksiMember.belongsTo(models.data_member, {
+            foreignKey: 'data_member_id',
+            as: 'data_member',
+        })
+        RiwayatTransaksiMember.belongsTo(models.produk_member, {
+            foreignKey: 'produk_id',
+            as: 'produk_member',
+        })
+    }
 
     return RiwayatTransaksiMember
 }
