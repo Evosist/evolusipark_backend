@@ -12,6 +12,7 @@ const {
     data_voucher,
     data_member,
     laporan_transaksi_batal,
+    tipe_denda,
     tenant,
 } = require('../../models/index')
 const dayjs = require('dayjs')
@@ -105,6 +106,10 @@ module.exports = {
                         as: 'data_member',
                     },
                     {
+                        model: tipe_denda,
+                        as: 'tipe_denda',
+                    },
+                    {
                         model: tenant,
                         as: 'tenant',
                         attributes: ['id', 'nama_tenant'],
@@ -122,23 +127,22 @@ module.exports = {
                 } else if (searchLower === 'false' || searchLower === '0') {
                     statusFilter = false
                 }
-              //=================================================================
+                //=================================================================
                 // Berhasil Untuk Pencarian Nomor Tiket dan Nomor Polisi
                 //=================================================================
                 options.where[Op.or] = [
-
-                      { no_tiket: { [Op.iLike]: `%${search}%` } },
-                     { nomor_polisi: { [Op.iLike]: `%${search}%` } },
+                    { no_tiket: { [Op.iLike]: `%${search}%` } },
+                    { nomor_polisi: { [Op.iLike]: `%${search}%` } },
                     //Kolom Tidak Ditemukan
                     // {
                     //     no_tiket_atau_tiket_manual: {
                     //         [Op.iLike]: `%${search}%`,
                     //     },
                     // },
-                  ,
+                    ,
                 ]
 
-  /*
+                /*
                 options.where[Op.or] = [
                     literal(
                         `CAST("tanggal_masuk" AS TEXT) ILIKE '%${search}%'`
