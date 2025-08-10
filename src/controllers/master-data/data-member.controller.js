@@ -19,9 +19,8 @@ const ExcelJS = require('exceljs')
 const dayjs = require('dayjs')
 const sequelize = require('../../models/index').sequelize
 // const Op = require('sequelize').Op
-const { Op, literal } = require('sequelize');
+const { Op, literal } = require('sequelize')
 // const { riwayat_transaksi_member } = require('../models');
-
 
 function generateTableRows(data) {
     return data
@@ -58,8 +57,8 @@ module.exports = {
             const sortOrder = req.query.sortOrder || 'asc'
 
             const options = {
-               distinct: true, // ✅ Tambahkan di sini
-                 subQuery: false, // ✅ Tambahkan ini
+                distinct: true, // ✅ Tambahkan di sini
+                subQuery: false, // ✅ Tambahkan ini
                 include: [
                     {
                         model: perusahaan,
@@ -102,32 +101,43 @@ module.exports = {
                 }
 
                 const orConditions = [
-                  { nama: { [Op.iLike]: `%${search}%` } },
-                  { no_hp: { [Op.iLike]: `%${search}%` } },
-                  { no_kartu: { [Op.iLike]: `%${search}%` } },
-                  { '$perusahaan.nama$': { [Op.iLike]: `%${search}%` } },
-                  { '$produk_member.nama$': { [Op.iLike]: `%${search}%` } },
-                  { '$data_nomor_polisi.nomor_polisi$': { [Op.iLike]: `%${search}%` } },
+                    { nama: { [Op.iLike]: `%${search}%` } },
+                    { no_hp: { [Op.iLike]: `%${search}%` } },
+                    { no_kartu: { [Op.iLike]: `%${search}%` } },
+                    { '$perusahaan.nama$': { [Op.iLike]: `%${search}%` } },
+                    { '$produk_member.nama$': { [Op.iLike]: `%${search}%` } },
+                    {
+                        '$data_nomor_polisi.nomor_polisi$': {
+                            [Op.iLike]: `%${search}%`,
+                        },
+                    },
                 ]
 
                 if (statusFilter !== null) {
-                  orConditions.push({
-                    akses_tiket: statusFilter,
-                    akses_kartu: statusFilter,
-                  })
+                    orConditions.push({
+                        akses_tiket: statusFilter,
+                        akses_kartu: statusFilter,
+                    })
                 }
 
                 orConditions.push(
-                  literal(`CAST("data_member"."tarif" AS TEXT) ILIKE '%${search}%'`),
-                  literal(`CAST("data_member"."biaya_member" AS TEXT) ILIKE '%${search}%'`),
-                  literal(`CAST("data_member"."biaya_kartu" AS TEXT) ILIKE '%${search}%'`),
-                  literal(`CAST("data_member"."tgl_input" AS TEXT) ILIKE '%${search}%'`)
+                    literal(
+                        `CAST("data_member"."tarif" AS TEXT) ILIKE '%${search}%'`
+                    ),
+                    literal(
+                        `CAST("data_member"."biaya_member" AS TEXT) ILIKE '%${search}%'`
+                    ),
+                    literal(
+                        `CAST("data_member"."biaya_kartu" AS TEXT) ILIKE '%${search}%'`
+                    ),
+                    literal(
+                        `CAST("data_member"."tgl_input" AS TEXT) ILIKE '%${search}%'`
+                    )
                 )
 
                 options.where = {
-                  [Op.or]: orConditions,
+                    [Op.or]: orConditions,
                 }
-
 
                 /*options.where = {
                     [Op.or]: [
@@ -308,6 +318,93 @@ module.exports = {
             })
         } catch (err) {
             return errorhandler(res, err)
+        }
+    },
+    // GET /api/.../transaksi-riwayat-member-v3/:id
+    getTransaksiRiwayatMemberV3: async (req, res) => {
+        try {
+            const memberId = parseInt(req.params.id)
+            if (!memberId) {
+                return res
+                    .status(400)
+                    .json({ success: false, message: 'Member ID is required' })
+            }
+
+            // Ambil page dan limit dari query string, beri default kalau tidak ada
+            const page = req.query.page ? parseInt(req.query.page) : 1
+            const limit = req.query.limit ? parseInt(req.query.limit) : 10
+            const offset = (page - 1) * limit
+
+            // Hitung total data dulu
+            const totalData = await riwayat_transaksi_member.count({
+                where: { data_member_id: memberId },
+            })
+
+            // Ambil data dengan limit dan offset (pagination)
+            const results = await riwayat_transaksi_member.findAll({
+                where: { data_member_id: memberId },
+                order: [['tgl_transaksi', 'DESC']],
+                limit,
+                offset,
+            })
+
+            // Hitung total pages
+            const totalPages = Math.ceil(totalData / limit)
+
+            return res.json({
+                success: true,
+                message: `Riwayat transaksi member dengan id ${memberId}`,
+                results: {
+                    data: results,
+                    totalData,
+                    totalPages,
+                    currentPage: page,
+                    pageSize: limit,
+                },
+            })
+        } catch (error) {
+            console.error('Error in getTransaksiRiwayatMemberV3:', error)
+            return errorhandler(res, error)
+        }
+    },
+
+    // POST /api/.../transaksi-riwayat-member-v3
+    createTransaksiRiwayatMemberV3: async (req, res) => {
+        try {
+            const { produk_id, tarif, periode, user_id, data_member_id } =
+                req.body
+
+            if (
+                !produk_id ||
+                tarif === undefined ||
+                !periode ||
+                !user_id ||
+                !data_member_id
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        'Missing required fields: produk_id, tarif, periode, user_id, data_member_id',
+                })
+            }
+
+            const newRecord = await riwayat_transaksi_member.create({
+                tgl_transaksi: new Date(), // tanggal sekarang
+                produk_id,
+                tarif,
+                masa_aktif: periode, // sesuai model pakai field masa_aktif
+                user_id: parseInt(user_id), // kalau user_id string, parse ke int
+                data_member_id,
+            })
+
+            return res.status(201).json({
+                success: true,
+                message: 'Riwayat transaksi member created successfully',
+                data: newRecord,
+            })
+        } catch (error) {
+            console.error('Error in createTransaksiRiwayatMemberV3:', error)
+            return errorhandler(res, error)
         }
     },
     getRiwayatTransaksiMember: async (req, res) => {
@@ -727,134 +824,143 @@ module.exports = {
     // },
     //
     perpanjangMasaAktif: async (req, res) => {
-  try {
-    const memberId = req.params.id
-    const { produk_id, tarif, periode, user_id } = req.body
+        try {
+            const memberId = req.params.id
+            const { produk_id, tarif, periode, user_id } = req.body
 
-    // =========================
-    // Validasi Input
-    // =========================
-    if (!produk_id || !tarif || !periode || !user_id) {
-      return res.status(400).json({
-        success: false,
-        message: 'Field produk_id, tarif, periode, dan user_id wajib diisi',
-      })
-    }
+            // =========================
+            // Validasi Input
+            // =========================
+            if (!produk_id || !tarif || !periode || !user_id) {
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        'Field produk_id, tarif, periode, dan user_id wajib diisi',
+                })
+            }
 
-    if (!Array.isArray(periode)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Field periode harus berupa array, contoh: ["2025-09-05", "2025-09-30"]',
-      })
-    }
+            if (!Array.isArray(periode)) {
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        'Field periode harus berupa array, contoh: ["2025-09-05", "2025-09-30"]',
+                })
+            }
 
-    // =========================
-    // Ambil semua kendaraan member
-    // =========================
-    const kendaraanList = await data_nomor_polisi.findAll({
-      where: { data_member_id: memberId },
-      attributes: ['kendaraan_id'],
-    })
+            // =========================
+            // Ambil semua kendaraan member
+            // =========================
+            const kendaraanList = await data_nomor_polisi.findAll({
+                where: { data_member_id: memberId },
+                attributes: ['kendaraan_id'],
+            })
 
-    const memberKendaraanIds = kendaraanList.map(k => k.kendaraan_id.toString())
+            const memberKendaraanIds = kendaraanList.map((k) =>
+                k.kendaraan_id.toString()
+            )
 
-    // =========================
-    // Ambil produk yang dipilih
-    // =========================
-    const produk = await produk_member.findOne({
-      where: { id: produk_id },
-      attributes: ['list_id_kendaraan'],
-    })
+            // =========================
+            // Ambil produk yang dipilih
+            // =========================
+            const produk = await produk_member.findOne({
+                where: { id: produk_id },
+                attributes: ['list_id_kendaraan'],
+            })
 
-    if (!produk) {
-      return res.status(404).json({
-        success: false,
-        message: 'Produk member tidak ditemukan',
-      })
-    }
+            if (!produk) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Produk member tidak ditemukan',
+                })
+            }
 
-    // =========================
-    // Parsing list_id_kendaraan
-    // =========================
-    let listIdKendaraan = []
+            // =========================
+            // Parsing list_id_kendaraan
+            // =========================
+            let listIdKendaraan = []
 
-    if (Array.isArray(produk.list_id_kendaraan)) {
-      listIdKendaraan = produk.list_id_kendaraan.map(id => id.toString())
-    } else if (typeof produk.list_id_kendaraan === 'string') {
-      try {
-        const parsed = JSON.parse(produk.list_id_kendaraan)
-        if (Array.isArray(parsed)) {
-          listIdKendaraan = parsed.map(id => id.toString())
-        } else {
-          listIdKendaraan = produk.list_id_kendaraan.split(',').map(id => id.trim())
+            if (Array.isArray(produk.list_id_kendaraan)) {
+                listIdKendaraan = produk.list_id_kendaraan.map((id) =>
+                    id.toString()
+                )
+            } else if (typeof produk.list_id_kendaraan === 'string') {
+                try {
+                    const parsed = JSON.parse(produk.list_id_kendaraan)
+                    if (Array.isArray(parsed)) {
+                        listIdKendaraan = parsed.map((id) => id.toString())
+                    } else {
+                        listIdKendaraan = produk.list_id_kendaraan
+                            .split(',')
+                            .map((id) => id.trim())
+                    }
+                } catch (e) {
+                    listIdKendaraan = produk.list_id_kendaraan
+                        .split(',')
+                        .map((id) => id.trim())
+                }
+            }
+
+            // =========================
+            // Validasi kesesuaian kendaraan
+            // =========================
+            const kendaraanTidakTerdaftar = memberKendaraanIds.filter(
+                (id) => !listIdKendaraan.includes(id)
+            )
+
+            if (kendaraanTidakTerdaftar.length > 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Kendaraan tidak sesuai dengan produk member',
+                    detail: kendaraanTidakTerdaftar,
+                })
+            }
+
+            // =========================
+            // Update Data Member
+            // =========================
+            const [updatedRows] = await data_member.update(
+                {
+                    produk_id,
+                    tarif,
+                    periode, // langsung array
+                    user_id,
+                },
+                { where: { id: memberId } }
+            )
+
+            if (updatedRows === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Data member tidak ditemukan atau tidak diubah',
+                })
+            }
+
+            // =========================
+            // Simpan Riwayat Transaksi (pakai array langsung)
+            // =========================
+            const transaksi = await riwayat_transaksi_member.create({
+                tgl_transaksi: new Date(),
+                produk_id,
+                tarif,
+                masa_aktif: periode, // langsung array, bukan JSON.stringify
+                user_id,
+            })
+
+            // Ambil data member terbaru
+            const updatedMember = await data_member.findByPk(memberId)
+
+            return res.status(200).json({
+                success: true,
+                message: 'Data member berhasil diperpanjang',
+                data: {
+                    member: updatedMember,
+                    transaksi,
+                },
+            })
+        } catch (err) {
+            return errorhandler(res, err)
         }
-      } catch (e) {
-        listIdKendaraan = produk.list_id_kendaraan.split(',').map(id => id.trim())
-      }
-    }
-
-    // =========================
-    // Validasi kesesuaian kendaraan
-    // =========================
-    const kendaraanTidakTerdaftar = memberKendaraanIds.filter(
-      id => !listIdKendaraan.includes(id)
-    )
-
-    if (kendaraanTidakTerdaftar.length > 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'Kendaraan tidak sesuai dengan produk member',
-        detail: kendaraanTidakTerdaftar,
-      })
-    }
-
-    // =========================
-    // Update Data Member
-    // =========================
-    const [updatedRows] = await data_member.update(
-      {
-        produk_id,
-        tarif,
-        periode, // langsung array
-        user_id
-      },
-      { where: { id: memberId } }
-    )
-
-    if (updatedRows === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'Data member tidak ditemukan atau tidak diubah',
-      })
-    }
-
-    // =========================
-    // Simpan Riwayat Transaksi (pakai array langsung)
-    // =========================
-    const transaksi = await riwayat_transaksi_member.create({
-      tgl_transaksi: new Date(),
-      produk_id,
-      tarif,
-      masa_aktif: periode, // langsung array, bukan JSON.stringify
-      user_id,
-    })
-
-    // Ambil data member terbaru
-    const updatedMember = await data_member.findByPk(memberId)
-
-    return res.status(200).json({
-      success: true,
-      message: 'Data member berhasil diperpanjang',
-      data: {
-        member: updatedMember,
-        transaksi
-      }
-    })
-  } catch (err) {
-    return errorhandler(res, err)
-  }
-}
-,
+    },
     gantiNopol: async (req, res) => {
         try {
             // Cek apakah nomor polisi lama ada

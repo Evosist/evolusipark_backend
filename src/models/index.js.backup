@@ -55,19 +55,6 @@ Object.keys(db).forEach((modelName) => {
     }
 })
 
-// Setelah Object.keys(db).forEach...
-
-// db.riwayat_transaksi_member.belongsTo(db.produk_member, {
-//   foreignKey: 'produk_id',
-//   as: 'produk_member',
-// });
-//
-// db.riwayat_transaksi_member.belongsTo(db.user, {
-//   foreignKey: 'user_id',
-//   as: 'user',
-// });
-
-
 db.sequelize = sequelize
 db.Sequelize = Sequelize
 

@@ -14,6 +14,11 @@ dataMemberRouter.get(
     '/riwayat-transaksi-member',
     dataMemberController.getRiwayatTransaksiMember
 )
+
+
+dataMemberRouter.get('/transaksi-riwayat-member-v3/:id', dataMemberController.getTransaksiRiwayatMemberV3)
+dataMemberRouter.post('/transaksi-riwayat-member-v3', dataMemberController.createTransaksiRiwayatMemberV3)
+
 dataMemberRouter.get('/pdf', dataMemberController.generatePdf)
 dataMemberRouter.get('/excel', dataMemberController.generateExcel)
 dataMemberRouter.get('/:id', dataMemberController.findOneById)
