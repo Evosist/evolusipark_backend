@@ -1,6 +1,7 @@
-const { riwayat_ganti_nomor_polisi_v2, data_member } = require('../../models')
+const { riwayat_ganti_nomor_polisi_v2, data_member, user } = require('../../models')
 const errorhandler = require('../../helpers/errorhandler.helper')
 const { Op } = require('sequelize')
+
 
 module.exports = {
     // GET riwayat ganti nomor polisi by data_member_id dengan pagination dan search
@@ -38,7 +39,19 @@ module.exports = {
                             model: data_member,
                             as: 'data_member',
                             attributes: ['id', 'nama', 'no_kartu'],
+                            include: [
+                                {
+                                    model: user,
+                                    as: 'user',
+                                    attributes: ['nama'], // ini nama user dari member
+                                },
+                            ],
                         },
+                        // {
+                        //     model: produk_member,
+                        //     as: 'produk_member',
+                        //     attributes: ['nama'], // nama produk
+                        // },
                     ],
                     order: [['tgl_ganti', 'DESC']],
                     limit,
@@ -62,7 +75,6 @@ module.exports = {
         }
     },
 
-    
     createRiwayat: async (req, res) => {
         try {
             const {
