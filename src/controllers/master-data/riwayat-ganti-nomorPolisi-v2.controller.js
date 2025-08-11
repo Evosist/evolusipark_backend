@@ -2,6 +2,8 @@ const {
     sequelize,
     riwayat_ganti_nomor_polisi_v2,
     data_nomor_polisi,
+    kendaraan,
+    tipe_kendaraan,
     data_member,
     user,
 } = require('../../models')
@@ -12,97 +14,88 @@ const { Op } = require('sequelize')
 
 module.exports = {
     // GET riwayat ganti nomor polisi by data_member_id dengan pagination dan search
-    getRiwayatByMemberId: async (req, res) => {
-        try {
-            const memberId = parseInt(req.params.memberId)
-            if (!memberId) {
-                return res
-                    .status(400)
-                    .json({ success: false, message: 'Member ID is required' })
-            }
-
-            const search = req.query.search || ''
-            const limit = req.query.limit ? parseInt(req.query.limit) : 10
-            const page = req.query.page ? parseInt(req.query.page) : 1
-            const offset = (page - 1) * limit
-
-            const whereClause = {
-                data_member_id: memberId,
-            }
-
-            if (search) {
-                whereClause[Op.or] = [
-                    { nomor_polisi_lama: { [Op.iLike]: `%${search}%` } },
-                    { nomor_polisi_baru: { [Op.iLike]: `%${search}%` } },
-                    { keterangan: { [Op.iLike]: `%${search}%` } },
-                ]
-            }
-
-            const { count, rows } =
-                await riwayat_ganti_nomor_polisi_v2.findAndCountAll({
-                    where: whereClause,
-                    include: [
-                        {
-                            model: data_member,
-                            as: 'data_member',
-                            attributes: ['id', 'nama', 'no_kartu'],
-                            include: [
-                                {
-                                    model: user,
-                                    as: 'user',
-                                    attributes: ['nama'], // ini nama user dari member
-                                },
-                            ],
-                        },
-                        // {
-                        //     model: produk_member,
-                        //     as: 'produk_member',
-                        //     attributes: ['nama'], // nama produk
-                        // },
-                    ],
-                    order: [['tgl_ganti', 'DESC']],
-                    limit,
-                    offset,
-                })
-
-            return res.json({
-                success: true,
-                message: `Riwayat ganti nomor polisi member id ${memberId}`,
-                results: {
-                    data: rows,
-                    totalData: count,
-                    totalPages: Math.ceil(count / limit),
-                    currentPage: page,
-                    pageSize: limit,
-                },
-            })
-        } catch (error) {
-            console.error('Error getRiwayatByMemberId:', error)
-            return errorhandler(res, error)
-        }
-    },
 
     createRiwayat: async (req, res) => {
         try {
+            // const {
+            //     data_member_id,
+            //     nomor_polisi_lama,
+            //     nomor_polisi_baru,
+            //     keterangan,
+            //     user_id,
+            //     kendaraan_lama_id,
+            //     kendaraan_baru_id,
+            // } = req.body
+
+            // if (
+            //     !data_member_id ||
+            //     !nomor_polisi_lama ||
+            //     !nomor_polisi_baru ||
+            //     !kendaraan_lama_id ||
+            //     !kendaraan_baru_id ||
+            //     !user_id
+            // ) {
+            //     return res.status(400).json({
+            //         success: false,
+            //         message: 'Missing required fields',
+            //     })
+            // }
             const {
                 data_member_id,
                 nomor_polisi_lama,
                 nomor_polisi_baru,
                 keterangan,
                 user_id,
+                kendaraan_lama_id,
+                kendaraan_baru_id,
             } = req.body
 
-            if (
-                !data_member_id ||
-                !nomor_polisi_lama ||
-                !nomor_polisi_baru ||
-                !user_id
-            ) {
+            const requiredFields = {
+                data_member_id,
+                nomor_polisi_lama,
+                nomor_polisi_baru,
+                kendaraan_lama_id,
+                kendaraan_baru_id,
+                user_id,
+            }
+
+            const missingFields = Object.entries(requiredFields)
+                .filter(
+                    ([_, value]) =>
+                        value === undefined || value === null || value === ''
+                )
+                .map(([key]) => key)
+
+            if (missingFields.length > 0) {
                 return res.status(400).json({
                     success: false,
-                    message: 'Missing required fields',
+                    message: `Missing required fields: ${missingFields.join(
+                        ', '
+                    )}`,
                 })
             }
+
+            // const kendaraanLama = await kendaraan.findOne({
+            //     where: { id: kendaraan_lama_id, data_member_id },
+            // })
+            // if (!kendaraanLama) {
+            //     return res.status(404).json({
+            //         success: false,
+            //         message:
+            //             'Kendaraan lama tidak ditemukan atau bukan milik member',
+            //     })
+            // }
+
+            // const kendaraanBaru = await kendaraan.findOne({
+            //     where: { id: kendaraan_baru_id, data_member_id },
+            // })
+            // if (!kendaraanBaru) {
+            //     return res.status(404).json({
+            //         success: false,
+            //         message:
+            //             'Kendaraan baru tidak ditemukan atau bukan milik member',
+            //     })
+            // }
 
             // 🔍 Cek apakah nomor polisi lama milik member benar-benar ada
             const existingDataNopol = await data_nomor_polisi.findOne({
@@ -170,6 +163,8 @@ module.exports = {
                         data_member_id,
                         nomor_polisi_lama,
                         nomor_polisi_baru,
+                        kendaraan_lama_id,
+                        kendaraan_baru_id,
                         keterangan,
                         user_id,
                         tgl_ganti: new Date(),
@@ -218,6 +213,100 @@ module.exports = {
             }
 
             console.error('Error createRiwayat:', error)
+            return errorhandler(res, error)
+        }
+    },
+    getRiwayatByMemberId: async (req, res) => {
+        try {
+            const memberId = parseInt(req.params.memberId)
+            if (!memberId) {
+                return res
+                    .status(400)
+                    .json({ success: false, message: 'Member ID is required' })
+            }
+
+            const search = req.query.search || ''
+            const limit = req.query.limit ? parseInt(req.query.limit) : 10
+            const page = req.query.page ? parseInt(req.query.page) : 1
+            const offset = (page - 1) * limit
+
+            const whereClause = {
+                data_member_id: memberId,
+            }
+
+            if (search) {
+                whereClause[Op.or] = [
+                    { nomor_polisi_lama: { [Op.iLike]: `%${search}%` } },
+                    { nomor_polisi_baru: { [Op.iLike]: `%${search}%` } },
+                    { keterangan: { [Op.iLike]: `%${search}%` } },
+                ]
+            }
+
+            const { count, rows } =
+                await riwayat_ganti_nomor_polisi_v2.findAndCountAll({
+                    where: whereClause,
+                    include: [
+                        {
+                            model: data_member,
+                            as: 'data_member',
+                            attributes: ['id', 'nama', 'no_kartu'],
+                            include: [
+                                {
+                                    model: user,
+                                    as: 'user',
+                                    attributes: ['nama'], // ini nama user dari member
+                                },
+                            ],
+                        },
+                        {
+                            model: kendaraan,
+                            as: 'kendaraan_lama',
+                            attributes: ['id', 'nama_kendaraan'],
+                            include: [
+                                {
+                                    model: tipe_kendaraan,
+                                    as: 'tipe_kendaraan',
+                                    attributes: ['tipe_kendaraan'],
+                                },
+                            ],
+                        },
+                        {
+                            model: kendaraan,
+                            as: 'kendaraan_baru',
+                            attributes: ['id', 'nama_kendaraan'],
+                            include: [
+                                {
+                                    model: tipe_kendaraan,
+                                    as: 'tipe_kendaraan',
+                                    attributes: ['tipe_kendaraan'],
+                                },
+                            ],
+                        },
+
+                        // {
+                        //     model: produk_member,
+                        //     as: 'produk_member',
+                        //     attributes: ['nama'], // nama produk
+                        // },
+                    ],
+                    order: [['tgl_ganti', 'DESC']],
+                    limit,
+                    offset,
+                })
+
+            return res.json({
+                success: true,
+                message: `Riwayat ganti nomor polisi member id ${memberId}`,
+                results: {
+                    data: rows,
+                    totalData: count,
+                    totalPages: Math.ceil(count / limit),
+                    currentPage: page,
+                    pageSize: limit,
+                },
+            })
+        } catch (error) {
+            console.error('Error getRiwayatByMemberId:', error)
             return errorhandler(res, error)
         }
     },
