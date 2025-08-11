@@ -13,6 +13,8 @@ module.exports = {
         dialectModule: pg,
         logging: false,
         // ⚠️ Hilangkan dialectOptions jika PostgreSQL tidak pakai SSL
+        // Di render memerlukan SSL, jadi harus diaktifkan
+        // Jika dilokal boleh dikomentar
         dialectOptions: {
             ssl: {
                 rejectUnauthorized: false,
