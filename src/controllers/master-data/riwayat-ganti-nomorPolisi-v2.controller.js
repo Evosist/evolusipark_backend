@@ -17,29 +17,6 @@ module.exports = {
 
     createRiwayat: async (req, res) => {
         try {
-            // const {
-            //     data_member_id,
-            //     nomor_polisi_lama,
-            //     nomor_polisi_baru,
-            //     keterangan,
-            //     user_id,
-            //     kendaraan_lama_id,
-            //     kendaraan_baru_id,
-            // } = req.body
-
-            // if (
-            //     !data_member_id ||
-            //     !nomor_polisi_lama ||
-            //     !nomor_polisi_baru ||
-            //     !kendaraan_lama_id ||
-            //     !kendaraan_baru_id ||
-            //     !user_id
-            // ) {
-            //     return res.status(400).json({
-            //         success: false,
-            //         message: 'Missing required fields',
-            //     })
-            // }
             const {
                 data_member_id,
                 nomor_polisi_lama,
@@ -74,28 +51,6 @@ module.exports = {
                     )}`,
                 })
             }
-
-            // const kendaraanLama = await kendaraan.findOne({
-            //     where: { id: kendaraan_lama_id, data_member_id },
-            // })
-            // if (!kendaraanLama) {
-            //     return res.status(404).json({
-            //         success: false,
-            //         message:
-            //             'Kendaraan lama tidak ditemukan atau bukan milik member',
-            //     })
-            // }
-
-            // const kendaraanBaru = await kendaraan.findOne({
-            //     where: { id: kendaraan_baru_id, data_member_id },
-            // })
-            // if (!kendaraanBaru) {
-            //     return res.status(404).json({
-            //         success: false,
-            //         message:
-            //             'Kendaraan baru tidak ditemukan atau bukan milik member',
-            //     })
-            // }
 
             // 🔍 Cek apakah nomor polisi lama milik member benar-benar ada
             const existingDataNopol = await data_nomor_polisi.findOne({
@@ -141,21 +96,6 @@ module.exports = {
                 })
             }
 
-            // const isNopolExist = await data_nomor_polisi.findOne({
-            //     where: {
-            //         nomor_polisi: {
-            //             [Op.iLike]: nomor_polisi_baru,
-            //         },
-            //     },
-            // })
-
-            // if (isNopolExist) {
-            //     return res.status(400).json({
-            //         success: false,
-            //         message: `Nomor polisi "${nomor_polisi_baru}" sudah digunakan oleh member lain`,
-            //     })
-            // }
-
             await sequelize.transaction(async (t) => {
                 // 2️⃣ Insert data baru
                 const newData = await riwayat_ganti_nomor_polisi_v2.create(
@@ -174,7 +114,10 @@ module.exports = {
 
                 // 3️⃣ Update nomor polisi di tabel data_nomor_polisi
                 const [affectedRows] = await data_nomor_polisi.update(
-                    { nomor_polisi: nomor_polisi_baru },
+                    {
+                        nomor_polisi: nomor_polisi_baru,
+                        kendaraan_id: kendaraan_baru_id,
+                    },
                     {
                         where: {
                             data_member_id,
