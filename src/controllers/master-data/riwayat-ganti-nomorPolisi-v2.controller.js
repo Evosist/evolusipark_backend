@@ -1,7 +1,14 @@
-const { riwayat_ganti_nomor_polisi_v2, data_member, user } = require('../../models')
+const {
+    sequelize,
+    riwayat_ganti_nomor_polisi_v2,
+    data_nomor_polisi,
+    data_member,
+    user,
+} = require('../../models')
+
 const errorhandler = require('../../helpers/errorhandler.helper')
 const { Op } = require('sequelize')
-
+// const {  } = require('../../models')
 
 module.exports = {
     // GET riwayat ganti nomor polisi by data_member_id dengan pagination dan search
@@ -97,6 +104,24 @@ module.exports = {
                 })
             }
 
+            // 🔍 Cek apakah nomor polisi lama milik member benar-benar ada
+            const existingDataNopol = await data_nomor_polisi.findOne({
+                where: {
+                    data_member_id,
+                    nomor_polisi: {
+                        [Op.iLike]: nomor_polisi_lama,
+                    },
+                },
+            })
+
+            if (!existingDataNopol) {
+                return res.status(404).json({
+                    success: false,
+                    // message: `Nomor polisi lama "${nomor_polisi_lama}" milik member ID ${data_member_id} tidak ditemukan`,
+                    message: `Nomor polisi lama "${nomor_polisi_lama}" milik member tidak ditemukan`,
+                })
+            }
+
             // 1️⃣ Cek apakah nomor polisi baru sudah pernah digunakan oleh member ini
             const existingNopol = await riwayat_ganti_nomor_polisi_v2.findOne({
                 where: {
@@ -123,22 +148,75 @@ module.exports = {
                 })
             }
 
-            // 2️⃣ Insert data baru
-            const newData = await riwayat_ganti_nomor_polisi_v2.create({
-                data_member_id,
-                nomor_polisi_lama,
-                nomor_polisi_baru,
-                keterangan,
-                user_id,
-                tgl_ganti: new Date(),
-            })
+            // const isNopolExist = await data_nomor_polisi.findOne({
+            //     where: {
+            //         nomor_polisi: {
+            //             [Op.iLike]: nomor_polisi_baru,
+            //         },
+            //     },
+            // })
 
-            return res.status(201).json({
-                success: true,
-                message: 'Riwayat ganti nomor polisi berhasil dibuat',
-                results: newData,
+            // if (isNopolExist) {
+            //     return res.status(400).json({
+            //         success: false,
+            //         message: `Nomor polisi "${nomor_polisi_baru}" sudah digunakan oleh member lain`,
+            //     })
+            // }
+
+            await sequelize.transaction(async (t) => {
+                // 2️⃣ Insert data baru
+                const newData = await riwayat_ganti_nomor_polisi_v2.create(
+                    {
+                        data_member_id,
+                        nomor_polisi_lama,
+                        nomor_polisi_baru,
+                        keterangan,
+                        user_id,
+                        tgl_ganti: new Date(),
+                    },
+                    { transaction: t }
+                )
+
+                // 3️⃣ Update nomor polisi di tabel data_nomor_polisi
+                const [affectedRows] = await data_nomor_polisi.update(
+                    { nomor_polisi: nomor_polisi_baru },
+                    {
+                        where: {
+                            data_member_id,
+                            nomor_polisi: {
+                                [Op.iLike]: nomor_polisi_lama,
+                            },
+                        },
+                        transaction: t,
+                    }
+                )
+
+                // 4️⃣ Validasi hasil update
+                if (affectedRows === 0) {
+                    throw new Error(
+                        'Data nomor polisi lama tidak ditemukan atau tidak bisa diperbarui'
+                    )
+                }
+
+                return res.status(201).json({
+                    success: true,
+                    // message: 'Riwayat ganti nomor polisi berhasil dibuat',
+                    message:
+                        'Riwayat ganti nomor polisi berhasil dibuat dan data nomor polisi diperbarui',
+                    results: newData,
+                })
             })
         } catch (error) {
+            // console.error('Error createRiwayat:', error)
+            // return errorhandler(res, error)
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Nomor polisi sudah digunakan',
+                    detail: error.errors?.[0]?.message || error.message,
+                })
+            }
+
             console.error('Error createRiwayat:', error)
             return errorhandler(res, error)
         }
