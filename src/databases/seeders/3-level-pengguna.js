@@ -560,6 +560,25 @@ module.exports = {
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
+                {
+                    id: 3,
+                    tenant_id: 1,
+                    nama: 'Member',
+                    hak_akses: JSON.stringify([
+                        {
+                            nama_menu: 'Dashboard',
+                            nama_sub_menu: null,
+                            aksi: {
+                                read: true,
+                                create: null,
+                                delete: null,
+                                update: null,
+                            },
+                        },
+                    ]),
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                },
             ],
             {}
         )
