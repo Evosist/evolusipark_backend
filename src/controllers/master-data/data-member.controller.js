@@ -806,80 +806,6 @@ module.exports = {
             return errorhandler(res, err)
         }
     },
-    // perpanjangMasaAktif: async (req, res) => {
-    //   // const { produk_id, tarif, periode, user_id } = req.body;
-    //   //
-    //   //   if (!produk_id || !tarif || !periode || !user_id) {
-    //   //     return res.status(400).json({
-    //   //       success: false,
-    //   //       message: 'Field produk_id, tarif, periode, dan user_id wajib diisi',
-    //   //     });
-    //   //   }
-    //
-    //     try {
-    //         // Ambil semua kendaraan_id milik member
-    //         const kendaraanList = await data_nomor_polisi.findAll({
-    //             where: { data_member_id: req.params.id },
-    //             attributes: ['kendaraan_id'],
-    //         })
-    //
-    //         const memberKendaraanIds = kendaraanList.map((k) =>
-    //             k.kendaraan_id.toString()
-    //         )
-    //
-    //         // Ambil produk_member baru yang akan digunakan
-    //         const produk = await produk_member.findOne({
-    //             where: { id: req.body.produk_id },
-    //             attributes: ['list_id_kendaraan'],
-    //         })
-    //
-    //         if (!produk) {
-    //             return res.status(404).json({
-    //                 success: false,
-    //                 message: 'Produk member tidak ditemukan',
-    //             })
-    //         }
-    //
-    //         const listIdKendaraan = produk.list_id_kendaraan.map((id) =>
-    //             id.toString()
-    //         )
-    //
-    //         // Cek apakah semua kendaraan member terdapat dalam list produk
-    //         const kendaraanTidakTerdaftar = memberKendaraanIds.filter(
-    //             (id) => !listIdKendaraan.includes(id)
-    //         )
-    //
-    //         if (kendaraanTidakTerdaftar.length > 0) {
-    //             return res.status(400).json({
-    //                 success: false,
-    //                 message: 'Kendaraan tidak sesuai dengan produk member',
-    //             })
-    //         }
-    //
-    //         const data = await data_member.update(req.body, {
-    //             where: {
-    //                 id: req.params.id,
-    //             },
-    //         })
-    //
-    //         await riwayat_transaksi_member.create({
-    //             tgl_transaksi: new Date(),
-    //             produk_id: req.body.produk_id,
-    //             tarif: req.body.tarif,
-    //             masa_aktif: req.body.periode,
-    //             user_id: req.body.user_id,
-    //         })
-    //
-    //         return res.json({
-    //             success: true,
-    //             message: 'Update data member successfully',
-    //             results: data,
-    //         })
-    //     } catch (err) {
-    //         return errorhandler(res, err)
-    //     }
-    // },
-    //
     perpanjangMasaAktif: async (req, res) => {
         try {
             const memberId = req.params.id
@@ -1137,6 +1063,24 @@ module.exports = {
                     { model: perusahaan, as: 'perusahaan' },
                     { model: produk_member, as: 'produk_member' },
                     { model: data_nomor_polisi, as: 'data_nomor_polisi' },
+                    {
+                        model: data_nomor_polisi,
+                        as: 'data_nomor_polisi',
+                        include: [
+                            {
+                                model: kendaraan,
+                                as: 'kendaraan',
+                                attributes: ['nama_kendaraan'],
+                                include: [
+                                    {
+                                        model: tipe_kendaraan,
+                                        as: 'tipe_kendaraan',
+                                        attributes: ['tipe_kendaraan'], // pastikan field ini ada di model tipe_kendaraan
+                                    },
+                                ],
+                            },
+                        ],
+                    },
                     { model: user, as: 'user', attributes: ['id', 'nama'] },
                 ],
             })
