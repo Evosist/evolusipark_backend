@@ -263,6 +263,47 @@ module.exports = {
     create: async (req, res) => {
         try {
             // ===============================
+            // Cek apakah anggota member
+            // ===============================
+            const dataMember = await data_nomor_polisis.findOne({
+                where: {
+                    kendaraan_id: req.body.kendaraan_id,
+                    nomor_polisi: req.body.nomor_polisi,
+                },
+                include: [
+                    {
+                        model: data_member,
+                        as: 'member',
+                        where: {
+                            periode: {
+                                [Op.contains]: dayjs().format('YYYY-MM-DD'), // masih aktif
+                            },
+                        },
+                    },
+                ],
+            })
+
+            if (dataMember) {
+                // Anggota member
+                const jenisPembayaran = await payment.findOne({
+                    where: { id: req.body.jenis_pembayaran_id },
+                })
+
+                if (
+                    !jenisPembayaran ||
+                    jenisPembayaran.jenis_payment.toLowerCase() !== 'member'
+                ) {
+                    return res.status(400).json({
+                        success: false,
+                        message:
+                            'Jenis pembayaran untuk member hanya boleh "member"',
+                    })
+                }
+
+                req.body.biaya_parkir = 0
+            }
+
+            // ===============================
             // Ambil data tarif parkir & denda
             // ===============================
             const dataTarifParkir = await tarif_parkir.findOne({
@@ -319,16 +360,18 @@ module.exports = {
             const selisihJam = Math.ceil(selisihMs / (1000 * 60 * 60))
 
             // ===============================
-            // Hitung biaya parkir dasar
+            // Hitung biaya parkir dasar (jika bukan member)
             // ===============================
-            const tarifPertama = dataTarifParkir.tarif_rotasi_pertama || 0
-            const tarifKedua = dataTarifParkir.tarif_rotasi_kedua || 0
-            const tarifKetiga = dataTarifParkir.tarif_rotasi_ketiga || 0
-
             let biaya = 0
-            if (selisihJam >= 1) biaya += tarifPertama
-            if (selisihJam >= 2) biaya += tarifKedua
-            if (selisihJam >= 3) biaya += (selisihJam - 2) * tarifKetiga
+            if (!dataMember) {
+                const tarifPertama = dataTarifParkir.tarif_rotasi_pertama || 0
+                const tarifKedua = dataTarifParkir.tarif_rotasi_kedua || 0
+                const tarifKetiga = dataTarifParkir.tarif_rotasi_ketiga || 0
+
+                if (selisihJam >= 1) biaya += tarifPertama
+                if (selisihJam >= 2) biaya += tarifKedua
+                if (selisihJam >= 3) biaya += (selisihJam - 2) * tarifKetiga
+            }
 
             // ===============================
             // Hitung biaya denda
@@ -352,9 +395,9 @@ module.exports = {
             }
 
             // ===============================
-            // Jika ada voucher, kurangi biaya parkir
+            // Jika ada voucher, kurangi biaya parkir (kecuali member)
             // ===============================
-            if (req.body.id_data_voucher) {
+            if (req.body.id_data_voucher && !dataMember) {
                 const dataVoucher = await data_voucher.findOne({
                     where: { id: req.body.id_data_voucher },
                 })
