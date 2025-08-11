@@ -209,34 +209,10 @@ module.exports = {
                         as: 'perusahaan',
                         attributes: ['id', 'nama'],
                     },
-                    // {
-                    //     model: produk_member,
-                    //     as: 'produk_member',
-                    //     attributes: ['id', 'nama'],
-                    // },
                     {
                         model: produk_member,
                         as: 'produk_member',
                     },
-                    // {
-                    //     model: data_nomor_polisi,
-                    //     as: 'data_nomor_polisi',
-                    //     // attributes: ['id', 'nomor_polisi'],
-                    //     include: [
-                    //         {
-                    //             model: kendaraan,
-                    //             as: 'kendaraan',
-                    //             attributes: ['id', 'nama_kendaraan'],
-                    //             include: [
-                    //                 {
-                    //                     model: tipe_kendaraan,
-                    //                     as: 'tipe_kendaraan',
-                    //                     attributes: ['id', 'tipe_kendaraan'],
-                    //                 },
-                    //             ],
-                    //         },
-                    //     ],
-                    // },
 
                     {
                         model: data_nomor_polisi,
@@ -372,6 +348,32 @@ module.exports = {
             }
 
             const { count, rows } = await data_member.findAndCountAll(options)
+
+            // 🔹 Tambahkan proses untuk inject list_kendaraan_detail
+            for (const member of rows) {
+                const listId = member.produk_member?.list_id_kendaraan || []
+                if (listId.length) {
+                    const kendaraanList = await kendaraan.findAll({
+                        where: { id: listId.map(Number) },
+                        attributes: [
+                            'id',
+                            'nama_kendaraan',
+                            'tipe_kendaraan_id',
+                        ],
+                        include: [
+                            {
+                                model: tipe_kendaraan,
+                                as: 'tipe_kendaraan',
+                                attributes: ['tipe_kendaraan'],
+                            },
+                        ],
+                    })
+                    member.produk_member.setDataValue(
+                        'list_kendaraan_detail',
+                        kendaraanList
+                    )
+                }
+            }
 
             return res.json({
                 success: true,
