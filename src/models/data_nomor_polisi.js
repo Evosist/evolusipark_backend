@@ -37,5 +37,6 @@ module.exports = (sequelize, DataTypes) => {
             modelName: 'data_nomor_polisi',
         }
     )
+
     return data_nomor_polisi
 }

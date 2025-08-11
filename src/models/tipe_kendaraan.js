@@ -13,6 +13,12 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'tenant_id',
                 as: 'tenant',
             })
+
+            // ✅ Tambahkan relasi ke kendaraan
+            tipe_kendaraan.hasMany(models.kendaraan, {
+                foreignKey: 'tipe_kendaraan_id',
+                as: 'kendaraan',
+            })
         }
     }
     tipe_kendaraan.init(

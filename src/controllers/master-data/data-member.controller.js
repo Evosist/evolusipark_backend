@@ -11,6 +11,7 @@ const {
     user,
     pos,
     kendaraan,
+    tipe_kendaraan,
     tenant,
 } = require('../../models/index')
 const fs = require('fs')
@@ -65,15 +66,52 @@ module.exports = {
                         as: 'perusahaan',
                         attributes: ['id', 'nama'],
                     },
+                    // {
+                    //     model: produk_member,
+                    //     as: 'produk_member',
+                    //     attributes: ['id', 'nama'],
+                    // },
                     {
                         model: produk_member,
                         as: 'produk_member',
-                        attributes: ['id', 'nama'],
                     },
+                    // {
+                    //     model: data_nomor_polisi,
+                    //     as: 'data_nomor_polisi',
+                    //     // attributes: ['id', 'nomor_polisi'],
+                    //     include: [
+                    //         {
+                    //             model: kendaraan,
+                    //             as: 'kendaraan',
+                    //             attributes: ['id', 'nama_kendaraan'],
+                    //             include: [
+                    //                 {
+                    //                     model: tipe_kendaraan,
+                    //                     as: 'tipe_kendaraan',
+                    //                     attributes: ['id', 'tipe_kendaraan'],
+                    //                 },
+                    //             ],
+                    //         },
+                    //     ],
+                    // },
+
                     {
                         model: data_nomor_polisi,
                         as: 'data_nomor_polisi',
-                        attributes: ['id', 'nomor_polisi'],
+                        include: [
+                            {
+                                model: kendaraan,
+                                as: 'kendaraan',
+                                attributes: ['id', 'nama_kendaraan'],
+                                include: [
+                                    {
+                                        model: tipe_kendaraan,
+                                        as: 'tipe_kendaraan',
+                                        attributes: ['id', 'tipe_kendaraan'],
+                                    },
+                                ],
+                            },
+                        ],
                     },
                     {
                         model: user,
