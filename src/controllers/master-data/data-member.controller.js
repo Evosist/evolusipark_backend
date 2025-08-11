@@ -48,6 +48,149 @@ function generateTableRows(data) {
 }
 
 module.exports = {
+    //   findOneById: async (req, res) => {
+    //     try {
+    //         const data = await data_member.findOne({
+    //             where: { id: req.params.id },
+    //             include: [
+    //                 { model: perusahaan, as: 'perusahaan' },
+    //                 {
+    //                     model: produk_member,
+    //                     as: 'produk_member',
+    //                     attributes: { exclude: [] },
+    //                 },
+    //                 {
+    //                     model: data_nomor_polisi,
+    //                     as: 'data_nomor_polisi',
+    //                     include: [
+    //                         {
+    //                             model: kendaraan,
+    //                             as: 'kendaraan',
+    //                             attributes: ['nama_kendaraan'],
+    //                             include: [
+    //                                 {
+    //                                     model: tipe_kendaraan,
+    //                                     as: 'tipe_kendaraan',
+    //                                     attributes: ['tipe_kendaraan'],
+    //                                 },
+    //                             ],
+    //                         },
+    //                     ],
+    //                 },
+    //                 { model: user, as: 'user', attributes: ['id', 'nama'] },
+    //             ],
+    //         })
+
+    //         if (!data) {
+    //             return res.status(404).json({
+    //                 success: false,
+    //                 message: 'Data member tidak ditemukan',
+    //             })
+    //         }
+
+    //         const listId = data.produk_member?.list_id_kendaraan || []
+    //         if (listId.length) {
+    //             const kendaraanList = await kendaraan.findAll({
+    //                 where: { id: listId.map(Number) },
+    //                 attributes: ['id', 'nama_kendaraan', 'tipe_kendaraan_id'],
+    //                 include: [
+    //                     {
+    //                         model: tipe_kendaraan,
+    //                         as: 'tipe_kendaraan',
+    //                         attributes: ['tipe_kendaraan'],
+    //                     },
+    //                 ],
+    //             })
+
+    //             data.produk_member.setDataValue(
+    //                 'list_kendaraan_detail',
+    //                 kendaraanList
+    //             )
+    //         }
+
+    //         return res.json({
+    //             success: true,
+    //             message: 'Get data member successfully',
+    //             results: data,
+    //         })
+    //     } catch (err) {
+    //         return errorhandler(res, err)
+    //     }
+    // },
+    findOneById: async (req, res) => {
+        try {
+            const data = await data_member.findOne({
+                // 🔹 pakai findOne (hasil object)
+                where: {
+                    id: req.params.id,
+                },
+                include: [
+                    { model: perusahaan, as: 'perusahaan' },
+                    {
+                        model: produk_member,
+                        as: 'produk_member',
+                        // tambahkan attributes biar bawa list_id_kendaraan
+                        attributes: { exclude: [] },
+                    },
+                    // { model: data_nomor_polisi, as: 'data_nomor_polisi' },
+                    {
+                        model: data_nomor_polisi,
+                        as: 'data_nomor_polisi',
+                        include: [
+                            {
+                                model: kendaraan,
+                                as: 'kendaraan',
+                                attributes: ['nama_kendaraan'],
+                                include: [
+                                    {
+                                        model: tipe_kendaraan,
+                                        as: 'tipe_kendaraan',
+                                        attributes: ['tipe_kendaraan'], // pastikan field ini ada di model tipe_kendaraan
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    { model: user, as: 'user', attributes: ['id', 'nama'] },
+                ],
+            })
+
+            if (!data) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Data member tidak ditemukan',
+                })
+            }
+            // Ambil list kendaraan detail berdasarkan produk_member.list_id_kendaraan
+            const listId = data.produk_member?.list_id_kendaraan || []
+            if (listId.length) {
+                const kendaraanList = await kendaraan.findAll({
+                    where: { id: listId.map(Number) },
+                    attributes: ['id', 'nama_kendaraan', 'tipe_kendaraan_id'],
+                    include: [
+                        {
+                            model: tipe_kendaraan,
+                            as: 'tipe_kendaraan',
+                            attributes: ['tipe_kendaraan'],
+                        },
+                    ],
+                })
+                // Inject data baru
+                data.produk_member.setDataValue(
+                    'list_kendaraan_detail',
+                    kendaraanList
+                )
+            }
+
+            return res.json({
+                success: true,
+                message: 'Get data member successfully',
+                results: data,
+            })
+        } catch (err) {
+            return errorhandler(res, err)
+        }
+    },
     getAll: async (req, res) => {
         try {
             const search = req.query.search || ''
@@ -1047,46 +1190,6 @@ module.exports = {
             return res.json({
                 success: true,
                 message: 'Update data member successfully',
-                results: data,
-            })
-        } catch (err) {
-            return errorhandler(res, err)
-        }
-    },
-    findOneById: async (req, res) => {
-        try {
-            const data = await data_member.findAll({
-                where: {
-                    id: req.params.id,
-                },
-                include: [
-                    { model: perusahaan, as: 'perusahaan' },
-                    { model: produk_member, as: 'produk_member' },
-                    { model: data_nomor_polisi, as: 'data_nomor_polisi' },
-                    {
-                        model: data_nomor_polisi,
-                        as: 'data_nomor_polisi',
-                        include: [
-                            {
-                                model: kendaraan,
-                                as: 'kendaraan',
-                                attributes: ['nama_kendaraan'],
-                                include: [
-                                    {
-                                        model: tipe_kendaraan,
-                                        as: 'tipe_kendaraan',
-                                        attributes: ['tipe_kendaraan'], // pastikan field ini ada di model tipe_kendaraan
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                    { model: user, as: 'user', attributes: ['id', 'nama'] },
-                ],
-            })
-            return res.json({
-                success: true,
-                message: 'Get data member successfully',
                 results: data,
             })
         } catch (err) {

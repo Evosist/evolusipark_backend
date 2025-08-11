@@ -31,6 +31,15 @@ module.exports = (sequelize, DataTypes) => {
             nama: DataTypes.STRING,
             periode: DataTypes.RANGE(DataTypes.DATEONLY),
             list_id_kendaraan: DataTypes.ARRAY(DataTypes.STRING),
+            list_kendaraan_detail: {
+                type: DataTypes.VIRTUAL,
+                get() {
+                    return this.getDataValue('list_kendaraan_detail')
+                },
+                set(value) {
+                    this.setDataValue('list_kendaraan_detail', value)
+                },
+            },
             max_kendaraan: DataTypes.INTEGER,
             tarif: {
                 type: DataTypes.INTEGER,
