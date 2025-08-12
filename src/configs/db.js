@@ -12,9 +12,31 @@ module.exports = {
         dialect: 'postgres',
         dialectModule: pg,
         logging: false,
-        // ⚠️ Hilangkan dialectOptions jika PostgreSQL tidak pakai SSL
-        // Di render memerlukan SSL, jadi harus diaktifkan
-        // Jika dilokal boleh dikomentar
+    },
+    staging: {
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
+        dialect: 'postgres',
+        dialectModule: pg,
+        logging: false,
+        dialectOptions: {
+            ssl: {
+                rejectUnauthorized: false,
+            },
+        },
+    },
+    production: {
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
+        dialect: 'postgres',
+        dialectModule: pg,
+        logging: false,
         dialectOptions: {
             ssl: {
                 rejectUnauthorized: false,
