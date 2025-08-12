@@ -1,6 +1,7 @@
 const pg = require('pg')
 
-require('dotenv').config({ path: '.env' })
+const envPath = `.env.${process.env.NODE_ENV || 'development'}`
+require('dotenv').config({ path: envPath })
 
 module.exports = {
     development: {
