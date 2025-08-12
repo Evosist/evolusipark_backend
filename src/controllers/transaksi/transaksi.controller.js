@@ -304,6 +304,10 @@ module.exports = {
             }
 
             // ===============================
+            // Cek jenis perhitungan pembayaran
+            // ===============================
+
+            // ===============================
             // Ambil data tarif parkir & denda
             // ===============================
             const dataTarifParkir = await tarif_parkir.findOne({
