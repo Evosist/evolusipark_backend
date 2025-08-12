@@ -1,3 +1,4 @@
+const { Op } = require('sequelize')
 const errorhandler = require('../../helpers/errorhandler.helper')
 const {
     level_pengguna,
@@ -24,6 +25,153 @@ module.exports = {
 
             const options = {
                 where: {},
+                include: [
+                    {
+                        model: user,
+                        as: 'user',
+                        attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: perusahaan,
+                        as: 'perusahaan',
+                        attributes: ['id', 'nama', 'jenis_perusahaan'],
+                    },
+                    {
+                        model: tenant,
+                        as: 'tenant',
+                        attributes: ['id', 'nama_tenant'],
+                    },
+                ],
+                order: [[validSortBy, sortOrder]],
+            }
+
+            if (search) {
+                options.where[Op.or] = [
+                    { nama: { [Op.iLike]: `%${search}%` } },
+                    { '$perusahaan.nama$': { [Op.iLike]: `%${search}%` } },
+                    { '$user.nama$': { [Op.iLike]: `%${search}%` } },
+                ]
+            }
+
+            if (limit) {
+                options.limit = limit
+                options.offset = offset
+            }
+
+            const { count, rows } = await level_pengguna.findAndCountAll(
+                options
+            )
+
+            return res.json({
+                success: true,
+                message: 'Get all level pengguna successfully',
+                results: {
+                    data: rows,
+                    totalData: count,
+                    totalPages: limit ? Math.ceil(count / limit) : 1,
+                    currentPage: page,
+                    pageSize: limit || count,
+                },
+            })
+        } catch (err) {
+            return errorhandler(res, err)
+        }
+    },
+    getAllAdminTenant: async (req, res) => {
+        try {
+            const search = req.query.search || ''
+            const limit = req.query.limit ? parseInt(req.query.limit) : 10
+            const page = req.query.page ? parseInt(req.query.page) : 1
+            const offset = limit && page ? (page - 1) * limit : 0
+            const sortBy = req.query.sortBy || 'id'
+            const sortOrder =
+                req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
+
+            const allowedSortColumns = ['id', 'nama', 'createdAt', 'updatedAt']
+            const validSortBy = allowedSortColumns.includes(sortBy)
+                ? sortBy
+                : 'id'
+
+            const options = {
+                where: {
+                    nama: 'Administrator Tenant',
+                },
+                include: [
+                    {
+                        model: user,
+                        as: 'user',
+                        attributes: ['id', 'nama'],
+                    },
+                    {
+                        model: perusahaan,
+                        as: 'perusahaan',
+                        attributes: ['id', 'nama', 'jenis_perusahaan'],
+                    },
+                    {
+                        model: tenant,
+                        as: 'tenant',
+                        attributes: ['id', 'nama_tenant'],
+                    },
+                ],
+                order: [[validSortBy, sortOrder]],
+            }
+
+            if (search) {
+                options.where[Op.or] = [
+                    { nama: { [Op.iLike]: `%${search}%` } },
+                    { '$perusahaan.nama$': { [Op.iLike]: `%${search}%` } },
+                    { '$user.nama$': { [Op.iLike]: `%${search}%` } },
+                ]
+            }
+
+            if (limit) {
+                options.limit = limit
+                options.offset = offset
+            }
+
+            const { count, rows } = await level_pengguna.findAndCountAll(
+                options
+            )
+
+            return res.json({
+                success: true,
+                message: 'Get all level pengguna successfully',
+                results: {
+                    data: rows,
+                    totalData: count,
+                    totalPages: limit ? Math.ceil(count / limit) : 1,
+                    currentPage: page,
+                    pageSize: limit || count,
+                },
+            })
+        } catch (err) {
+            return errorhandler(res, err)
+        }
+    },
+    getAllCustomUser: async (req, res) => {
+        try {
+            const search = req.query.search || ''
+            const limit = req.query.limit ? parseInt(req.query.limit) : 10
+            const page = req.query.page ? parseInt(req.query.page) : 1
+            const offset = limit && page ? (page - 1) * limit : 0
+            const sortBy = req.query.sortBy || 'id'
+            const sortOrder =
+                req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
+
+            const allowedSortColumns = ['id', 'nama', 'createdAt', 'updatedAt']
+            const validSortBy = allowedSortColumns.includes(sortBy)
+                ? sortBy
+                : 'id'
+
+            const options = {
+                where: {
+                    nama: {
+                        [Op.notIn]: [
+                            'Super Administrator',
+                            'Administrator Tenant',
+                        ],
+                    },
+                },
                 include: [
                     {
                         model: user,
