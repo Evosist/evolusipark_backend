@@ -14,6 +14,7 @@ const {
     laporan_transaksi_batal,
     tipe_denda,
     tenant,
+    data_nomor_polisi,
 } = require('../../models/index')
 const dayjs = require('dayjs')
 const relativeTime = require('dayjs/plugin/relativeTime')
@@ -265,7 +266,7 @@ module.exports = {
             // ===============================
             // Cek apakah anggota member
             // ===============================
-            const dataMember = await data_nomor_polisis.findOne({
+            const dataMember = await data_nomor_polisi.findOne({
                 where: {
                     kendaraan_id: req.body.kendaraan_id,
                     nomor_polisi: req.body.nomor_polisi,
@@ -273,7 +274,7 @@ module.exports = {
                 include: [
                     {
                         model: data_member,
-                        as: 'member',
+                        as: 'data_member',
                         where: {
                             periode: {
                                 [Op.contains]: dayjs().format('YYYY-MM-DD'), // masih aktif
