@@ -135,3 +135,5 @@ dist
 .pnp.*
 src/configs/db.js
 src/configs/db.js
+src/configs/db.js
+src/configs/db.js
