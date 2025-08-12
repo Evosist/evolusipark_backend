@@ -12,11 +12,6 @@ module.exports = {
         port: process.env.DB_PORT,
         dialect: 'postgres',
         dialectModule: pg,
-<<<<<<< HEAD
-        logging: false
-        // ⚠️ Hilangkan dialectOptions jika PostgreSQL tidak pakai SSL
-    }
-=======
         logging: false,
     },
     staging: {
@@ -49,5 +44,4 @@ module.exports = {
             },
         },
     },
->>>>>>> ab960c44f5a6333bc052f7c8c30b99f7a22ae700
 }
