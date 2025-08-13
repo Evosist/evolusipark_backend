@@ -19,7 +19,7 @@ module.exports = {
                 {
                     id: 1,
                     tenant_id: 1,
-                    nama: 'Super Administrator',
+                    nama: 'Super Admin',
                     hak_akses: JSON.stringify([
                         {
                             nama_menu: 'Dashboard',
