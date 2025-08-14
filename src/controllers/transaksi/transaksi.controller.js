@@ -296,13 +296,7 @@ module.exports = {
             // Simpan transaksi masuk
             const data = await transaksi.create({
                 ...req.body,
-                tanggal_masuk: req.body.tanggal_masuk,
-                pintu_masuk_id: req.body.pintu_masuk_id,
                 no_tiket: noTiket,
-                kendaraan_id: req.body.kendaraan_id,
-                nomor_polisi: req.body.nomor_polisi,
-                jenis_perhitungan_pembayaran:
-                    req.body.jenis_perhitungan_pembayaran, // flat / regular
                 is_active: true,
                 createdAt: new Date(),
                 updatedAt: new Date(),
@@ -503,7 +497,7 @@ module.exports = {
             trx.biaya_parkir = biaya
             trx.jumlah_denda_tiket = biayaDendaTiket
             trx.jumlah_denda_stnk = biayaDendaStnk
-            trx.jumlah_denda_kartu_member = biayaDendaKartuMember
+            trx.jumlah_denda_member = biayaDendaKartuMember
             trx.interval = selisihJam
             trx.is_active = false
             trx.keterangan_atau_penjelasan =
