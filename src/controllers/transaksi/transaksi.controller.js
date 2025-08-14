@@ -501,7 +501,7 @@ module.exports = {
             trx.jumlah_denda_stnk = biayaDendaStnk
             trx.jumlah_denda_member = biayaDendaKartuMember
             trx.interval = selisihJam
-            trx.is_active = false
+            trx.is_active = true
             trx.keterangan_atau_penjelasan =
                 req.body.keterangan_atau_penjelasan || null
             trx.id_data_voucher = req.body.id_data_voucher || null
