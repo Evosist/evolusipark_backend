@@ -362,7 +362,7 @@ module.exports = {
                         as: 'data_member',
                         where: {
                             periode: {
-                                [Op.contains]: dayjs().format('YYYY-MM-DD'),
+                                [Op.contains]: dayjs().toDate(),
                             },
                         },
                     },
