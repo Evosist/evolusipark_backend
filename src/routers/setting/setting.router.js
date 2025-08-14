@@ -11,6 +11,5 @@ router.use('/tarif-denda', tarifDendaRouter)
 router.use('/parameter', parameterRouter)
 router.use('/global', globalRouter)
 router.use('/payment', paymentRouter)
-router.use('/perhitungan-pembayaran', perhitunganPembayaranRouter)
 
 module.exports = router
