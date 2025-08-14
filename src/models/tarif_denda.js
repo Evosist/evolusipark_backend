@@ -38,6 +38,11 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 validate: { min: 0 },
             },
+            denda_kartu_member: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                validate: { min: 0 },
+            },
             denda_member: DataTypes.BOOLEAN,
             status: DataTypes.BOOLEAN,
         },

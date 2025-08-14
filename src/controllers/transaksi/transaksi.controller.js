@@ -23,6 +23,13 @@ const Op = require('sequelize').Op
 
 dayjs.extend(relativeTime)
 
+// Generate nomor tiket unik
+function generateNoTiket() {
+    const now = dayjs().format('YYYYMMDDHHmmss')
+    const random = Math.floor(Math.random() * 1000)
+    return `TIK${now}${random}`
+}
+
 module.exports = {
     getAll: async (req, res) => {
         try {
@@ -261,173 +268,48 @@ module.exports = {
             return errorhandler(res, err)
         }
     },
+    // ===============================
+    // Transaksi Masuk (CREATE)
+    // ===============================
     create: async (req, res) => {
         try {
-            // ===============================
-            // Cek apakah anggota member
-            // ===============================
-            const dataMember = await data_nomor_polisi.findOne({
+            // Cek transaksi aktif untuk nomor polisi ini
+            const existingTrx = await transaksi.findOne({
                 where: {
-                    kendaraan_id: req.body.kendaraan_id,
                     nomor_polisi: req.body.nomor_polisi,
+                    tanggal_keluar: null,
+                    is_active: true,
                 },
-                include: [
-                    {
-                        model: data_member,
-                        as: 'data_member',
-                        where: {
-                            periode: {
-                                [Op.contains]: dayjs().format('YYYY-MM-DD'), // masih aktif
-                            },
-                        },
-                    },
-                ],
             })
 
-            if (dataMember) {
-                // Anggota member
-                const jenisPembayaran = await payment.findOne({
-                    where: { id: req.body.jenis_pembayaran_id },
-                })
-
-                if (
-                    !jenisPembayaran ||
-                    jenisPembayaran.jenis_payment.toLowerCase() !== 'member'
-                ) {
-                    return res.status(400).json({
-                        success: false,
-                        message:
-                            'Jenis pembayaran untuk member hanya boleh "member"',
-                    })
-                }
-
-                req.body.biaya_parkir = 0
-            }
-
-            // ===============================
-            // Cek jenis perhitungan pembayaran
-            // ===============================
-
-            // ===============================
-            // Ambil data tarif parkir & denda
-            // ===============================
-            const dataTarifParkir = await tarif_parkir.findOne({
-                where: { kendaraan_id: req.body.kendaraan_id },
-            })
-
-            const dataTarifDenda = await tarif_denda.findOne({
-                where: { kendaraan_id: req.body.kendaraan_id },
-            })
-
-            if (!dataTarifParkir) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Tarif parkir tidak ditemukan',
-                })
-            }
-
-            if (!dataTarifDenda) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Tarif denda tidak ditemukan',
-                })
-            }
-
-            // ===============================
-            // Validasi waktu masuk & keluar
-            // ===============================
-            const waktu_masuk = dayjs(req.body.tanggal_masuk).format(
-                'YYYY-MM-DD HH:mm:ss'
-            )
-            const waktu_keluar = dayjs(req.body.tanggal_keluar).format(
-                'YYYY-MM-DD HH:mm:ss'
-            )
-
-            if (!waktu_masuk || !waktu_keluar) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'Waktu Masuk dan Waktu Keluar wajib diisi',
-                })
-            }
-
-            const masuk = new Date(waktu_masuk)
-            const keluar = new Date(waktu_keluar)
-
-            if (keluar < masuk) {
+            if (existingTrx) {
                 return res.status(400).json({
                     success: false,
                     message:
-                        'waktu_keluar tidak boleh lebih awal dari waktu_masuk',
+                        'Kendaraan ini masih memiliki transaksi aktif, tidak bisa membuat transaksi masuk baru',
                 })
             }
 
-            const selisihMs = keluar - masuk
-            const selisihJam = Math.ceil(selisihMs / (1000 * 60 * 60))
+            // Generate nomor tiket
+            const noTiket = generateNoTiket()
 
-            // ===============================
-            // Hitung biaya parkir dasar (jika bukan member)
-            // ===============================
-            let biaya = 0
-            if (!dataMember) {
-                const tarifPertama = dataTarifParkir.tarif_rotasi_pertama || 0
-                const tarifKedua = dataTarifParkir.tarif_rotasi_kedua || 0
-                const tarifKetiga = dataTarifParkir.tarif_rotasi_ketiga || 0
-
-                if (selisihJam >= 1) biaya += tarifPertama
-                if (selisihJam >= 2) biaya += tarifKedua
-                if (selisihJam >= 3) biaya += (selisihJam - 2) * tarifKetiga
-            }
-
-            // ===============================
-            // Hitung biaya denda
-            // ===============================
-            const isDenda = req.body.denda === true || req.body.denda === 'true'
-            const isTiketHilang =
-                req.body.is_tiket_hilang === true ||
-                req.body.is_tiket_hilang === 'true'
-            const isStnkHilang =
-                req.body.is_stnk_hilang === true ||
-                req.body.is_stnk_hilang === 'true'
-
-            let biayaDendaTiket = 0
-            let biayaDendaStnk = 0
-
-            if (isDenda) {
-                if (isTiketHilang)
-                    biayaDendaTiket = dataTarifDenda.denda_tiket || 0
-                if (isStnkHilang)
-                    biayaDendaStnk = dataTarifDenda.denda_stnk || 0
-            }
-
-            // ===============================
-            // Jika ada voucher, kurangi biaya parkir (kecuali member)
-            // ===============================
-            if (req.body.id_data_voucher && !dataMember) {
-                const dataVoucher = await data_voucher.findOne({
-                    where: { id: req.body.id_data_voucher },
-                })
-
-                if (dataVoucher) {
-                    const nilaiVoucher = dataVoucher.tarif || 0
-                    biaya = biaya - nilaiVoucher
-                    if (biaya < 0) biaya = 0 // jangan minus
-                }
-            }
-
-            // ===============================
-            // Simpan transaksi
-            // ===============================
+            // Simpan transaksi masuk
             const data = await transaksi.create({
-                ...req.body,
-                biaya_parkir: biaya,
-                jumlah_denda_tiket: biayaDendaTiket,
-                jumlah_denda_stnk: biayaDendaStnk,
-                interval: selisihJam,
+                tanggal_masuk: req.body.tanggal_masuk,
+                pintu_masuk_id: req.body.pintu_masuk_id,
+                no_tiket: noTiket,
+                kendaraan_id: req.body.kendaraan_id,
+                nomor_polisi: req.body.nomor_polisi,
+                jenis_perhitungan_pembayaran:
+                    req.body.jenis_perhitungan_pembayaran, // flat / regular
+                is_active: true,
+                createdAt: new Date(),
+                updatedAt: new Date(),
             })
 
             return res.json({
                 success: true,
-                message: 'Create transaksi tunai successfully',
+                message: 'Transaksi masuk berhasil dibuat',
                 results: data,
             })
         } catch (err) {
@@ -450,17 +332,189 @@ module.exports = {
             return errorhandler(res, err)
         }
     },
+
+    // ===============================
+    // Transaksi Keluar (UPDATE)
+    // ===============================
     update: async (req, res) => {
         try {
-            const data = await transaksi.update(req.body, {
+            // Cari transaksi aktif
+            const trx = await transaksi.findOne({
                 where: {
-                    id: req.params.id,
+                    nomor_polisi: req.body.nomor_polisi,
+                    tanggal_keluar: null,
+                    is_active: true,
                 },
             })
+
+            if (!trx) {
+                return res.status(404).json({
+                    success: false,
+                    message:
+                        'Transaksi masuk tidak ditemukan atau sudah keluar',
+                })
+            }
+
+            // Cek member
+            const dataMember = await data_nomor_polisi.findOne({
+                where: {
+                    kendaraan_id: trx.kendaraan_id,
+                    nomor_polisi: trx.nomor_polisi,
+                },
+                include: [
+                    {
+                        model: data_member,
+                        as: 'data_member',
+                        where: {
+                            periode: {
+                                [Op.contains]: dayjs().format('YYYY-MM-DD'),
+                            },
+                        },
+                    },
+                ],
+            })
+
+            if (dataMember) {
+                const jenisPembayaran = await payment.findOne({
+                    where: { id: req.body.jenis_pembayaran_id },
+                })
+
+                if (
+                    !jenisPembayaran ||
+                    jenisPembayaran.jenis_payment.toLowerCase() !== 'member'
+                ) {
+                    return res.status(400).json({
+                        success: false,
+                        message:
+                            'Jenis pembayaran untuk member hanya boleh "member"',
+                    })
+                }
+                trx.biaya_parkir = 0
+            }
+
+            // Ambil tarif
+            const dataTarifParkir = await tarif_parkir.findOne({
+                where: { kendaraan_id: trx.kendaraan_id },
+            })
+            const dataTarifDenda = await tarif_denda.findOne({
+                where: { kendaraan_id: trx.kendaraan_id },
+            })
+
+            if (!dataTarifParkir) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Tarif parkir tidak ditemukan',
+                })
+            }
+            if (!dataTarifDenda) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Tarif denda tidak ditemukan',
+                })
+            }
+
+            // Validasi waktu
+            const waktu_masuk = dayjs(trx.tanggal_masuk)
+            const waktu_keluar = dayjs(req.body.tanggal_keluar)
+            if (waktu_keluar.isBefore(waktu_masuk)) {
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        'Waktu keluar tidak boleh lebih awal dari waktu masuk',
+                })
+            }
+            const selisihJam = Math.ceil(
+                waktu_keluar.diff(waktu_masuk, 'hour', true)
+            )
+
+            // Hitung biaya parkir
+            let biaya = 0
+            if (!dataMember) {
+                if (
+                    req.body.jenis_perhitungan_pembayaran.toLowerCase() ===
+                    'flat'
+                ) {
+                    biaya = dataTarifParkir.tarif_flat || 0
+                } else {
+                    const tarifPertama =
+                        dataTarifParkir.tarif_rotasi_pertama || 0
+                    const tarifKedua = dataTarifParkir.tarif_rotasi_kedua || 0
+                    const tarifKetiga = dataTarifParkir.tarif_rotasi_ketiga || 0
+
+                    if (selisihJam >= 1) biaya += tarifPertama
+                    if (selisihJam >= 2) biaya += tarifKedua
+                    if (selisihJam >= 3) biaya += (selisihJam - 2) * tarifKetiga
+                }
+            }
+
+            // Hitung denda
+            let biayaDendaTiket = 0
+            let biayaDendaStnk = 0
+            let biayaDendaKartuMember = 0
+
+            const isDenda = req.body.denda === true || req.body.denda === 'true'
+            const isTiketHilang =
+                req.body.is_tiket_hilang === true ||
+                req.body.is_tiket_hilang === 'true'
+            const isStnkHilang =
+                req.body.is_stnk_hilang === true ||
+                req.body.is_stnk_hilang === 'true'
+            const isKartuMemberHilang =
+                req.body.is_kartu_member_hilang === true ||
+                req.body.is_kartu_member_hilang === 'true'
+
+            if (isDenda) {
+                if (dataMember && dataTarifDenda.denda_member === false) {
+                    biayaDendaTiket = 0
+                    biayaDendaStnk = 0
+                    biayaDendaKartuMember = 0
+                } else {
+                    if (isTiketHilang)
+                        biayaDendaTiket = dataTarifDenda.denda_tiket || 0
+                    if (isStnkHilang)
+                        biayaDendaStnk = dataTarifDenda.denda_stnk || 0
+                    if (isKartuMemberHilang)
+                        biayaDendaKartuMember =
+                            dataTarifDenda.denda_kartu_member || 0
+                }
+            }
+
+            // Voucher
+            if (req.body.id_data_voucher && !dataMember) {
+                const dataVoucher = await data_voucher.findOne({
+                    where: { id: req.body.id_data_voucher },
+                })
+                if (dataVoucher) {
+                    const nilaiVoucher = dataVoucher.tarif || 0
+                    biaya -= nilaiVoucher
+                    if (biaya < 0) biaya = 0
+                }
+            }
+
+            // Update transaksi keluar
+            trx.tanggal_keluar = req.body.tanggal_keluar
+            trx.pintu_keluar_id = req.body.pintu_keluar_id
+            trx.petugas_id = req.body.petugas_id
+            trx.shift_id = req.body.shift_id
+            trx.jenis_pembayaran_id = req.body.jenis_pembayaran_id
+            trx.jenis_perhitungan_pembayaran =
+                req.body.jenis_perhitungan_pembayaran // flat / regular
+            trx.biaya_parkir = biaya
+            trx.jumlah_denda_tiket = biayaDendaTiket
+            trx.jumlah_denda_stnk = biayaDendaStnk
+            trx.jumlah_denda_kartu_member = biayaDendaKartuMember
+            trx.interval = selisihJam
+            trx.is_active = false
+            trx.keterangan_atau_penjelasan =
+                req.body.keterangan_atau_penjelasan || null
+            trx.id_data_voucher = req.body.id_data_voucher || null
+
+            await trx.save()
+
             return res.json({
                 success: true,
-                message: 'Update transaksi tunai successfully',
-                results: data,
+                message: 'Transaksi keluar berhasil diupdate',
+                results: trx,
             })
         } catch (err) {
             return errorhandler(res, err)

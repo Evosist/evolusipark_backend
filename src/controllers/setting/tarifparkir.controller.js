@@ -364,6 +364,7 @@ module.exports = {
                     kendaraan_id: req.body.kendaraan_id,
                     denda_tiket: 0,
                     denda_stnk: 0,
+                    denda_kartu_member: 0,
                     denda_member: false,
                     status: false,
                 },
