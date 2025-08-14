@@ -491,6 +491,8 @@ module.exports = {
             trx.pintu_keluar_id = req.body.pintu_keluar_id
             trx.petugas_id = req.body.petugas_id
             trx.shift_id = req.body.shift_id
+            trx.denda = req.body.denda
+            trx.tipe_denda_id = req.body.tipe_denda_id
             trx.jenis_pembayaran_id = req.body.jenis_pembayaran_id
             trx.jenis_perhitungan_pembayaran =
                 req.body.jenis_perhitungan_pembayaran // flat / regular
