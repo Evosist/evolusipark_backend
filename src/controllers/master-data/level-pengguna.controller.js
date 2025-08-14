@@ -77,12 +77,13 @@ module.exports = {
             return errorhandler(res, err)
         }
     },
+
     getAllAdminTenant: async (req, res) => {
         try {
-            const search = req.query.search || ''
-            const limit = req.query.limit ? parseInt(req.query.limit) : 10
-            const page = req.query.page ? parseInt(req.query.page) : 1
-            const offset = limit && page ? (page - 1) * limit : 0
+            const search = (req.query.search || '').trim()
+            const limit = req.query.limit ? parseInt(req.query.limit, 10) : 10
+            const page = req.query.page ? parseInt(req.query.page, 10) : 1
+            const offset = (page - 1) * limit
             const sortBy = req.query.sortBy || 'id'
             const sortOrder =
                 req.query.sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
@@ -92,16 +93,42 @@ module.exports = {
                 ? sortBy
                 : 'id'
 
-            const options = {
-                where: {
-                    nama: 'Administrator Tenant',
-                },
-                include: [
+            const perusahaanId = req.query.perusahaan_id
+                ? parseInt(req.query.perusahaan_id, 10)
+                : null
+
+            if (!perusahaanId) {
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        'perusahaan_id wajib dikirim sebagai query parameter',
+                })
+            }
+
+            // Base filter: hanya data milik perusahaan ini
+            const where = { perusahaan_id: perusahaanId }
+
+            // Optional: search, tanpa menghilangkan filter perusahaan
+            if (search) {
+                where[Op.and] = [
                     {
-                        model: user,
-                        as: 'user',
-                        attributes: ['id', 'nama'],
+                        [Op.or]: [
+                            { nama: { [Op.iLike]: `%${search}%` } }, // Postgres (iLike)
+                            {
+                                '$perusahaan.nama$': {
+                                    [Op.iLike]: `%${search}%`,
+                                },
+                            },
+                            { '$user.nama$': { [Op.iLike]: `%${search}%` } },
+                        ],
                     },
+                ]
+            }
+
+            const options = {
+                where,
+                include: [
+                    { model: user, as: 'user', attributes: ['id', 'nama'] },
                     {
                         model: perusahaan,
                         as: 'perusahaan',
@@ -114,19 +141,9 @@ module.exports = {
                     },
                 ],
                 order: [[validSortBy, sortOrder]],
-            }
-
-            if (search) {
-                options.where[Op.or] = [
-                    { nama: { [Op.iLike]: `%${search}%` } },
-                    { '$perusahaan.nama$': { [Op.iLike]: `%${search}%` } },
-                    { '$user.nama$': { [Op.iLike]: `%${search}%` } },
-                ]
-            }
-
-            if (limit) {
-                options.limit = limit
-                options.offset = offset
+                limit,
+                offset,
+                distinct: true,
             }
 
             const { count, rows } = await level_pengguna.findAndCountAll(
@@ -135,7 +152,7 @@ module.exports = {
 
             return res.json({
                 success: true,
-                message: 'Get all level pengguna successfully',
+                message: 'Get level pengguna by perusahaan_id successfully',
                 results: {
                     data: rows,
                     totalData: count,
@@ -148,6 +165,7 @@ module.exports = {
             return errorhandler(res, err)
         }
     },
+
     getAllCustomUser: async (req, res) => {
         try {
             const search = req.query.search || ''
