@@ -307,10 +307,6 @@ module.exports = {
         try {
             const data = await kendaraan.create(req.body)
 
-            await tarif_parkir.create({
-                kendaraan_id: data.id,
-            })
-
             return res.json({
                 success: true,
                 message: 'Create kendaraan successfully',
