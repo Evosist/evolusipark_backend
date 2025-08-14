@@ -14,14 +14,12 @@ module.exports = {
             'jenis_perhitungan_pembayarans',
             [
                 {
-                    jenis_payment: 'Regular',
-                    status: false,
+                    nama: 'Regular',
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
                 {
-                    jenis_payment: 'Flat',
-                    status: false,
+                    nama: 'Flat',
                     createdAt: new Date(),
                     updatedAt: new Date(),
                 },
