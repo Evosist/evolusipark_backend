@@ -295,6 +295,7 @@ module.exports = {
 
             // Simpan transaksi masuk
             const data = await transaksi.create({
+                ...req.body,
                 tanggal_masuk: req.body.tanggal_masuk,
                 pintu_masuk_id: req.body.pintu_masuk_id,
                 no_tiket: noTiket,
