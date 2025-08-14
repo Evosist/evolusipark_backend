@@ -69,6 +69,11 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: true,
                 validate: { min: 0 },
             },
+            tarif_flat: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+                validate: { min: 0 },
+            },
         },
         {
             sequelize,
