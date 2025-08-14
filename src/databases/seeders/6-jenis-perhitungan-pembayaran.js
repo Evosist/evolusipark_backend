@@ -11,7 +11,7 @@ module.exports = {
          */
 
         await queryInterface.bulkInsert(
-            'jenis_perhitungan_pembayaran',
+            'jenis_perhitungan_pembayarans',
             [
                 {
                     jenis_payment: 'Regular',
