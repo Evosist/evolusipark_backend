@@ -83,28 +83,28 @@ module.exports = {
             // Awal: Siapkan filter awal
             options.where = {}
 
-            if (startDate && endDate) {
-                if (!isValidDDMMYYYY(startDate) || !isValidDDMMYYYY(endDate)) {
-                    return res.status(400).json({
-                        success: false,
-                        message: 'Format tanggal harus DD-MM-YYYY',
-                    })
-                }
+            // if (startDate && endDate) {
+            //     if (!isValidDDMMYYYY(startDate) || !isValidDDMMYYYY(endDate)) {
+            //         return res.status(400).json({
+            //             success: false,
+            //             message: 'Format tanggal harus DD-MM-YYYY',
+            //         })
+            //     }
 
-                const start = new Date(convertDDMMYYYYtoMMDDYYYY(startDate))
-                const end = new Date(
-                    new Date(convertDDMMYYYYtoMMDDYYYY(endDate)).setHours(
-                        23,
-                        59,
-                        59,
-                        999
-                    )
-                )
+            //     const start = new Date(convertDDMMYYYYtoMMDDYYYY(startDate))
+            //     const end = new Date(
+            //         new Date(convertDDMMYYYYtoMMDDYYYY(endDate)).setHours(
+            //             23,
+            //             59,
+            //             59,
+            //             999
+            //         )
+            //     )
 
-                options.where.createdAt = {
-                    [Op.between]: [start, end],
-                }
-            }
+            //     options.where.createdAt = {
+            //         [Op.between]: [start, end],
+            //     }
+            // }
 
             if (search) {
                 options.where[Op.and] = [
