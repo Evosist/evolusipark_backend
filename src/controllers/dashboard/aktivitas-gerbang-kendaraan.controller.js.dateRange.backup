@@ -1,5 +1,4 @@
 const errorhandler = require('../../helpers/errorhandler.helper')
-const { getUTCDateRange } = require('../../helpers/dateRange.helper')
 const {
     aktivitas_gerbang_kendaraan,
     user,
@@ -110,20 +109,37 @@ module.exports = {
             //     }
             // }
             if (startDate && endDate) {
-                try {
-                    const { start, end } = getUTCDateRange(startDate, endDate)
-
-                    console.log('Start (UTC):', start.toISOString())
-                    console.log('End (UTC):', end.toISOString())
-
-                    options.where.createdAt = {
-                        [Op.between]: [start, end],
-                    }
-                } catch (err) {
+                if (!isValidDDMMYYYY(startDate) || !isValidDDMMYYYY(endDate)) {
                     return res.status(400).json({
                         success: false,
-                        message: err.message,
+                        message: 'Format tanggal harus DD-MM-YYYY',
                     })
+                }
+
+                const startConverted = convertDDMMYYYYtoMMDDYYYY(startDate)
+                const endConverted = convertDDMMYYYYtoMMDDYYYY(endDate)
+
+                const start = dayjs
+                    .utc(startConverted, 'MM-DD-YYYY')
+                    .startOf('day')
+                    .toDate()
+                const end = dayjs
+                    .utc(endConverted, 'MM-DD-YYYY')
+                    .endOf('day')
+                    .toDate()
+
+                if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Tanggal tidak valid setelah konversi',
+                    })
+                }
+
+                console.log('Start (UTC):', start.toISOString())
+                console.log('End (UTC):', end.toISOString())
+
+                options.where.createdAt = {
+                    [Op.between]: [start, end],
                 }
             }
 
