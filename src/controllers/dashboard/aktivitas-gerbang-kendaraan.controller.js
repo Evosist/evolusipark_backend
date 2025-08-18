@@ -91,6 +91,9 @@ module.exports = {
             //         })
             //     }
 
+            //     console.log('Start:', convertDDMMYYYYtoMMDDYYYY(startDate))
+            //     console.log('End:', convertDDMMYYYYtoMMDDYYYY(endDate))
+
             //     const start = new Date(convertDDMMYYYYtoMMDDYYYY(startDate))
             //     const end = new Date(
             //         new Date(convertDDMMYYYYtoMMDDYYYY(endDate)).setHours(
@@ -101,6 +104,78 @@ module.exports = {
             //         )
             //     )
 
+            //     options.where.createdAt = {
+            //         [Op.between]: [start, end],
+            //     }
+            // }
+            if (startDate && endDate) {
+                if (!isValidDDMMYYYY(startDate) || !isValidDDMMYYYY(endDate)) {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Format tanggal harus DD-MM-YYYY',
+                    })
+                }
+
+                const startConverted = convertDDMMYYYYtoMMDDYYYY(startDate)
+                const endConverted = convertDDMMYYYYtoMMDDYYYY(endDate)
+
+                const start = dayjs
+                    .utc(startConverted, 'MM-DD-YYYY')
+                    .startOf('day')
+                    .toDate()
+                const end = dayjs
+                    .utc(endConverted, 'MM-DD-YYYY')
+                    .endOf('day')
+                    .toDate()
+
+                if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Tanggal tidak valid setelah konversi',
+                    })
+                }
+
+                console.log('Start (UTC):', start.toISOString())
+                console.log('End (UTC):', end.toISOString())
+
+                options.where.createdAt = {
+                    [Op.between]: [start, end],
+                }
+            }
+
+            // if (startDate && endDate) {
+            //     // Validasi format awal
+            //     if (!isValidDDMMYYYY(startDate) || !isValidDDMMYYYY(endDate)) {
+            //         return res.status(400).json({
+            //             success: false,
+            //             message: 'Format tanggal harus DD-MM-YYYY',
+            //         })
+            //     }
+
+            //     // Konversi ke format MM-DD-YYYY
+            //     const startConverted = convertDDMMYYYYtoMMDDYYYY(startDate)
+            //     const endConverted = convertDDMMYYYYtoMMDDYYYY(endDate)
+
+            //     // Parse menggunakan dayjs agar lebih stabil
+            //     const start = dayjs(startConverted, 'MM-DD-YYYY').toDate()
+            //     const endRaw = dayjs(endConverted, 'MM-DD-YYYY').toDate()
+
+            //     // Validasi hasil parsing
+            //     if (isNaN(start.getTime()) || isNaN(endRaw.getTime())) {
+            //         return res.status(400).json({
+            //             success: false,
+            //             message: 'Tanggal tidak valid setelah konversi',
+            //         })
+            //     }
+
+            //     // Set jam akhir hari untuk endDate
+            //     const end = new Date(endRaw.setHours(23, 59, 59, 999))
+
+            //     // Logging opsional
+            //     console.log('Start:', start.toISOString())
+            //     console.log('End:', end.toISOString())
+
+            //     // Tambahkan ke filter query
             //     options.where.createdAt = {
             //         [Op.between]: [start, end],
             //     }
