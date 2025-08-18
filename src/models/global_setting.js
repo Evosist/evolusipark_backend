@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
             no_telp_lokasi: DataTypes.STRING,
             no_fax_lokasi: DataTypes.STRING,
             alamat_lokasi: DataTypes.STRING,
+            logo: DataTypes.STRING,
         },
         {
             sequelize,

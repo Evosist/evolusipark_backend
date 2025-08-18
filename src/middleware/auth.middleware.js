@@ -4,6 +4,7 @@ const errorhandler = require('../helpers/errorhandler.helper')
 
 const authMiddleware = (req, res, next) => {
     try {
+        console.log("Masuk authMiddleware");
         const { authorization: auth } = req.headers
         if (!auth && !auth?.startsWith('Bearer ')) {
             throw Error('unauthorized')

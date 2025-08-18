@@ -1,4 +1,5 @@
 const envPath = `.env.${process.env.NODE_ENV || 'development'}`
+const path = require('path')
 require('dotenv').config({ path: envPath })
 
 const express = require('express')
@@ -27,6 +28,9 @@ app.get('/', (req, res) => {
         message: 'Backend is running well',
     })
 })
+
+// serve folder assets sebagai static
+app.use('/assets', express.static(path.join(process.cwd(), 'assets')))
 
 app.use('/', require('./src/routers/index.router'))
 

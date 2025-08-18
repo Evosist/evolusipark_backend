@@ -32,6 +32,67 @@ function generateTableRows(data) {
 }
 
 module.exports = {
+      uploadLogo: async (req, res) => {
+        try {
+            console.log('Masuk globalController.uploadLogo')
+
+            // 1. cek apakah file ada
+            if (!req.file) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Logo file is required',
+                })
+            }
+
+            // 2. generate path baru
+            const filePath = `/assets/${req.tenant_id}/images/globals/${req.file.filename}`
+
+            // 3. cek apakah record global_setting untuk tenant ini ada
+            const existing = await global_setting.findOne({
+                where: { tenant_id: req.tenant_id },
+            })
+
+            if (!existing) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Global setting for tenant not found',
+                })
+            }
+
+            // 4. hapus logo lama kalau ada
+            if (existing.logo) {
+                const oldPath = path.join(process.cwd(), existing.logo)
+                if (fs.existsSync(oldPath)) {
+                    fs.unlinkSync(oldPath)
+                }
+            }
+
+            // 5. update record berdasarkan tenant_id
+            const [count, updated] = await global_setting.update(
+                { logo: filePath },
+                {
+                    where: { tenant_id: req.tenant_id },
+                    returning: true,
+                }
+            )
+
+            if (count === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Failed to update logo',
+                })
+            }
+
+            return res.json({
+                success: true,
+                message: 'Logo uploaded successfully',
+                results: updated[0], // record hasil update
+            })
+        } catch (err) {
+            return errorhandler(res, err)
+        }
+    },
+
     getAll: async (req, res) => {
         try {
             const search = req.query.search || ''
