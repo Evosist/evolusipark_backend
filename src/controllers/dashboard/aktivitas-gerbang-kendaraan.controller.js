@@ -9,7 +9,8 @@ const fs = require('fs')
 const puppeteer = require('puppeteer')
 const ExcelJS = require('exceljs')
 const dayjs = require('dayjs')
-const Op = require('sequelize').Op
+// const Op = require('sequelize').Op
+const { Op, fn, col, cast, Sequelize } = require('sequelize')
 const { isValidDDMMYYYY } = require('../../helpers/dateformat.helper')
 const { convertDDMMYYYYtoMMDDYYYY } = require('../../helpers/dateformat.helper')
 
@@ -58,11 +59,6 @@ module.exports = {
                         attributes: ['id', 'nama'],
                     },
                     {
-                        model: user,
-                        as: 'petugas',
-                        attributes: ['id', 'nama'],
-                    },
-                    {
                         model: tenant,
                         as: 'tenant',
                         attributes: ['id', 'nama_tenant'],
@@ -84,31 +80,6 @@ module.exports = {
             // Awal: Siapkan filter awal
             options.where = {}
 
-            // if (startDate && endDate) {
-            //     if (!isValidDDMMYYYY(startDate) || !isValidDDMMYYYY(endDate)) {
-            //         return res.status(400).json({
-            //             success: false,
-            //             message: 'Format tanggal harus DD-MM-YYYY',
-            //         })
-            //     }
-
-            //     console.log('Start:', convertDDMMYYYYtoMMDDYYYY(startDate))
-            //     console.log('End:', convertDDMMYYYYtoMMDDYYYY(endDate))
-
-            //     const start = new Date(convertDDMMYYYYtoMMDDYYYY(startDate))
-            //     const end = new Date(
-            //         new Date(convertDDMMYYYYtoMMDDYYYY(endDate)).setHours(
-            //             23,
-            //             59,
-            //             59,
-            //             999
-            //         )
-            //     )
-
-            //     options.where.createdAt = {
-            //         [Op.between]: [start, end],
-            //     }
-            // }
             if (startDate && endDate) {
                 try {
                     const { start, end } = getUTCDateRange(startDate, endDate)
@@ -127,44 +98,6 @@ module.exports = {
                 }
             }
 
-            // if (startDate && endDate) {
-            //     // Validasi format awal
-            //     if (!isValidDDMMYYYY(startDate) || !isValidDDMMYYYY(endDate)) {
-            //         return res.status(400).json({
-            //             success: false,
-            //             message: 'Format tanggal harus DD-MM-YYYY',
-            //         })
-            //     }
-
-            //     // Konversi ke format MM-DD-YYYY
-            //     const startConverted = convertDDMMYYYYtoMMDDYYYY(startDate)
-            //     const endConverted = convertDDMMYYYYtoMMDDYYYY(endDate)
-
-            //     // Parse menggunakan dayjs agar lebih stabil
-            //     const start = dayjs(startConverted, 'MM-DD-YYYY').toDate()
-            //     const endRaw = dayjs(endConverted, 'MM-DD-YYYY').toDate()
-
-            //     // Validasi hasil parsing
-            //     if (isNaN(start.getTime()) || isNaN(endRaw.getTime())) {
-            //         return res.status(400).json({
-            //             success: false,
-            //             message: 'Tanggal tidak valid setelah konversi',
-            //         })
-            //     }
-
-            //     // Set jam akhir hari untuk endDate
-            //     const end = new Date(endRaw.setHours(23, 59, 59, 999))
-
-            //     // Logging opsional
-            //     console.log('Start:', start.toISOString())
-            //     console.log('End:', end.toISOString())
-
-            //     // Tambahkan ke filter query
-            //     options.where.createdAt = {
-            //         [Op.between]: [start, end],
-            //     }
-            // }
-
             if (search) {
                 options.where[Op.and] = [
                     ...(options.where[Op.and] || []), // biar nggak overwrite
@@ -172,17 +105,34 @@ module.exports = {
                         [Op.or]: [
                             { tiket: { [Op.iLike]: `%${search}%` } },
                             { plat_nomor: { [Op.iLike]: `%${search}%` } },
-                            { waktu: { [Op.iLike]: `%${search}%` } },
-                            { lokasi_gerbang: { [Op.iLike]: `%${search}%` } },
-                            { buka_atau_tutup: { [Op.iLike]: `%${search}%` } },
-                            { status_palang: { [Op.iLike]: `%${search}%` } },
-                            { '$petugas.nama$': { [Op.iLike]: `%${search}%` } },
-                            {
-                                '$data_member.nama$': {
-                                    [Op.iLike]: `%${search}%`,
-                                },
-                            },
+                            // Sequelize.where(cast(col('waktu'), 'varchar'), {
+                            //   [Op.iLike]: `%${search}%`,
+                            // }),
+                            // { lokasi_gerbang: { [Op.iLike]: `%${search}%` } },
+                            // { buka_atau_tutup: { [Op.iLike]: `%${search}%` } },
+                            // { status_palang: { [Op.iLike]: `%${search}%` } },
+                            // { '$petugas.nama$': { [Op.iLike]: `%${search}%` } },
+                            // {
+                            //     '$data_member.nama$': {
+                            //         [Op.iLike]: `%${search}%`,
+                            //     },
+                            // },
                         ],
+
+                        // [Op.or]: [
+                        //     { tiket: { [Op.iLike]: `%${search}%` } },
+                        //     { plat_nomor: { [Op.iLike]: `%${search}%` } },
+                        //     { waktu: { [Op.iLike]: `%${search}%` } },
+                        //     { lokasi_gerbang: { [Op.iLike]: `%${search}%` } },
+                        //     { buka_atau_tutup: { [Op.iLike]: `%${search}%` } },
+                        //     { status_palang: { [Op.iLike]: `%${search}%` } },
+                        //     { '$petugas.nama$': { [Op.iLike]: `%${search}%` } },
+                        //     {
+                        //         '$data_member.nama$': {
+                        //             [Op.iLike]: `%${search}%`,
+                        //         },
+                        //     },
+                        // ],
                     },
                 ]
             }
