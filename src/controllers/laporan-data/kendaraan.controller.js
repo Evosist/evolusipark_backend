@@ -5,6 +5,7 @@ const {
 const errorhandler = require('../../helpers/errorhandler.helper')
 const { sequelize } = require('../../models/index')
 const { QueryTypes } = require('sequelize')
+const { getUTCDateRange } = require('../../helpers/dateRange.helper')
 
 module.exports = {
     getAllDataKendaraanIn: async (req, res) => {
@@ -22,6 +23,8 @@ module.exports = {
             limit = parseInt(limit)
             page = parseInt(page)
             const offset = (page - 1) * limit
+            const startDate = req.query.start_date
+            const endDate = req.query.end_date
 
             // validasi kolom sort
             const allowedSort = [
@@ -39,27 +42,46 @@ module.exports = {
             const conditions = [`agk.tipe_gerbang = 'In'`]
             const replacements = {}
 
-            if (start_date) {
-                if (!isValidDDMMYYYY(start_date)) {
-                    return errorhandler(res, 'Invalid start date format', 400)
-                }
-                start_date = convertDDMMYYYYtoMMDDYYYY(start_date)
-                conditions.push(`agk."createdAt" >= :start_date`)
-                replacements.start_date = start_date
-            }
+            // if (start_date) {
+            //     if (!isValidDDMMYYYY(start_date)) {
+            //         return errorhandler(res, 'Invalid start date format', 400)
+            //     }
+            //     start_date = convertDDMMYYYYtoMMDDYYYY(start_date)
+            //     conditions.push(`agk."createdAt" >= :start_date`)
+            //     replacements.start_date = start_date
+            // }
             // if (end_date) {
             //     conditions.push(`agk."createdAt" <= :end_date`)
             //     replacements.end_date = end_date
             // }
-            if (end_date) {
-                if (!isValidDDMMYYYY(end_date)) {
-                    return errorhandler(res, 'Invalid end date format', 400)
+            // if (end_date) {
+            //     if (!isValidDDMMYYYY(end_date)) {
+            //         return errorhandler(res, 'Invalid end date format', 400)
+            //     }
+            //     end_date = convertDDMMYYYYtoMMDDYYYY(end_date)
+            //     conditions.push(
+            //         `agk."createdAt" < (:end_date::date + INTERVAL '1 day')`
+            //     )
+            //     replacements.end_date = end_date
+            // }
+
+            
+            if (startDate && endDate) {
+                try {
+                    const { start, end } = getUTCDateRange(startDate, endDate)
+
+                    console.log('Start (UTC):', start.toISOString())
+                    console.log('End (UTC):', end.toISOString())
+
+                    options.where.createdAt = {
+                        [Op.between]: [start, end],
+                    }
+                } catch (err) {
+                    return res.status(400).json({
+                        success: false,
+                        message: err.message,
+                    })
                 }
-                end_date = convertDDMMYYYYtoMMDDYYYY(end_date)
-                conditions.push(
-                    `agk."createdAt" < (:end_date::date + INTERVAL '1 day')`
-                )
-                replacements.end_date = end_date
             }
 
             if (search) {
