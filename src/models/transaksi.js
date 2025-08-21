@@ -63,6 +63,7 @@ module.exports = (sequelize, DataTypes) => {
     transaksi.init(
         {
             tenant_id: DataTypes.INTEGER,
+            is_manual: DataTypes.BOOLEAN,
             tanggal_masuk: DataTypes.DATE,
             pintu_masuk_id: DataTypes.INTEGER,
             no_tiket: { type: DataTypes.STRING, unique: true },
