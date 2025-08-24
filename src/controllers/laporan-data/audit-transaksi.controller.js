@@ -471,12 +471,14 @@ module.exports = {
                 replacements.offset = offset
             }
 
-            const [[{ total }]] = await sequelize.query(countQuery, {
+            const countResult = await sequelize.query(countQuery, {
                 replacements,
                 type: QueryTypes.SELECT,
             })
 
-            const [results] = await sequelize.query(query, {
+            const total = countResult[0]?.total || 0
+
+            const results = await sequelize.query(query, {
                 replacements,
                 type: QueryTypes.SELECT,
             })
