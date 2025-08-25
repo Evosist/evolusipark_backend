@@ -42,8 +42,6 @@ module.exports = {
             const conditions = [`agk.tipe_gerbang = 'In'`]
             const replacements = {}
 
-           
-
             // if (startDate && endDate) {
             //     try {
             //         const { start, end } = getUTCDateRange(startDate, endDate)
@@ -69,7 +67,9 @@ module.exports = {
                     console.log('Start (UTC):', start.toISOString())
                     console.log('End (UTC):', end.toISOString())
 
-                    conditions.push(`agk."createdAt" BETWEEN :start_date AND :end_date`)
+                    conditions.push(
+                        `agk."createdAt" BETWEEN :start_date AND :end_date`
+                    )
                     replacements.start_date = start
                     replacements.end_date = end
                 } catch (err) {
@@ -79,7 +79,6 @@ module.exports = {
                     })
                 }
             }
-
 
             if (search) {
                 conditions.push(
@@ -239,12 +238,10 @@ module.exports = {
                 page = 1,
             } = req.query
 
-            // konversi ke angka
             limit = parseInt(limit)
             page = parseInt(page)
             const offset = (page - 1) * limit
 
-            // validasi sortBy
             const allowedSort = [
                 'tanggal_masuk',
                 'nomor_tiket',
@@ -273,7 +270,6 @@ module.exports = {
                     return errorhandler(res, 'Invalid end_date format')
                 }
                 end_date = convertDDMMYYYYtoMMDDYYYY(end_date)
-                // conditions.push(`keluar."createdAt" <= :end_date`)
                 conditions.push(
                     `keluar."createdAt" < (:end_date::date + INTERVAL '1 day')`
                 )
@@ -281,9 +277,9 @@ module.exports = {
             }
             if (search) {
                 conditions.push(`(
-                masuk.tiket ILIKE :search
-                OR masuk.plat_nomor ILIKE :search
-                )`)
+            masuk.tiket ILIKE :search
+            OR masuk.plat_nomor ILIKE :search
+            )`)
                 replacements.search = `%${search}%`
             }
 
@@ -292,6 +288,26 @@ module.exports = {
                 : ''
 
             const dataQuery = `
+            WITH masuk AS (
+              SELECT *
+              FROM (
+                SELECT agk.*,
+                       ROW_NUMBER() OVER (PARTITION BY tiket ORDER BY "createdAt" ASC) AS rn
+                FROM aktivitas_gerbang_kendaraans agk
+                WHERE tipe_gerbang = 'In'
+              ) sub
+              WHERE rn = 1
+            ),
+            keluar AS (
+              SELECT *
+              FROM (
+                SELECT agk.*,
+                       ROW_NUMBER() OVER (PARTITION BY tiket ORDER BY "createdAt" DESC) AS rn
+                FROM aktivitas_gerbang_kendaraans agk
+                WHERE tipe_gerbang = 'Out'
+              ) sub
+              WHERE rn = 1
+            )
             SELECT
               masuk.tiket AS nomor_tiket,
               masuk."createdAt" AS tanggal_masuk,
@@ -358,39 +374,11 @@ module.exports = {
                 'nama_perusahaan', p.nama,
                 'nama_produk', pm.nama
               ) AS data_member
-
-            FROM (
-              SELECT DISTINCT ON (tiket) *
-              FROM aktivitas_gerbang_kendaraans
-              WHERE tipe_gerbang = 'In'
-              ORDER BY tiket, "createdAt" DESC
-            ) masuk
-            JOIN (
-              SELECT DISTINCT ON (tiket) *
-              FROM aktivitas_gerbang_kendaraans
-              WHERE tipe_gerbang = 'Out'
-              ORDER BY tiket, "createdAt" DESC
-            ) keluar ON masuk.tiket = keluar.tiket
-
-            LEFT JOIN (
-              SELECT DISTINCT ON (no_tiket) *
-              FROM transaksis
-              WHERE is_active = true
-              ORDER BY
-                no_tiket,
-                CASE
-                  WHEN (biaya_parkir IS NOT NULL AND biaya_parkir::numeric > 0)
-                    OR (jumlah_denda_stnk IS NOT NULL AND jumlah_denda_stnk::numeric > 0)
-                    OR (jumlah_denda_tiket IS NOT NULL AND jumlah_denda_tiket::numeric > 0)
-                  THEN 0
-                  ELSE 1
-                END,
-                "createdAt" DESC
-            ) t ON t.no_tiket = masuk.tiket
-
-            LEFT JOIN data_nomor_polisis dnp ON masuk.kendaraan_id = dnp.kendaraan_id
-            LEFT JOIN data_members dm ON t.id_data_member = dm.id
+            FROM masuk
+            JOIN keluar ON masuk.tiket = keluar.tiket
+            LEFT JOIN transaksis t ON t.no_tiket = masuk.tiket AND t.is_active = true
             LEFT JOIN kendaraans dk ON masuk.kendaraan_id = dk.id
+            LEFT JOIN data_members dm ON t.id_data_member = dm.id
             LEFT JOIN perusahaans p ON dm.perusahaan_id = p.id
             LEFT JOIN produk_members pm ON dm.produk_id = pm.id
             LEFT JOIN users u ON t.petugas_id = u.id
@@ -400,51 +388,32 @@ module.exports = {
             LIMIT :limit OFFSET :offset
             `
 
-            // query total
             const countQuery = `
-              SELECT COUNT(*) AS total
+            WITH masuk AS (
+              SELECT *
               FROM (
-                SELECT masuk.tiket
-                FROM (
-                  SELECT DISTINCT ON (tiket) *
-                  FROM aktivitas_gerbang_kendaraans
-                  WHERE tipe_gerbang = 'In'
-                  ORDER BY tiket, "createdAt" DESC
-                ) masuk
-                JOIN (
-                  SELECT DISTINCT ON (tiket) *
-                  FROM aktivitas_gerbang_kendaraans
-                  WHERE tipe_gerbang = 'Out'
-                  ORDER BY tiket, "createdAt" DESC
-                ) keluar
-                  ON masuk.tiket = keluar.tiket
-                 AND keluar."createdAt" > masuk."createdAt"
-                LEFT JOIN data_nomor_polisis dnp
-                  ON masuk.kendaraan_id = dnp.kendaraan_id
-                LEFT JOIN data_members dm
-                  ON dnp.data_member_id = dm.id
-                ${whereSql}
-              ) AS subquery
+                SELECT agk.*,
+                       ROW_NUMBER() OVER (PARTITION BY tiket ORDER BY "createdAt" ASC) AS rn
+                FROM aktivitas_gerbang_kendaraans agk
+                WHERE tipe_gerbang = 'In'
+              ) sub
+              WHERE rn = 1
+            ),
+            keluar AS (
+              SELECT *
+              FROM (
+                SELECT agk.*,
+                       ROW_NUMBER() OVER (PARTITION BY tiket ORDER BY "createdAt" DESC) AS rn
+                FROM aktivitas_gerbang_kendaraans agk
+                WHERE tipe_gerbang = 'Out'
+              ) sub
+              WHERE rn = 1
+            )
+            SELECT COUNT(*) AS total
+            FROM masuk
+            JOIN keluar ON masuk.tiket = keluar.tiket
+            ${whereSql}
             `
-
-            // const countQuery = `
-            // SELECT COUNT(*) AS total
-            // FROM (
-            //   SELECT masuk.tiket
-            //   FROM aktivitas_gerbang_kendaraans masuk
-            //   JOIN aktivitas_gerbang_kendaraans keluar
-            //     ON masuk.tiket = keluar.tiket
-            //    AND masuk.tipe_gerbang = 'In'
-            //    AND keluar.tipe_gerbang = 'Out'
-            //   LEFT JOIN data_nomor_polisis dnp
-            //     ON masuk.kendaraan_id = dnp.kendaraan_id
-            //   LEFT JOIN data_members dm
-            //     ON dnp.data_member_id = dm.id
-            //   ${whereSql}
-            //   GROUP BY masuk.tiket, masuk."createdAt", masuk.plat_nomor, masuk.kendaraan_id,
-            //            keluar.lokasi_gerbang, keluar.buka_atau_tutup, keluar."createdAt", dm.id
-            // ) AS subquery
-            // `
 
             replacements.limit = limit
             replacements.offset = offset
