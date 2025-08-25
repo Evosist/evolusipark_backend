@@ -504,6 +504,7 @@ module.exports = {
             trx.is_active = true
             trx.keterangan_atau_penjelasan =
                 req.body.keterangan_atau_penjelasan || null
+            trx.id_data_member = req.body.id_data_member || null
             trx.id_data_voucher = req.body.id_data_voucher || null
 
             await trx.save()
